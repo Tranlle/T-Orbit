@@ -1,0 +1,18 @@
+<Application x:Class="Tranbok.Tools.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:infra="clr-namespace:Tranbok.Tools.Infrastructure"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Dark.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Converters — registered at app level so all views can use them -->
+            <BooleanToVisibilityConverter               x:Key="BoolToVis"/>
+            <infra:InverseBoolToVisibilityConverter     x:Key="InverseBoolToVisConverter"/>
+            <infra:ZeroToVisibilityConverter            x:Key="ZeroToVisibleConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

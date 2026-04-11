@@ -1,0 +1,166 @@
+<UserControl x:Class="Tranbok.Tools.Views.PluginManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:infra="clr-namespace:Tranbok.Tools.Infrastructure"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="SortedPlugins" Source="{Binding Plugins}">
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="Sort" Direction="Ascending"/>
+                <componentModel:SortDescription PropertyName="Name" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+    <Grid Background="{StaticResource BgCanvasBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="{StaticResource BgDefaultBrush}"
+                BorderBrush="{StaticResource BorderMutedBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="20,0,20,0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="&#xE71D;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="18"
+                           Foreground="{StaticResource AccentBlueBrush}"
+                           Margin="0,0,10,0"/>
+                <TextBlock Text="插件管理"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource FgDefaultBrush}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="{StaticResource BgDefaultBrush}"
+                    BorderBrush="{StaticResource BorderMutedBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="8">
+                <ListBox ItemsSource="{Binding Source={StaticResource SortedPlugins}}"
+                         SelectedItem="{Binding SelectedPlugin, Mode=TwoWay}"
+                         BorderThickness="0"
+                         Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type infra:PluginEntry}">
+                            <Border Padding="10,8" Margin="0,1" CornerRadius="6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding IconGlyph}"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="14"
+                                               Foreground="{StaticResource FgMutedBrush}"
+                                               VerticalAlignment="Top"
+                                               Margin="0,1,10,0"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource FgDefaultBrush}"/>
+                                        <TextBlock Text="{Binding Description}"
+                                                   FontSize="11"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource FgSubtleBrush}"
+                                                   Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Background="{StaticResource BgDefaultBrush}"
+                    BorderBrush="{StaticResource BorderMutedBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20">
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedPlugin, Mode=OneWay}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+
+                    <StackPanel>
+                        <TextBlock Text="插件详情"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource FgDefaultBrush}"
+                                   Margin="0,0,0,16"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="名称"
+                                       Width="72"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource FgSubtleBrush}"/>
+                            <TextBlock Text="{Binding SelectedPlugin.Name, Mode=OneWay}"
+                                       FontSize="13"
+                                       Foreground="{StaticResource FgDefaultBrush}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="标识"
+                                       Width="72"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource FgSubtleBrush}"/>
+                            <TextBlock Text="{Binding SelectedPlugin.Id, Mode=OneWay}"
+                                       FontSize="13"
+                                       Foreground="{StaticResource FgDefaultBrush}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="描述"
+                                       Foreground="{StaticResource FgSubtleBrush}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="{Binding SelectedPlugin.Description, Mode=OneWay}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource FgDefaultBrush}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="排序"
+                                       Width="72"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource FgSubtleBrush}"/>
+                            <TextBox Text="{Binding SelectedPluginSortText, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="120"
+                                     ToolTip="排序范围 0~100，越小越靠前"/>
+                        </StackPanel>
+
+                        <CheckBox Content="启用该插件"
+                                  IsChecked="{Binding SelectedPlugin.IsEnabled, Mode=TwoWay}"
+                                  Foreground="{StaticResource FgDefaultBrush}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
