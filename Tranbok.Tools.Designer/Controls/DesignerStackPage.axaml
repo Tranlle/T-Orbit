@@ -1,0 +1,9 @@
+<local:DesignerStackPage xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.DesignerStackPage">
+  <StackPanel Classes="page-content">
+    <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:DesignerStackPage}}"
+                      ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource AncestorType=local:DesignerStackPage}}" />
+  </StackPanel>
+</local:DesignerStackPage>

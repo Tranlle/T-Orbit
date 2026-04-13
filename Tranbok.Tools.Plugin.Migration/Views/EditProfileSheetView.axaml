@@ -1,0 +1,41 @@
+<designer:DesignerPage xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:designer="using:Tranbok.Tools.Designer.Controls"
+                       xmlns:forms="using:Tranbok.Tools.Designer.Controls.Forms"
+                       xmlns:inputs="using:Tranbok.Tools.Designer.Controls.Inputs"
+                       xmlns:selectors="using:Tranbok.Tools.Designer.Controls.Selectors"
+                       xmlns:vm="using:Tranbok.Tools.Plugin.Migration.ViewModels"
+                       xmlns:models="using:Tranbok.Tools.Plugin.Migration.Models"
+                       x:Class="Tranbok.Tools.Plugin.Migration.Views.EditProfileSheetView"
+                       x:DataType="vm:MigrationViewModel">
+  <forms:DesignerForm Title="编辑配置" Description="修改项目路径、数据库类型、DbContext 与连接字符串。">
+    <Grid Classes="form-grid" ColumnDefinitions="*,20,*" RowDefinitions="Auto,Auto,Auto">
+      <inputs:DesignerTextBox Grid.Row="0" Grid.Column="0"
+                              Label="项目路径"
+                              Text="{Binding EditingProjectPath, Mode=TwoWay}"
+                              ShowClearButton="True"
+                              Watermark="请选择 Domain 项目 .csproj 路径" />
+      <inputs:DesignerTextBox Grid.Row="0" Grid.Column="2"
+                              Label="配置名称"
+                              Text="{Binding EditingProfile.ProfileName, Mode=TwoWay}"
+                              ShowClearButton="True"
+                              Watermark="例如 开发环境 / 生产环境" />
+      <inputs:DesignerSelect Grid.Row="1" Grid.Column="0"
+                             Label="数据库类型"
+                             ItemsSource="{Binding DbTypeOptions}"
+                             SelectedItem="{Binding SelectedEditingDbTypeOption, Mode=TwoWay}"
+                             DisplayMemberPath="Label"
+                             Placeholder="请选择数据库类型" />
+      <inputs:DesignerTextBox Grid.Row="1" Grid.Column="2"
+                              Label="DbContext"
+                              Text="{Binding EditingProfile.ContextName, Mode=TwoWay}"
+                              ShowClearButton="True"
+                              Watermark="例如 AppDbContext" />
+      <inputs:DesignerTextBox Grid.Row="2" Grid.ColumnSpan="3"
+                              Label="连接字符串"
+                              Text="{Binding EditingProfile.ConnectionString, Mode=TwoWay}"
+                              ShowClearButton="True"
+                              Watermark="请输入数据库连接字符串" />
+    </Grid>
+  </forms:DesignerForm>
+</designer:DesignerPage>

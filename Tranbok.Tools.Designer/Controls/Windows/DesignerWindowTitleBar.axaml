@@ -1,0 +1,44 @@
+<designer:DesignerWindowTitleBar xmlns="https://github.com/avaloniaui"
+                                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                 xmlns:designer="using:Tranbok.Tools.Designer.Controls.Windows"
+                                 xmlns:windows="using:Tranbok.Tools.Designer.Controls.Windows"
+                                 x:Class="Tranbok.Tools.Designer.Controls.Windows.DesignerWindowTitleBar"
+                                 x:Name="Root">
+  <Border Classes="toolbar" Padding="0" BorderThickness="0,0,0,1">
+    <Grid ColumnDefinitions="*,Auto" Height="{Binding TitleBarHeight, ElementName=Root}">
+      <Grid Grid.Column="0" ColumnDefinitions="Auto,*" Margin="14,0,0,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+          <TextBlock Text="{Binding Title, ElementName=Root}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" />
+          <TextBlock Classes="caption muted"
+                     Text="{Binding Subtitle, ElementName=Root}"
+                     FontSize="10"
+                     VerticalAlignment="Bottom"
+                     Margin="0,0,0,2"
+                     IsVisible="False">
+            <TextBlock.Styles>
+              <Style Selector="TextBlock">
+                <Setter Property="IsVisible" Value="False" />
+              </Style>
+              <Style Selector="TextBlock:not(:empty)">
+                <Setter Property="IsVisible" Value="True" />
+              </Style>
+            </TextBlock.Styles>
+          </TextBlock>
+        </StackPanel>
+
+        <Border x:Name="DragRegion"
+                Grid.Column="1"
+                Background="Transparent"
+                PointerPressed="TitleBar_PointerPressed" />
+      </Grid>
+
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  IsVisible="{Binding ShowWindowControls, ElementName=Root}">
+        <windows:DesignerTitleBarButton Text="—" Click="MinimizeButton_Click" />
+        <windows:DesignerTitleBarButton Text="▢" Click="MaximizeButton_Click" />
+        <windows:DesignerTitleBarButton Text="✕" IsDanger="True" Click="CloseButton_Click" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</designer:DesignerWindowTitleBar>

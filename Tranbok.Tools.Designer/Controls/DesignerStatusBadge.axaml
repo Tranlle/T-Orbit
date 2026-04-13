@@ -1,0 +1,12 @@
+<local:DesignerStatusBadge xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.DesignerStatusBadge">
+  <Border Classes="badge"
+          Classes.success="{Binding IsSuccess, RelativeSource={RelativeSource AncestorType=local:DesignerStatusBadge}}"
+          Classes.warning="{Binding IsWarning, RelativeSource={RelativeSource AncestorType=local:DesignerStatusBadge}}"
+          Classes.danger="{Binding IsDanger, RelativeSource={RelativeSource AncestorType=local:DesignerStatusBadge}}">
+    <TextBlock Classes="caption"
+               Text="{Binding Text, RelativeSource={RelativeSource AncestorType=local:DesignerStatusBadge}}" />
+  </Border>
+</local:DesignerStatusBadge>

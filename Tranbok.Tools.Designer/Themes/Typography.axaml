@@ -1,0 +1,40 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="LineHeight" Value="20" />
+  </Style>
+
+  <Style Selector="TextBlock.h1">
+    <Setter Property="FontSize" Value="28" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="LineHeight" Value="36" />
+  </Style>
+
+  <Style Selector="TextBlock.h2">
+    <Setter Property="FontSize" Value="22" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="LineHeight" Value="30" />
+  </Style>
+
+  <Style Selector="TextBlock.h3">
+    <Setter Property="FontSize" Value="17" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="LineHeight" Value="24" />
+  </Style>
+
+  <Style Selector="TextBlock.caption">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextSecondaryBrush}" />
+    <Setter Property="LineHeight" Value="18" />
+  </Style>
+
+  <Style Selector="TextBlock.muted">
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextMutedBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.label">
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextSecondaryBrush}" />
+  </Style>
+</Styles>

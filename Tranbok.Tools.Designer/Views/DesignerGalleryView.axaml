@@ -1,0 +1,61 @@
+<designer:DesignerPage xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:designer="using:Tranbok.Tools.Designer.Controls"
+                       xmlns:forms="using:Tranbok.Tools.Designer.Controls.Forms"
+                       xmlns:inputs="using:Tranbok.Tools.Designer.Controls.Inputs"
+                       xmlns:selectors="using:Tranbok.Tools.Designer.Controls.Selectors"
+                       xmlns:vm="using:Tranbok.Tools.Designer.ViewModels"
+                       xmlns:models="using:Tranbok.Tools.Designer.Models"
+                       x:Class="Tranbok.Tools.Designer.Views.DesignerGalleryView"
+                       x:DataType="vm:DesignerGalleryViewModel">
+  <StackPanel Spacing="20">
+    <forms:DesignerValidationSummary Title="示例校验信息" Messages="{Binding ValidationMessages}" />
+
+    <forms:DesignerForm Title="输入控件" Description="展示基础输入类控件。">
+      <Grid Classes="form-grid" ColumnDefinitions="*,20,*" RowDefinitions="Auto,Auto">
+        <inputs:DesignerTextBox Grid.Row="0" Grid.Column="0" Label="项目名称" Description="支持前后缀、说明与清空按钮。" Text="{Binding TextValue, Mode=TwoWay}" ShowClearButton="True" Prefix="📦" Suffix="必填" />
+        <inputs:DesignerComboBox Grid.Row="0" Grid.Column="2" Label="环境" Description="支持显示成员路径与占位。" ItemsSource="{Binding EnvironmentOptions}" SelectedItem="{Binding SelectedEnvironment, Mode=TwoWay}" Placeholder="请选择环境" />
+        <inputs:DesignerDatePicker Grid.Row="1" Grid.Column="0" Label="发布日期" Description="统一日期输入风格。" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" />
+        <selectors:DesignerToggleSwitch Grid.Row="1" Grid.Column="2" Label="启用高级能力" Description="启用后提供更多高级选项。" IsChecked="{Binding FeatureEnabled, Mode=TwoWay}" />
+      </Grid>
+    </forms:DesignerForm>
+
+    <forms:DesignerForm Title="选择控件" Description="展示单选、下拉和多选的统一交互。">
+      <Grid Classes="form-grid" ColumnDefinitions="*,20,*" RowDefinitions="Auto,Auto">
+        <selectors:DesignerRadioGroup Grid.Row="0" Grid.Column="0" Label="模式选择" Description="支持 ItemTemplate 自定义渲染。" ItemsSource="{Binding RadioOptions}" SelectedItem="{Binding SelectedMode, Mode=TwoWay}">
+          <selectors:DesignerRadioGroup.ItemTemplate>
+            <DataTemplate x:DataType="models:DesignerOptionItem">
+              <StackPanel Spacing="2">
+                <TextBlock Text="{Binding Label}" />
+                <TextBlock Classes="caption" Text="{Binding Description}" />
+              </StackPanel>
+            </DataTemplate>
+          </selectors:DesignerRadioGroup.ItemTemplate>
+        </selectors:DesignerRadioGroup>
+        <inputs:DesignerSelect Grid.Row="0" Grid.Column="2" Label="当前模式" Description="支持搜索入口、空状态和键盘下拉。" ItemsSource="{Binding ModeOptions}" SelectedItem="{Binding SelectedMode, Mode=TwoWay}" DisplayMemberPath="Label" Placeholder="请选择模式" SearchText="{Binding SelectSearchText, Mode=TwoWay}" EmptyText="没有符合条件的模式" />
+        <selectors:DesignerMultiSelect Grid.Row="1" Grid.ColumnSpan="3" Label="标签" Description="支持列表多选、已选标签展示与单独移除。" ItemsSource="{Binding TagOptions}" SelectedItems="{Binding SelectedTags, Mode=TwoWay}" />
+      </Grid>
+    </forms:DesignerForm>
+
+    <forms:DesignerFormSection Title="控件状态矩阵" Description="集中说明当前 Designer 控件支持的状态和能力。">
+      <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding ControlStateMatrix}">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="分组" Binding="{Binding Group}" Width="120" />
+          <DataGridTextColumn Header="控件" Binding="{Binding Name}" Width="220" />
+          <DataGridTextColumn Header="状态" Binding="{Binding State}" Width="160" />
+          <DataGridTextColumn Header="说明" Binding="{Binding Description}" Width="*" />
+        </DataGrid.Columns>
+      </DataGrid>
+    </forms:DesignerFormSection>
+
+    <forms:DesignerFormSection Title="使用说明" Description="作为文档页说明当前设计系统的推荐使用方式。">
+      <ItemsControl ItemsSource="{Binding GalleryNotes}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="•  {Binding}" TextWrapping="Wrap" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </forms:DesignerFormSection>
+  </StackPanel>
+</designer:DesignerPage>

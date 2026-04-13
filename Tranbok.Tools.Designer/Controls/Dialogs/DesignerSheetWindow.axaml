@@ -1,0 +1,20 @@
+<windows:DesignerToolWindow xmlns="https://github.com/avaloniaui"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:designer="using:Tranbok.Tools.Designer.Controls"
+                            xmlns:vm="using:Tranbok.Tools.Designer.ViewModels"
+                            xmlns:windows="using:Tranbok.Tools.Designer.Controls.Windows"
+                            x:Class="Tranbok.Tools.Designer.Controls.Dialogs.DesignerSheetWindow"
+                            x:DataType="vm:DesignerSheetViewModel">
+  <designer:DesignerPage>
+    <StackPanel Spacing="16">
+      <designer:DesignerPageHeader Title="{Binding Title}" Description="{Binding Description}" />
+      <TextBlock Classes="caption muted" Text="{Binding Note}" IsVisible="{Binding Note, Converter={StaticResource StringHasValueToBoolConverter}}" />
+      <ContentPresenter Content="{Binding Content}" />
+      <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+        <Border />
+        <Button Grid.Column="1" Classes="ghost" Content="{Binding CancelText}" Click="CancelClicked" />
+        <Button Grid.Column="2" Classes="primary" Content="{Binding ConfirmText}" Click="ConfirmClicked" />
+      </Grid>
+    </StackPanel>
+  </designer:DesignerPage>
+</windows:DesignerToolWindow>

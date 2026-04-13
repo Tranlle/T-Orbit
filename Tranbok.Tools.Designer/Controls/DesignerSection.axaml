@@ -1,0 +1,13 @@
+<local:DesignerSection xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.DesignerSection">
+  <StackPanel Classes="page-section">
+    <TextBlock Classes="h3" Text="{Binding Title, RelativeSource={RelativeSource AncestorType=local:DesignerSection}}"
+               IsVisible="{Binding HasTitle, RelativeSource={RelativeSource AncestorType=local:DesignerSection}}" />
+    <TextBlock Classes="caption" Text="{Binding Description, RelativeSource={RelativeSource AncestorType=local:DesignerSection}}"
+               IsVisible="{Binding HasDescription, RelativeSource={RelativeSource AncestorType=local:DesignerSection}}" />
+    <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:DesignerSection}}"
+                      ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource AncestorType=local:DesignerSection}}" />
+  </StackPanel>
+</local:DesignerSection>

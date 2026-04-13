@@ -1,0 +1,420 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:forms="using:Tranbok.Tools.Designer.Controls.Forms"
+        xmlns:inputs="using:Tranbok.Tools.Designer.Controls.Inputs"
+        xmlns:selectors="using:Tranbok.Tools.Designer.Controls.Selectors"
+        xmlns:windows="using:Tranbok.Tools.Designer.Controls.Windows"
+        xmlns:collections="using:Tranbok.Tools.Designer.Controls.Collections">
+  <Design.PreviewWith>
+    <StackPanel Margin="24" Spacing="16">
+      <inputs:DesignerTextBox Label="名称" Description="请输入名称" Watermark="请输入名称" Text="示例文本" ShowClearButton="True" />
+      <inputs:DesignerComboBox Label="类型" Description="选择一个选项" Placeholder="请选择" />
+      <inputs:DesignerDatePicker Label="日期" Description="选择日期" />
+      <selectors:DesignerToggleSwitch Label="启用功能" Description="打开后生效" IsChecked="True" />
+    </StackPanel>
+  </Design.PreviewWith>
+
+  <Style Selector="windows|DesignerTitleBarButton">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border x:Name="Root" Width="46" Height="{DynamicResource TranbokTitleBarHeight}" Background="Transparent">
+          <TextBlock Text="{TemplateBinding Text}"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     FontSize="14"
+                     Foreground="{DynamicResource TranbokTextPrimaryBrush}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="windows|DesignerTitleBarButton:pointerover /template/ Border#Root">
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+  </Style>
+
+  <Style Selector="windows|DesignerTitleBarButton[IsDanger=true]:pointerover /template/ Border#Root">
+    <Setter Property="Background" Value="{DynamicResource TranbokDangerBrush}" />
+  </Style>
+
+  <Style Selector="inputs|DesignerInputControl">
+    <Setter Property="ValidationBrush" Value="{DynamicResource TranbokDangerBrush}" />
+  </Style>
+
+  <Style Selector="inputs|DesignerTextBox">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label"
+                     Text="{TemplateBinding Label}"
+                     IsVisible="{Binding Label, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding Description}"
+                     Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <Border Background="{DynamicResource TranbokSurfaceElevatedBrush}"
+                  BorderBrush="{DynamicResource TranbokBorderBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{DynamicResource TranbokRadiusSmall}"
+                  MinHeight="{DynamicResource TranbokInputHeight}"
+                  Padding="0">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                  VerticalAlignment="Center">
+              <ContentPresenter Grid.Column="0"
+                                Margin="10,0,6,0"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Prefix}"
+                                ContentTemplate="{TemplateBinding PrefixTemplate}" />
+              <TextBox x:Name="PART_TextBox"
+                       Grid.Column="1"
+                       Background="Transparent"
+                       BorderThickness="0"
+                       Margin="0"
+                       Padding="{DynamicResource TranbokControlPadding}"
+                       MinHeight="{DynamicResource TranbokInputInnerMinHeight}"
+                       VerticalAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                       PlaceholderText="{TemplateBinding Watermark}"
+                       AcceptsReturn="{TemplateBinding AcceptsReturn}"
+                       MaxLines="{TemplateBinding MaxLines}" />
+              <TextBlock Grid.Column="2"
+                         Margin="6,0"
+                         VerticalAlignment="Center"
+                         Text="{TemplateBinding InnerRightText}"
+                         Foreground="{DynamicResource TranbokTextMutedBrush}"
+                         IsVisible="{Binding InnerRightText, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+              <Button x:Name="PART_ClearButton"
+                      Grid.Column="3"
+                      Classes="ghost"
+                      Margin="0,0,6,0"
+                      VerticalAlignment="Center"
+                      Content="✕"
+                      IsVisible="{TemplateBinding ShowClearButton}" />
+            </Grid>
+          </Border>
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding ValidationMessage}"
+                     Foreground="{TemplateBinding ValidationBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding ValidationMessage, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="inputs|DesignerComboBox">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label"
+                     Text="{TemplateBinding Label}"
+                     IsVisible="{Binding Label, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding Description}"
+                     Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <Border Background="{DynamicResource TranbokSurfaceElevatedBrush}"
+                  BorderBrush="{DynamicResource TranbokBorderBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{DynamicResource TranbokRadiusSmall}"
+                  MinHeight="{DynamicResource TranbokInputHeight}"
+                  Padding="0">
+            <Grid ColumnDefinitions="Auto,*,Auto"
+                  VerticalAlignment="Center">
+              <ContentPresenter Grid.Column="0"
+                                Margin="10,0,6,0"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Prefix}"
+                                ContentTemplate="{TemplateBinding PrefixTemplate}" />
+              <ComboBox Grid.Column="1"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Margin="0"
+                        Padding="{DynamicResource TranbokControlPadding}"
+                        MinHeight="{DynamicResource TranbokInputInnerMinHeight}"
+                        VerticalAlignment="Center"
+                        ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+                        SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                        ItemTemplate="{TemplateBinding ItemTemplate}"
+                        PlaceholderText="{TemplateBinding Placeholder}" />
+              <ContentPresenter Grid.Column="2"
+                                Margin="6,0,10,0"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Suffix}"
+                                ContentTemplate="{TemplateBinding SuffixTemplate}" />
+            </Grid>
+          </Border>
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding ValidationMessage}"
+                     Foreground="{TemplateBinding ValidationBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding ValidationMessage, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="inputs|DesignerSelect">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label"
+                     Text="{TemplateBinding Label}"
+                     IsVisible="{Binding Label, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding Description}"
+                     Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <TextBox PlaceholderText="搜索选项"
+                   IsVisible="{Binding IsSearchEnabled, RelativeSource={RelativeSource TemplatedParent}}"
+                   Text="{Binding SearchText, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+          <Border Background="{DynamicResource TranbokSurfaceElevatedBrush}"
+                  BorderBrush="{DynamicResource TranbokBorderBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{DynamicResource TranbokRadiusSmall}"
+                  MinHeight="{DynamicResource TranbokInputHeight}"
+                  Padding="0">
+            <Grid ColumnDefinitions="Auto,*,Auto"
+                  VerticalAlignment="Center">
+              <ContentPresenter Grid.Column="0"
+                                Margin="10,0,6,0"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Prefix}"
+                                ContentTemplate="{TemplateBinding PrefixTemplate}" />
+              <ComboBox x:Name="PART_ComboBox"
+                        Grid.Column="1"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Margin="0"
+                        Padding="{DynamicResource TranbokControlPadding}"
+                        MinHeight="{DynamicResource TranbokInputInnerMinHeight}"
+                        VerticalAlignment="Center"
+                        ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+                        SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                        ItemTemplate="{TemplateBinding ItemTemplate}"
+                        PlaceholderText="{TemplateBinding Placeholder}" />
+              <ContentPresenter Grid.Column="2"
+                                Margin="6,0,10,0"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Suffix}"
+                                ContentTemplate="{TemplateBinding SuffixTemplate}" />
+            </Grid>
+          </Border>
+          <TextBlock Classes="caption"
+                     Text="{Binding EmptyText, RelativeSource={RelativeSource TemplatedParent}}"
+                     IsVisible="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToBoolInverseConverter}}" />
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding ValidationMessage}"
+                     Foreground="{TemplateBinding ValidationBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding ValidationMessage, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="inputs|DesignerDatePicker">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label"
+                     Text="{TemplateBinding Label}"
+                     IsVisible="{Binding Label, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding Description}"
+                     Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <Border Background="{DynamicResource TranbokSurfaceElevatedBrush}"
+                  BorderBrush="{DynamicResource TranbokBorderBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{DynamicResource TranbokRadiusSmall}"
+                  MinHeight="{DynamicResource TranbokInputHeight}"
+                  Padding="0">
+            <DatePicker Background="Transparent"
+                        BorderThickness="0"
+                        Margin="0"
+                        Padding="{DynamicResource TranbokControlPadding}"
+                        MinHeight="{DynamicResource TranbokInputInnerMinHeight}"
+                        VerticalAlignment="Center"
+                        SelectedDate="{Binding SelectedDate, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+          </Border>
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding ValidationMessage}"
+                     Foreground="{TemplateBinding ValidationBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding ValidationMessage, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="selectors|DesignerToggleSwitch">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Classes="card" Padding="12">
+          <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+            <TextBlock Grid.Row="0" Grid.Column="0" Classes="label" Text="{TemplateBinding Label}" />
+            <ToggleSwitch Grid.RowSpan="2"
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Classes="caption"
+                       Text="{TemplateBinding Description}"
+                       Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                       TextWrapping="Wrap" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="selectors|DesignerRadioGroup">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel Spacing="8">
+          <TextBlock Classes="label" Text="{TemplateBinding Label}" />
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding Description}"
+                     Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                     TextWrapping="Wrap" />
+          <Border Classes="card" Padding="12">
+            <WrapPanel x:Name="PART_Panel" />
+          </Border>
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="selectors|DesignerMultiSelect">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel Spacing="8">
+          <TextBlock Classes="label" Text="{TemplateBinding Label}" />
+          <TextBlock Classes="caption"
+                     Text="{TemplateBinding Description}"
+                     Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                     TextWrapping="Wrap" />
+          <WrapPanel x:Name="PART_ChipsPanel" Margin="0,0,0,4" />
+          <Border Classes="card" Padding="8">
+            <ListBox x:Name="PART_ListBox"
+                     SelectionMode="Multiple"
+                     ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+                     ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource TemplatedParent}}" />
+          </Border>
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="forms|DesignerForm">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel Spacing="14" Margin="0,0,0,16">
+          <TextBlock Classes="h3" Text="{TemplateBinding Title}" IsVisible="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <TextBlock Classes="caption" Text="{TemplateBinding Description}" Foreground="{DynamicResource TranbokTextSecondaryBrush}" TextWrapping="Wrap" IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="forms|DesignerFormSection">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Classes="card content-host">
+          <StackPanel Spacing="16"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top">
+            <TextBlock Classes="h3" Text="{TemplateBinding Title}" IsVisible="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+            <TextBlock Classes="caption" Text="{TemplateBinding Description}" Foreground="{DynamicResource TranbokTextSecondaryBrush}" TextWrapping="Wrap" IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="forms|DesignerValidationSummary">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Classes="card" Background="{DynamicResource TranbokSurfaceElevatedBrush}" BorderBrush="{DynamicResource TranbokDangerBrush}" BorderThickness="1" IsVisible="{Binding HasMessages, RelativeSource={RelativeSource TemplatedParent}}">
+          <StackPanel Spacing="12">
+            <TextBlock Classes="label" Text="{TemplateBinding Title}" />
+            <ItemsControl ItemsSource="{Binding Messages, RelativeSource={RelativeSource TemplatedParent}}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="•  {Binding}" TextWrapping="Wrap" Foreground="{DynamicResource TranbokTextPrimaryBrush}" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="collections|DesignerCollectionPanel">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Classes="card content-host">
+          <StackPanel Spacing="16"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <StackPanel Spacing="4">
+                <TextBlock Classes="h3" Text="{TemplateBinding Title}" IsVisible="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+                <TextBlock Classes="caption" Text="{TemplateBinding Description}" Foreground="{DynamicResource TranbokTextSecondaryBrush}" TextWrapping="Wrap" IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+              </StackPanel>
+              <ContentPresenter Grid.Column="1" Content="{TemplateBinding Actions}" ContentTemplate="{TemplateBinding ActionsTemplate}" VerticalAlignment="Top" />
+            </Grid>
+            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="collections|DesignerDataPanel">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Classes="card content-host">
+          <StackPanel Spacing="16"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <StackPanel Spacing="4">
+                <TextBlock Classes="h3" Text="{TemplateBinding Title}" IsVisible="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+                <TextBlock Classes="caption" Text="{TemplateBinding Description}" Foreground="{DynamicResource TranbokTextSecondaryBrush}" TextWrapping="Wrap" IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+              </StackPanel>
+              <ContentPresenter Grid.Column="1" Content="{TemplateBinding HeaderContent}" ContentTemplate="{TemplateBinding HeaderContentTemplate}" VerticalAlignment="Top" />
+            </Grid>
+            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="collections|DesignerList">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel Spacing="12" Margin="0,0,0,12">
+          <ContentPresenter Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+          <TextBlock Classes="caption" Text="{TemplateBinding Description}" Foreground="{DynamicResource TranbokTextSecondaryBrush}" TextWrapping="Wrap" IsVisible="{Binding Description, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <Border Classes="card" Padding="12">
+            <ListBox ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}"
+                     SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                     ItemTemplate="{TemplateBinding ItemTemplate}" />
+          </Border>
+          <TextBlock Classes="caption muted" Text="{TemplateBinding EmptyText}" IsVisible="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToBoolInverseConverter}}" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>

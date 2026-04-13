@@ -1,0 +1,15 @@
+<local:DesignerPageHeader xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.DesignerPageHeader">
+  <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="6" Margin="0,0,0,8">
+    <TextBlock Grid.Row="0" Grid.Column="0" Classes="h2" Text="{Binding Title, RelativeSource={RelativeSource AncestorType=local:DesignerPageHeader}}" />
+    <TextBlock Grid.Row="1" Grid.Column="0" Classes="caption" Text="{Binding Description, RelativeSource={RelativeSource AncestorType=local:DesignerPageHeader}}"
+               IsVisible="{Binding HasDescription, RelativeSource={RelativeSource AncestorType=local:DesignerPageHeader}}" />
+    <ContentPresenter Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+                      Margin="16,0,0,0"
+                      VerticalAlignment="Center"
+                      Content="{Binding Actions, RelativeSource={RelativeSource AncestorType=local:DesignerPageHeader}}"
+                      ContentTemplate="{Binding ActionsTemplate, RelativeSource={RelativeSource AncestorType=local:DesignerPageHeader}}" />
+  </Grid>
+</local:DesignerPageHeader>

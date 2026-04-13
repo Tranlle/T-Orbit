@@ -1,0 +1,18 @@
+{
+  "key": "emerald-dark-custom",
+  "label": "Emerald Dark Custom",
+  "description": "示例：开发者可直接在 themes 目录下添加 JSON 主题。",
+  "baseVariant": "Dark",
+  "accentBrush": "#36CFC9",
+  "accentForegroundBrush": "#081B1A",
+  "backgroundBrush": "#0B1212",
+  "surfaceBrush": "#121A1A",
+  "surfaceElevatedBrush": "#182323",
+  "borderBrush": "#274240",
+  "textPrimaryBrush": "#F1FBFA",
+  "textSecondaryBrush": "#A7C7C4",
+  "textMutedBrush": "#6B8B88",
+  "badgeSuccessBackgroundBrush": "#1B3028",
+  "badgeWarningBackgroundBrush": "#322A18",
+  "badgeDangerBackgroundBrush": "#351D22"
+}

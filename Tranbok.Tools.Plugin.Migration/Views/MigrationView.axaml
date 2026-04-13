@@ -1,0 +1,345 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tranbok.Tools.Plugin.Migration.ViewModels"
+             xmlns:models="using:Tranbok.Tools.Plugin.Migration.Models"
+             xmlns:designer="using:Tranbok.Tools.Designer.Controls"
+             x:DataType="vm:MigrationViewModel"
+             x:Class="Tranbok.Tools.Plugin.Migration.Views.MigrationView">
+  <UserControl.Styles>
+    <Style Selector="Border.migration-toolbar">
+      <Setter Property="Background" Value="{DynamicResource TranbokSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+      <Setter Property="Padding" Value="20,16" />
+    </Style>
+
+    <Style Selector="Border.migration-pane">
+      <Setter Property="Background" Value="{DynamicResource TranbokSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="Border.migration-section-header">
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+      <Setter Property="Padding" Value="14,0" />
+      <Setter Property="MinHeight" Value="44" />
+    </Style>
+
+    <Style Selector="TextBlock.migration-label">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{DynamicResource TranbokTextMutedBrush}" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="Border.db-badge">
+      <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Padding" Value="12,6" />
+      <Setter Property="Margin" Value="0,0,12,0" />
+    </Style>
+
+    <Style Selector="Button.migration-action">
+      <Setter Property="MinWidth" Value="138" />
+      <Setter Property="Margin" Value="0,0,14,0" />
+      <Setter Property="MinHeight" Value="46" />
+      <Setter Property="Background" Value="{DynamicResource TranbokSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    </Style>
+
+    <Style Selector="Button.migration-action.primary">
+      <Setter Property="Background" Value="{DynamicResource TranbokAccentBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.migration-action.success">
+      <Setter Property="Background" Value="#15271B" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokSuccessBrush}" />
+    </Style>
+
+    <Style Selector="Button.migration-action.danger">
+      <Setter Property="Background" Value="#2B171A" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokDangerBrush}" />
+    </Style>
+
+    <Style Selector="ListBox.profile-list">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="8" />
+    </Style>
+
+    <Style Selector="ListBox.profile-list > ListBoxItem">
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0,0,0,8" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="ListBox.profile-list > ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="#24385C" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="Border.profile-card">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Padding" Value="16,14" />
+    </Style>
+
+    <Style Selector="TextBox.code-editor">
+      <Setter Property="FontFamily" Value="Cascadia Code,Consolas,Microsoft YaHei UI" />
+      <Setter Property="AcceptsReturn" Value="True" />
+      <Setter Property="AcceptsTab" Value="True" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+      <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+      <Setter Property="VerticalContentAlignment" Value="Top" />
+      <Setter Property="Padding" Value="16,12" />
+      <Setter Property="Background" Value="#0D121A" />
+      <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="TextBox.log-box">
+      <Setter Property="AcceptsReturn" Value="True" />
+      <Setter Property="IsReadOnly" Value="True" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+      <Setter Property="VerticalContentAlignment" Value="Top" />
+      <Setter Property="Padding" Value="16,12" />
+      <Setter Property="Margin" Value="0" />
+    </Style>
+  </UserControl.Styles>
+
+  <Grid RowDefinitions="Auto,*,160"
+        Background="{DynamicResource TranbokBackgroundBrush}">
+    <Border Grid.Row="0" Classes="migration-toolbar">
+      <Grid RowDefinitions="Auto,16,Auto">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="16">
+          <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <TextBlock Text="&#xE8D2;"
+                       FontFamily="Segoe MDL2 Assets"
+                       FontSize="18"
+                       Foreground="{DynamicResource TranbokAccentBrush}"
+                       VerticalAlignment="Center" />
+            <Border Classes="db-badge" IsVisible="{Binding HasSelectedProfile}">
+              <TextBlock Text="{Binding CurrentDatabaseTypeDisplay}" Foreground="{DynamicResource TranbokAccentBrush}" FontWeight="SemiBold" />
+            </Border>
+            <TextBlock Classes="caption muted"
+                       Text="{Binding OutputDirectory, StringFormat='复制目标目录：{0}'}"
+                       TextWrapping="Wrap"
+                       MaxWidth="720"
+                       VerticalAlignment="Center" />
+          </StackPanel>
+
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+            <designer:DesignerStatusBadge Text="{Binding StatusMessage}" />
+            <ProgressBar Width="120"
+                         Height="4"
+                         IsIndeterminate="True"
+                         IsVisible="{Binding IsBusy}" />
+          </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="2"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
+          <StackPanel Orientation="Horizontal">
+            <Button Classes="migration-action primary"
+                    Command="{Binding AddProfileCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" />
+                <TextBlock Text="新增配置" />
+              </StackPanel>
+            </Button>
+            <Button Classes="migration-action danger"
+                    Command="{Binding DeleteProfileCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" />
+                <TextBlock Text="删除配置" />
+              </StackPanel>
+            </Button>
+            <Button Classes="migration-action"
+                    Command="{Binding OpenEditProfileCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" />
+                <TextBlock Text="修改配置" />
+              </StackPanel>
+            </Button>
+            <Button Classes="migration-action"
+                    Command="{Binding RefreshCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" />
+                <TextBlock Text="刷新迁移" />
+              </StackPanel>
+            </Button>
+            <Button Classes="migration-action success"
+                    Command="{Binding ExecuteUpdateCommand}"
+                    IsEnabled="{Binding IsIdle}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" />
+                <TextBlock Text="执行更新" />
+              </StackPanel>
+            </Button>
+            <Button Classes="migration-action"
+                    Command="{Binding ShowNewPanelCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" />
+                <TextBlock Text="新增迁移" />
+              </StackPanel>
+            </Button>
+            <Button Classes="migration-action"
+                    Command="{Binding RollbackSelectedCommand}"
+                    IsEnabled="{Binding CanRollback}"
+                    ToolTip.Tip="{Binding RollbackTooltip}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="&#xE7A7;" FontFamily="Segoe MDL2 Assets" />
+                <TextBlock Text="删除迁移" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="320,6,*">
+      <Border Grid.Column="0" Classes="migration-pane" BorderBrush="{DynamicResource TranbokBorderBrush}" BorderThickness="0,0,1,0">
+        <Grid RowDefinitions="44,*">
+          <Border Grid.Row="0" Classes="migration-section-header">
+            <TextBlock Classes="migration-label" Text="配置列表" VerticalAlignment="Center" />
+          </Border>
+
+          <ListBox Grid.Row="1"
+                   Classes="profile-list"
+                   ItemsSource="{Binding DbProfiles}"
+                   SelectedItem="{Binding ActiveProfile, Mode=TwoWay}">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="models:DbConnectionProfile">
+                <Border Classes="profile-card">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="{Binding EffectiveProfileName}" FontSize="13" FontWeight="SemiBold" />
+                    <TextBlock Classes="caption" Text="{Binding DisplayName}" />
+                    <TextBlock Classes="caption muted" Text="{Binding ContextName}" TextTrimming="CharacterEllipsis" />
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+      </Border>
+
+      <GridSplitter Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Background="{DynamicResource TranbokBorderBrush}" />
+
+      <Grid Grid.Column="2" RowDefinitions="Auto,Auto,*" Background="{DynamicResource TranbokBackgroundBrush}">
+        <Border Grid.Row="0"
+                Classes="migration-pane"
+                BorderBrush="{DynamicResource TranbokBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="18,12">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+              <TextBlock Grid.Column="0" Classes="migration-label" Text="数据库类型" VerticalAlignment="Center" />
+              <ItemsControl Grid.Column="1" ItemsSource="{Binding OrderedProfiles}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="models:DbConnectionProfile">
+                    <Border Classes="db-badge">
+                      <TextBlock Text="{Binding DisplayName}" />
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </Grid>
+            <TextBlock Classes="caption muted"
+                       Text="{Binding ProjectPath, StringFormat='项目路径：{0}'}"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Classes="migration-pane"
+                BorderBrush="{DynamicResource TranbokBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="18,12">
+          <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <TextBlock Classes="migration-label" Text="迁移文件" VerticalAlignment="Center" />
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding Migrations}"
+                      SelectedItem="{Binding SelectedMigration, Mode=TwoWay}"
+                      HorizontalContentAlignment="Stretch"
+                      MinWidth="280"
+                      Margin="0">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="models:MigrationEntry">
+                  <TextBlock Text="{Binding FullName}" TextTrimming="CharacterEllipsis" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button Grid.Column="2"
+                    Classes="primary"
+                    Content="保存文件"
+                    Command="{Binding SaveEditorCommand}"
+                    IsEnabled="{Binding IsEditorDirty}" />
+          </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+          <TextBox Classes="code-editor"
+                   Text="{Binding EditorContent, Mode=TwoWay}"
+                   IsEnabled="{Binding HasSelectedMigration}">
+            <TextBox.KeyBindings>
+              <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveEditorCommand}" />
+            </TextBox.KeyBindings>
+          </TextBox>
+
+          <StackPanel VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      Opacity="0.32"
+                      IsHitTestVisible="False"
+                      IsVisible="{Binding HasSelectedMigration, Converter={StaticResource BoolInverseConverter}}">
+            <TextBlock Text="&#xE8A5;"
+                       FontFamily="Segoe MDL2 Assets"
+                       FontSize="44"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource TranbokTextMutedBrush}"
+                       Margin="0,0,0,14" />
+            <TextBlock Text="当前配置没有迁移，或请先从下拉框选择迁移"
+                       FontSize="13"
+                       Foreground="{DynamicResource TranbokTextMutedBrush}"
+                       HorizontalAlignment="Center" />
+          </StackPanel>
+        </Grid>
+      </Grid>
+    </Grid>
+
+    <Border Grid.Row="2"
+            Classes="migration-pane"
+            BorderBrush="{DynamicResource TranbokBorderBrush}"
+            BorderThickness="0,1,0,0">
+      <Grid RowDefinitions="44,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="16,0">
+          <TextBlock Classes="migration-label" Text="日志 / 状态区" VerticalAlignment="Center" />
+          <Button Grid.Column="1"
+                  Classes="ghost"
+                  Content="清除"
+                  Command="{Binding ClearLogCommand}"
+                  Margin="0" />
+        </Grid>
+
+        <TextBox Grid.Row="1"
+                 Classes="log-box"
+                 Text="{Binding OutputLog}" />
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

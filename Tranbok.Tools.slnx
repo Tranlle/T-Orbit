@@ -1,3 +1,7 @@
 <Solution>
-  <Project Path="Tranbok.Tools/Tranbok.Tools.csproj" />
+  <Project Path="Tranbok.Tools.Core/Tranbok.Tools.Core.csproj" />
+  <Project Path="Tranbok.Tools.App/Tranbok.Tools.App.csproj" />
+  <Project Path="Tranbok.Tools.Designer/Tranbok.Tools.Designer.csproj" />
+  <Project Path="Tranbok.Tools.Plugin.Migration/Tranbok.Tools.Plugin.Migration.csproj" Id="480c1a3b-1df4-4e0c-921a-0eca262e190f" />
+  <Project Path="Tranbok.Tools.Plugin.Core/Tranbok.Tools.Plugin.Core.csproj" />
 </Solution>

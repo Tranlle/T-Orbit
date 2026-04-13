@@ -1,0 +1,174 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:local="using:Tranbok.Tools.Designer.Controls.Inputs">
+  <Style Selector="Button">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokButtonHeight}" />
+    <Setter Property="Padding" Value="{DynamicResource TranbokButtonPadding}" />
+    <Setter Property="Margin" Value="0,0,0,8" />
+    <Setter Property="CornerRadius" Value="{DynamicResource TranbokRadiusSmall}" />
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="Button:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource TranbokAccentHoverBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentHoverBrush}" />
+  </Style>
+
+  <Style Selector="Button:pressed /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource TranbokAccentPressedBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentPressedBrush}" />
+  </Style>
+
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{DynamicResource TranbokAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentBrush}" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+
+  <Style Selector="Button.ghost">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+
+  <Style Selector="TextBox">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokInputHeight}" />
+    <Setter Property="Margin" Value="{DynamicResource TranbokControlMargin}" />
+    <Setter Property="Padding" Value="{DynamicResource TranbokControlPadding}" />
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource TranbokRadiusSmall}" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource TranbokAccentBrush}" />
+    <Setter Property="WatermarkForeground" Value="{DynamicResource TranbokTextMutedBrush}" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="local|DesignerTextBox">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokInputHeight}" />
+  </Style>
+
+  <Style Selector="TextBox:pointerover">
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentHoverBrush}" />
+  </Style>
+
+  <Style Selector="TextBox:focus">
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentBrush}" />
+  </Style>
+
+  <Style Selector="AutoCompleteBox">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokInputHeight}" />
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource TranbokRadiusSmall}" />
+  </Style>
+
+  <Style Selector="ComboBox, local|DesignerComboBox, local|DesignerSelect">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokInputHeight}" />
+    <Setter Property="Margin" Value="{DynamicResource TranbokControlMargin}" />
+    <Setter Property="Padding" Value="{DynamicResource TranbokControlPadding}" />
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource TranbokRadiusSmall}" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="ComboBox:pointerover">
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentHoverBrush}" />
+  </Style>
+
+  <Style Selector="ComboBox:focus">
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentBrush}" />
+  </Style>
+
+  <Style Selector="ComboBoxItem">
+    <Setter Property="MinHeight" Value="32" />
+    <Setter Property="Padding" Value="10,7" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+  </Style>
+
+  <Style Selector="DatePicker, local|DesignerDatePicker">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokInputHeight}" />
+    <Setter Property="Margin" Value="{DynamicResource TranbokControlMargin}" />
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource TranbokRadiusSmall}" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="TimePicker">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokInputHeight}" />
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource TranbokRadiusSmall}" />
+  </Style>
+
+  <Style Selector="CalendarDatePicker">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokInputHeight}" />
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource TranbokRadiusSmall}" />
+  </Style>
+
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+  </Style>
+
+  <Style Selector="RadioButton">
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+  </Style>
+
+  <Style Selector="ToggleSwitch">
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+  </Style>
+
+  <Style Selector="Slider">
+    <Setter Property="Foreground" Value="{DynamicResource TranbokAccentBrush}" />
+  </Style>
+
+  <Style Selector="ListBox">
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+  </Style>
+
+  <Style Selector="ListBoxItem">
+    <Setter Property="MinHeight" Value="{DynamicResource TranbokListItemHeight}" />
+    <Setter Property="Padding" Value="{DynamicResource TranbokListItemPadding}" />
+    <Setter Property="Margin" Value="0,0,0,8" />
+    <Setter Property="CornerRadius" Value="{DynamicResource TranbokRadiusSmall}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+  </Style>
+
+  <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
+  </Style>
+
+  <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource TranbokAccentBrush}" />
+  </Style>
+
+  <Style Selector="DataGrid">
+    <Setter Property="Background" Value="{DynamicResource TranbokSurfaceBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TranbokTextPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="GridLinesVisibility" Value="Horizontal" />
+  </Style>
+</Styles>

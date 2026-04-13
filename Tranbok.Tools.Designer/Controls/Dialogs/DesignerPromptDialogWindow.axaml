@@ -1,0 +1,33 @@
+<windows:DesignerDialogWindow xmlns="https://github.com/avaloniaui"
+                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:designer="using:Tranbok.Tools.Designer.Controls"
+                              xmlns:forms="using:Tranbok.Tools.Designer.Controls.Forms"
+                              xmlns:inputs="using:Tranbok.Tools.Designer.Controls.Inputs"
+                              xmlns:vm="using:Tranbok.Tools.Designer.ViewModels"
+                              xmlns:windows="using:Tranbok.Tools.Designer.Controls.Windows"
+                              x:Class="Tranbok.Tools.Designer.Controls.Dialogs.DesignerPromptDialogWindow"
+                              x:DataType="vm:DesignerPromptDialogViewModel">
+  <designer:DesignerPage>
+    <designer:DesignerCard>
+      <forms:DesignerForm Title="{Binding Title}" Description="{Binding Message}">
+        <StackPanel Spacing="16">
+          <TextBlock Classes="h2"
+                     Text="{Binding Icon}" />
+          <TextBlock Classes="caption"
+                     Text="{Binding Note}"
+                     IsVisible="{Binding Note, Converter={StaticResource StringHasValueToBoolConverter}}" />
+          <inputs:DesignerTextBox Label="输入内容"
+                                  Text="{Binding Value, Mode=TwoWay}"
+                                  Watermark="{Binding Placeholder}"
+                                  ValidationMessage="{Binding ValidationMessage}"
+                                  ShowClearButton="True" />
+          <Grid ColumnDefinitions="*,Auto,Auto">
+            <TextBlock />
+            <Button Grid.Column="1" Margin="0,0,8,0" Content="{Binding CancelText}" Click="CancelClicked" />
+            <Button Grid.Column="2" Classes="primary" Content="{Binding ConfirmText}" Click="ConfirmClicked" />
+          </Grid>
+        </StackPanel>
+      </forms:DesignerForm>
+    </designer:DesignerCard>
+  </designer:DesignerPage>
+</windows:DesignerDialogWindow>

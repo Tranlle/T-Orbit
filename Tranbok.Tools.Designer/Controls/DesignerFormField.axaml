@@ -1,0 +1,13 @@
+<local:DesignerFormField xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.DesignerFormField">
+  <StackPanel Spacing="6">
+    <TextBlock Classes="label" Text="{Binding Label, RelativeSource={RelativeSource AncestorType=local:DesignerFormField}}"
+               IsVisible="{Binding HasLabel, RelativeSource={RelativeSource AncestorType=local:DesignerFormField}}" />
+    <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:DesignerFormField}}"
+                      ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource AncestorType=local:DesignerFormField}}" />
+    <TextBlock Classes="caption muted" Text="{Binding Hint, RelativeSource={RelativeSource AncestorType=local:DesignerFormField}}"
+               IsVisible="{Binding HasHint, RelativeSource={RelativeSource AncestorType=local:DesignerFormField}}" />
+  </StackPanel>
+</local:DesignerFormField>

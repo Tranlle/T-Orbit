@@ -1,0 +1,11 @@
+<local:DesignerCard xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.DesignerCard">
+  <Border Classes="card content-host">
+    <ContentPresenter HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:DesignerCard}}"
+                      ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource AncestorType=local:DesignerCard}}" />
+  </Border>
+</local:DesignerCard>

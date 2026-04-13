@@ -23,3 +23,14 @@ TestResults.xml
 /.vs/
 /Tranbok.Tools/bin/
 /Tranbok.Tools/obj/
+/Tranbok.Tools.App/bin/
+/Tranbok.Tools.App/obj/
+/Tranbok.Tools.Core/bin/
+/Tranbok.Tools.Core/obj/
+/Tranbok.Tools.Designer/bin/
+/Tranbok.Tools.Designer/obj/
+/Tranbok.Tools.Plugin.Core/bin/
+/Tranbok.Tools.Plugin.Core/obj/
+/Tranbok.Tools.Plugin.Migration/bin/
+/Tranbok.Tools.Plugin.Migration/obj/
+/Tranbok.Tools/.vs/

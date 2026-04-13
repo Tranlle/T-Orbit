@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="using:Tranbok.Tools.Designer.ViewModels"
+             xmlns:designer="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.DefaultPluginView"
+             x:DataType="viewModels:DefaultPluginViewModel">
+  <designer:DesignerStackPage>
+    <designer:DesignerCard>
+      <StackPanel Spacing="12" MaxWidth="560" HorizontalAlignment="Center">
+        <TextBlock Classes="h2" Text="{Binding Title}" HorizontalAlignment="Center" />
+        <TextBlock Classes="caption" Text="{Binding Description}" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center" />
+      </StackPanel>
+    </designer:DesignerCard>
+  </designer:DesignerStackPage>
+</UserControl>
