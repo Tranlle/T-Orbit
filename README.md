@@ -121,7 +121,7 @@ TranbokTools/
 - 新增 / 执行 / 回滚迁移
 - 支持 SQL Server / PostgreSQL / MySQL
 - 迁移文件查看与编辑
-- 详见 → [迁移插件使用指南](./docs/wiki/Migration-Plugin.md)
+- 详见 → [迁移插件使用指南](https://github.com/Tranlle/TranbokTools/wiki/Migration-Plugin/Migration-Plugin)
 
 ---
 
