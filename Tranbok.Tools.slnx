@@ -5,6 +5,5 @@
   <Project Path="Tranbok.Tools.Plugin.Migration/Tranbok.Tools.Plugin.Migration.csproj" Id="480c1a3b-1df4-4e0c-921a-0eca262e190f" />
   <Project Path="Tranbok.Tools.Plugin.Core/Tranbok.Tools.Plugin.Core.csproj" />
   <Project Path="Tranbok.Tools.Plugin.PluginManager/Tranbok.Tools.Plugin.PluginManager.csproj" />
-  <Project Path="Tranbok.Tools.Plugin.Promptor/Tranbok.Tools.Plugin.Promptor.csproj" />
   <Project Path="Tranbok.Tools.Plugin.Settings/Tranbok.Tools.Plugin.Settings.csproj" />
 </Solution>

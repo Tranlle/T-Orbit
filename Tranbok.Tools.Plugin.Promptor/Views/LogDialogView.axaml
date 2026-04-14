@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tranbok.Tools.Plugin.Promptor.ViewModels"
+             x:DataType="vm:PromptorViewModel"
+             x:Class="Tranbok.Tools.Plugin.Promptor.Views.LogDialogView">
+  <Grid RowDefinitions="Auto,12,*">
+
+    <!-- 顶部工具栏 -->
+    <Grid Grid.Row="0"
+          ColumnDefinitions="*,Auto">
+      <TextBlock Grid.Column="0"
+                 Classes="caption-muted"
+                 VerticalAlignment="Center"
+                 Text="{Binding LogEntries.Count, StringFormat='共 {0} 条记录'}" />
+      <Button Grid.Column="1"
+              Content="清空日志"
+              Command="{Binding ClearLogCommand}"
+              Classes="danger" />
+    </Grid>
+
+    <!-- 日志内容区 -->
+    <Border Grid.Row="2"
+            Background="{DynamicResource TranbokBackgroundBrush}"
+            BorderBrush="{DynamicResource TranbokBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource TranbokRadiusMedium}">
+      <TextBox Text="{Binding FormattedLogText}"
+               IsReadOnly="True"
+               AcceptsReturn="True"
+               TextWrapping="NoWrap"
+               VerticalContentAlignment="Top"
+               FontFamily="{DynamicResource TranbokMonoFontFamily}"
+               FontSize="12"
+               LineHeight="20"
+               Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+               Background="Transparent"
+               BorderThickness="0"
+               Padding="16,12"
+               ScrollViewer.HorizontalScrollBarVisibility="Auto"
+               ScrollViewer.VerticalScrollBarVisibility="Auto" />
+    </Border>
+
+  </Grid>
+</UserControl>

@@ -4,19 +4,39 @@
              x:Class="Tranbok.Tools.Designer.Controls.SectionHeader"
              x:DataType="controls:SectionHeader"
              x:Name="Root">
-  <Grid ColumnDefinitions="*,Auto"
-        ColumnSpacing="12">
-    <StackPanel Spacing="4">
-      <TextBlock Classes="section-title"
-                 Text="{Binding Title, ElementName=Root}" />
-      <TextBlock Classes="caption-muted"
-                 Text="{Binding Description, ElementName=Root}"
-                 TextWrapping="Wrap"
-                 MinHeight="0" />
-    </StackPanel>
+  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
 
+    <!-- Left: accent bar + title/description -->
+    <Grid Grid.Column="0" ColumnDefinitions="Auto,*">
+
+      <!-- Gradient left bar -->
+      <Border Grid.Column="0"
+              Width="3"
+              CornerRadius="999"
+              Margin="0,2,10,2">
+        <Border.Background>
+          <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="#5B8CFF" Offset="0" />
+            <GradientStop Color="#38D9C0" Offset="1" />
+          </LinearGradientBrush>
+        </Border.Background>
+      </Border>
+
+      <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
+        <TextBlock Classes="section-title"
+                   Text="{Binding Title, ElementName=Root}" />
+        <TextBlock Classes="caption-muted"
+                   Text="{Binding Description, ElementName=Root}"
+                   TextWrapping="Wrap"
+                   MinHeight="0" />
+      </StackPanel>
+
+    </Grid>
+
+    <!-- Right: optional action content -->
     <ContentPresenter Grid.Column="1"
                       Content="{Binding ActionContent, ElementName=Root}"
-                      VerticalAlignment="Top" />
+                      VerticalAlignment="Center" />
+
   </Grid>
 </UserControl>

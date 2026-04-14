@@ -7,12 +7,24 @@
   <Border Classes="card">
     <StackPanel Spacing="0">
 
-      <!-- Header: accent left bar + title/description -->
-      <Border BorderBrush="{DynamicResource TranbokAccentBrush}"
-              BorderThickness="3,0,0,0"
-              Padding="12,2,0,2"
-              Margin="0,0,0,12">
-        <StackPanel Spacing="4">
+      <!-- Header: gradient left bar + title/description -->
+      <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,12">
+
+        <!-- Left accent bar — gradient from blue to teal -->
+        <Border Grid.Column="0"
+                Width="3"
+                CornerRadius="999"
+                Margin="0,2,12,2">
+          <Border.Background>
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+              <GradientStop Color="#5B8CFF" Offset="0" />
+              <GradientStop Color="#38D9C0" Offset="1" />
+            </LinearGradientBrush>
+          </Border.Background>
+        </Border>
+
+        <!-- Title + Description -->
+        <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
           <TextBlock Classes="section-title"
                      Text="{Binding Title, ElementName=Root}" />
           <TextBlock Classes="caption-muted"
@@ -20,7 +32,8 @@
                      Text="{Binding Description, ElementName=Root}"
                      TextWrapping="Wrap" />
         </StackPanel>
-      </Border>
+
+      </Grid>
 
       <!-- Separator -->
       <Border BorderBrush="{DynamicResource TranbokBorderBrush}"

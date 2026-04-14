@@ -1,4 +1,7 @@
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -13,6 +16,7 @@ using Tranbok.Tools.Designer.ViewModels;
 using Tranbok.Tools.Designer.ViewModels.Dialogs;
 using Tranbok.Tools.Plugin.Promptor.Models;
 using Tranbok.Tools.Plugin.Promptor.Services;
+using Tranbok.Tools.Plugin.Promptor.Views;
 
 namespace Tranbok.Tools.Plugin.Promptor.ViewModels;
 
@@ -39,8 +43,12 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     [ObservableProperty]
     private string statusMessage = "就绪";
 
-    [ObservableProperty]
-    private string outputLog = string.Empty;
+    public ObservableCollection<PromptorLogEntry> LogEntries { get; } = [];
+
+    public string FormattedLogText => LogEntries.Count == 0
+        ? "（暂无操作日志）\n\n提示：完成一次提示词优化后，此处将显示结构化的调用记录。"
+        : string.Join(Environment.NewLine + Environment.NewLine,
+            LogEntries.Select(e => e.FormatAsText()));
 
     public IReadOnlyList<DesignerOptionItem> StrategyOptions { get; } =
     [
@@ -56,12 +64,13 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     public bool IsIdle             => !IsBusy;
     public string StrategyDescription => SelectedStrategyOption?.Description ?? string.Empty;
 
-    public IRelayCommand OptimizeCommand     { get; }
-    public IRelayCommand CopyCommand         { get; }
-    public IRelayCommand ClearAllCommand     { get; }
-    public IRelayCommand ClearOutputCommand  { get; }
-    public IRelayCommand CancelCommand       { get; }
-    public IRelayCommand ClearLogCommand     { get; }
+    public IRelayCommand OptimizeCommand    { get; }
+    public IRelayCommand CopyCommand        { get; }
+    public IRelayCommand ClearAllCommand    { get; }
+    public IRelayCommand ClearOutputCommand { get; }
+    public IRelayCommand CancelCommand      { get; }
+    public IRelayCommand ShowLogCommand     { get; }
+    public IRelayCommand ClearLogCommand    { get; }
 
     public PromptorViewModel(
         IDesignerDialogService? dialogService,
@@ -79,7 +88,10 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         ClearAllCommand    = new RelayCommand(ClearAll);
         ClearOutputCommand = new RelayCommand(() => OptimizedOutput = string.Empty);
         CancelCommand      = new RelayCommand(() => _cts?.Cancel());
-        ClearLogCommand    = new RelayCommand(() => OutputLog = string.Empty);
+        ShowLogCommand     = new AsyncRelayCommand(ShowLogDialogAsync);
+        ClearLogCommand    = new RelayCommand(ClearLog);
+
+        LogEntries.CollectionChanged += (_, _) => OnPropertyChanged(nameof(FormattedLogText));
     }
 
     partial void OnRawInputChanged(string value)              => RaiseDerivedProperties();
@@ -116,6 +128,9 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 
         var strategy      = SelectedStrategyOption?.Value is OptimizationStrategy s ? s : OptimizationStrategy.Structured;
         var strategyLabel = SelectedStrategyOption?.Label ?? "结构化";
+        var inputPreview  = RawInput.Length > 80
+            ? RawInput[..80].Replace('\n', ' ').Replace('\r', ' ') + "…"
+            : RawInput.Replace('\n', ' ').Replace('\r', ' ');
 
         _cts?.Cancel();
         _cts = new CancellationTokenSource();
@@ -123,8 +138,10 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         IsBusy          = true;
         OptimizedOutput = string.Empty;
         StatusMessage   = $"正在优化（{strategyLabel}）…";
-        AppendLog($"\n▶  策略：{strategyLabel}  模型：{config.ModelName}  提供商：{config.Provider}");
-        AppendLog(new string('─', 50));
+
+        var sw      = Stopwatch.StartNew();
+        var success = false;
+        string? errorMessage = null;
 
         try
         {
@@ -134,25 +151,64 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
                 await Dispatcher.UIThread.InvokeAsync(() => OptimizedOutput += captured);
             }
 
+            sw.Stop();
+            success       = true;
             StatusMessage = $"✓ 优化完成（{strategyLabel}）";
-            AppendLog("✓ 完成");
         }
         catch (OperationCanceledException)
         {
+            sw.Stop();
             StatusMessage = "已取消";
-            AppendLog("✗ 已取消");
+            errorMessage  = "用户取消";
         }
         catch (Exception ex)
         {
+            sw.Stop();
             StatusMessage = "✗ 优化失败";
-            AppendLog($"✗ 错误：{ex.Message}");
+            errorMessage  = ex.Message;
             await ShowAlertAsync("优化失败", ex.Message);
         }
         finally
         {
             IsBusy = false;
             RaiseDerivedProperties();
+
+            // 写入结构化日志
+            LogEntries.Insert(0, new PromptorLogEntry
+            {
+                Time          = DateTime.Now,
+                StrategyLabel = strategyLabel,
+                Model         = config.ModelName,
+                Provider      = config.Provider,
+                IsSuccess     = success,
+                Duration      = sw.Elapsed,
+                InputPreview  = inputPreview,
+                ErrorMessage  = errorMessage
+            });
         }
+    }
+
+    private async Task ShowLogDialogAsync()
+    {
+        if (_dialogService is null || TryGetOwnerWindow() is not { } owner)
+            return;
+
+        var content = new LogDialogView { DataContext = this };
+
+        await _dialogService.ShowSheetAsync(owner, new DesignerSheetViewModel
+        {
+            Title               = "操作日志",
+            Description         = LogEntries.Count > 0 ? $"共 {LogEntries.Count} 条记录" : "暂无记录",
+            Content             = content,
+            ConfirmText         = "关闭",
+            CancelText          = string.Empty,
+            Icon                = DesignerDialogIcon.Info,
+            BaseFontSize        = 13,
+            DialogWidth         = 860,
+            DialogHeight        = 560,
+            LockSize            = true,
+            HideSystemDecorations = true
+        });
     }
 
     private async Task CopyToClipboardAsync()
@@ -166,12 +222,11 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
             {
                 await clipboard.SetTextAsync(OptimizedOutput);
                 StatusMessage = "✓ 已复制到剪贴板";
-                AppendLog("✓ 已复制优化结果到剪贴板");
             }
         }
         catch (Exception ex)
         {
-            AppendLog($"复制失败：{ex.Message}");
+            StatusMessage = $"复制失败：{ex.Message}";
         }
     }
 
@@ -183,13 +238,18 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         RaiseDerivedProperties();
     }
 
+    private void ClearLog()
+    {
+        LogEntries.Clear();
+    }
+
     private PromptorConfig ReadConfig()
     {
-        var provider    = GetVar("PROMPTOR_PROVIDER",    "openai");
+        var provider    = GetVar("PROMPTOR_PROVIDER",     "openai");
         var endpoint    = GetVar("PROMPTOR_API_ENDPOINT", "");
         var apiKey      = GetVar("PROMPTOR_API_KEY",      "");
         var model       = GetVar("PROMPTOR_MODEL_NAME",   "gpt-4o");
-        var maxTokensRaw = GetVar("PROMPTOR_MAX_TOKENS", "2048");
+        var maxTokensRaw = GetVar("PROMPTOR_MAX_TOKENS",  "2048");
         var tempRaw      = GetVar("PROMPTOR_TEMPERATURE", "1.0");
 
         if (!int.TryParse(maxTokensRaw, out var maxTokens) || maxTokens <= 0)
@@ -198,10 +258,10 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         if (!double.TryParse(tempRaw, CultureInfo.InvariantCulture, out var temperature))
             temperature = 1.0;
 
-        var needsKey = !string.Equals(provider, "ollama", StringComparison.OrdinalIgnoreCase)
-                       && string.IsNullOrWhiteSpace(endpoint);
+        var isOllama = string.Equals(provider, "ollama", StringComparison.OrdinalIgnoreCase);
+        var hasEndpoint = !string.IsNullOrWhiteSpace(endpoint);
 
-        if (needsKey && string.IsNullOrWhiteSpace(apiKey))
+        if (!isOllama && !hasEndpoint && string.IsNullOrWhiteSpace(apiKey))
         {
             throw new InvalidOperationException(
                 "尚未配置 API 密钥。\n请在「设置 → 插件变量管理」中添加 PROMPTOR_API_KEY 变量。");
@@ -214,11 +274,6 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     {
         if (_variableService is null) return defaultValue;
         return _variableService.GetValue(_pluginId, key) ?? defaultValue;
-    }
-
-    private void AppendLog(string message)
-    {
-        OutputLog += message + Environment.NewLine;
     }
 
     private async Task ShowAlertAsync(string title, string message)

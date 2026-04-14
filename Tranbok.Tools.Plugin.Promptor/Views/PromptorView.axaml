@@ -4,27 +4,54 @@
              xmlns:designer="using:Tranbok.Tools.Designer.Controls"
              x:DataType="vm:PromptorViewModel"
              x:Class="Tranbok.Tools.Plugin.Promptor.Views.PromptorView">
-  <designer:ToolPageLayout FooterHeight="160">
 
-    <!-- ═══ 顶部操作栏 ═══════════════════════════════════════════════════ -->
+  <UserControl.Styles>
+    <!-- ComboBox 紧凑模式，用于 ActionBar 内联控件 -->
+    <Style Selector="ComboBox.inline-compact">
+      <Setter Property="Height" Value="34" />
+      <Setter Property="MinHeight" Value="34" />
+      <Setter Property="Padding" Value="10,0" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <!-- 输入框多行：覆盖全局 Height 限制 -->
+    <Style Selector="TextBox.multiline">
+      <Setter Property="Height" Value="NaN" />
+      <Setter Property="MinHeight" Value="80" />
+      <Setter Property="Padding" Value="14,12" />
+    </Style>
+    <Style Selector="TextBox.multiline /template/ TextPresenter#PART_TextPresenter">
+      <Setter Property="Margin" Value="0" />
+    </Style>
+  </UserControl.Styles>
+
+  <!-- 无底部 Footer，只保留 Header + Body -->
+  <designer:ToolPageLayout FooterHeight="0"
+                           BodyFooterGapHeight="0">
+
+    <!-- ═══ 操作栏 ════════════════════════════════════════════════════ -->
     <designer:ToolPageLayout.HeaderContent>
       <designer:ActionBar StatusText="{Binding StatusMessage}"
                           IsBusy="{Binding IsBusy}">
 
         <designer:ActionBar.LeadContent>
+          <!-- 策略选择器：ComboBox 和 Label 保持相同字号与中线对齐 -->
           <StackPanel Orientation="Horizontal"
-                      Spacing="10"
+                      Spacing="8"
                       VerticalAlignment="Center">
-            <TextBlock Classes="caption-muted"
-                       Text="优化策略"
+            <TextBlock Text="优化策略"
+                       FontSize="13"
+                       Foreground="{DynamicResource TranbokTextSecondaryBrush}"
                        VerticalAlignment="Center" />
-            <ComboBox Classes="form-control"
+            <ComboBox Classes="inline-compact"
                       MinWidth="110"
                       ItemsSource="{Binding StrategyOptions}"
                       SelectedItem="{Binding SelectedStrategyOption, Mode=TwoWay}"
                       DisplayMemberBinding="{Binding Label}" />
-            <TextBlock Classes="caption-muted"
-                       Text="{Binding StrategyDescription}"
+            <TextBlock Text="{Binding StrategyDescription}"
+                       FontSize="13"
+                       Foreground="{DynamicResource TranbokTextMutedBrush}"
                        VerticalAlignment="Center" />
           </StackPanel>
         </designer:ActionBar.LeadContent>
@@ -33,12 +60,18 @@
           <designer:ActionGroup>
             <designer:ActionGroup.Body>
               <StackPanel Orientation="Horizontal" Spacing="8">
+
                 <Button Content="清空全部"
                         Command="{Binding ClearAllCommand}"
                         IsEnabled="{Binding IsIdle}" />
+
+                <Button Content="查看日志"
+                        Command="{Binding ShowLogCommand}" />
+
                 <Button Content="复制结果"
                         Command="{Binding CopyCommand}"
                         IsEnabled="{Binding HasOptimizedOutput}" />
+
                 <Button Content="取消"
                         Command="{Binding CancelCommand}"
                         IsVisible="{Binding IsBusy}" />
@@ -46,13 +79,14 @@
                 <!-- 分隔线 -->
                 <Border Width="1"
                         VerticalAlignment="Stretch"
-                        Margin="4,6"
+                        Margin="4,8"
                         Background="{DynamicResource TranbokBorderBrush}" />
 
                 <Button Classes="accent"
                         Content="优化提示词"
                         Command="{Binding OptimizeCommand}"
                         IsEnabled="{Binding IsIdle}" />
+
               </StackPanel>
             </designer:ActionGroup.Body>
           </designer:ActionGroup>
@@ -61,7 +95,7 @@
       </designer:ActionBar>
     </designer:ToolPageLayout.HeaderContent>
 
-    <!-- ═══ 主体工作区 ══════════════════════════════════════════════════ -->
+    <!-- ═══ 主体工作区 ════════════════════════════════════════════════ -->
     <designer:ToolPageLayout.BodyContent>
       <designer:SplitWorkspace LeftWidth="480"
                                LeftMinWidth="300"
@@ -70,11 +104,15 @@
         <!-- 左侧：原始提示词输入 -->
         <designer:SplitWorkspace.LeftContent>
           <Border Classes="card">
-            <Grid RowDefinitions="Auto,*" RowSpacing="12">
+            <Grid RowDefinitions="Auto,12,*">
+
+              <!-- 与右侧完全对称的 SectionHeader -->
               <designer:SectionHeader Grid.Row="0"
                                       Title="原始提示词"
-                                      Description="输入需要优化的提示词原文，按 Ctrl+Enter 快速优化。" />
-              <TextBox Grid.Row="1"
+                                      Description="输入需要优化的提示词原文，Ctrl+Enter 快速优化。" />
+
+              <TextBox Grid.Row="2"
+                       Classes="multiline"
                        Text="{Binding RawInput, Mode=TwoWay}"
                        PlaceholderText="请在此输入需要优化的提示词内容…"
                        AcceptsReturn="True"
@@ -87,6 +125,7 @@
                   <KeyBinding Gesture="Ctrl+Return" Command="{Binding OptimizeCommand}" />
                 </TextBox.KeyBindings>
               </TextBox>
+
             </Grid>
           </Border>
         </designer:SplitWorkspace.LeftContent>
@@ -94,16 +133,21 @@
         <!-- 右侧：优化结果输出 -->
         <designer:SplitWorkspace.RightContent>
           <Border Classes="card">
-            <Grid RowDefinitions="Auto,*" RowSpacing="12">
-              <designer:EditorHeader Grid.Row="0"
-                                     Title="优化结果">
-                <designer:EditorHeader.ActionContent>
+            <Grid RowDefinitions="Auto,12,*">
+
+              <!-- 与左侧完全对称的 SectionHeader，ActionContent 放清空按钮 -->
+              <designer:SectionHeader Grid.Row="0"
+                                      Title="优化结果"
+                                      Description="优化后的提示词将在此处流式显示。">
+                <designer:SectionHeader.ActionContent>
                   <Button Content="清空"
                           Command="{Binding ClearOutputCommand}"
                           IsEnabled="{Binding HasOptimizedOutput}" />
-                </designer:EditorHeader.ActionContent>
-              </designer:EditorHeader>
-              <TextBox Grid.Row="1"
+                </designer:SectionHeader.ActionContent>
+              </designer:SectionHeader>
+
+              <TextBox Grid.Row="2"
+                       Classes="multiline"
                        Text="{Binding OptimizedOutput, Mode=TwoWay}"
                        PlaceholderText="优化结果将在此处流式显示…"
                        IsReadOnly="{Binding IsBusy}"
@@ -112,23 +156,13 @@
                        VerticalContentAlignment="Top"
                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                        ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
             </Grid>
           </Border>
         </designer:SplitWorkspace.RightContent>
 
       </designer:SplitWorkspace>
     </designer:ToolPageLayout.BodyContent>
-
-    <!-- ═══ 底部日志区 ════════════════════════════════════════════════ -->
-    <designer:ToolPageLayout.FooterContent>
-      <designer:LogViewer Title="操作日志"
-                          Description="记录每次优化操作的策略、模型与结果。"
-                          Text="{Binding OutputLog}">
-        <designer:LogViewer.ActionContent>
-          <Button Content="清空日志" Command="{Binding ClearLogCommand}" />
-        </designer:LogViewer.ActionContent>
-      </designer:LogViewer>
-    </designer:ToolPageLayout.FooterContent>
 
   </designer:ToolPageLayout>
 </UserControl>
