@@ -1,239 +1,59 @@
+<div align="center">
+
 # Tranbok.Tools
 
-> 基于 **.NET 10 + Avalonia 12** 的插件化桌面工具宿主，当前提供插件管理、应用设置，以及通过外部插件加载的 EF Core 迁移工具。
+**基于 .NET 10 + Avalonia 12 构建的插件化桌面工具宿主**
 
-![Platform](https://img.shields.io/badge/platform-Desktop-blue)
-![.NET](https://img.shields.io/badge/.NET-10.0-512BD4)
-![UI](https://img.shields.io/badge/UI-Avalonia-7C3AED)
-![Architecture](https://img.shields.io/badge/Architecture-Plugin--based-0F766E)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Avalonia](https://img.shields.io/badge/Avalonia-12.0-7C3AED?logo=avalonia&logoColor=white)](https://avaloniaui.net/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)](https://github.com/AvaloniaUI/Avalonia)
+[![License](https://img.shields.io/badge/License-See%20LICENSE-6B7280)](./LICENSE)
 
-## 项目概览
-
-`Tranbok.Tools` 是一个桌面工具容器，而不是单一功能应用。仓库按“宿主 + 核心层 + Designer 层 + 插件契约层 + 插件实现层”组织，主界面会根据已注册且启用的插件动态生成导航，并在内容区渲染插件页面。
-
-当前仓库中已实现的核心能力：
-
-- Avalonia 桌面宿主与动态插件导航
-- 内置插件注册机制
-- `plugins` 目录外部插件发现与加载
-- 插件管理页面
-- 应用设置页面
-- 统一的主题、调色板、对话框与通用控件层
-- EF Core 迁移插件（通过插件目录发现加载）
+</div>
 
 ---
 
-## 当前功能
+Tranbok.Tools 是一个**桌面工具容器**，而非单一功能应用。宿主本身只负责插件加载、生命周期管理与导航渲染；所有业务能力均由可独立部署的插件提供。内置插件（设置、插件管理）与目录扫描插件（如 EF Core 迁移工具）共享统一的设计系统与宿主服务，彼此相互隔离。
 
-### 1. 插件化桌面宿主
+## 目录
 
-- 通过 `IPlugin` 定义插件生命周期
-- 通过 `IPluginViewProvider` 提供插件主视图
-- 通过 `IPluginHeaderActionsProvider` 提供页头动作按钮
-- 宿主根据启用插件动态生成左侧导航
-- 支持内置插件与目录扫描插件两种接入方式
-
-### 2. 插件管理
-
-- 查看当前已注册插件
-- 展示插件名称、描述、版本、标签、内置状态
-- 调整插件排序
-- 切换插件启用状态
-
-> 注意：当前“禁用插件”仅影响宿主导航显示与 `EnabledPlugins` 集合，不等于真正卸载程序集，也不会调用 `StopAsync` 结束插件生命周期。
-
-### 3. 设置页面
-
-- 切换深色 / 浅色主题
-- 切换内置调色板
-- 从 `themes/*.json` 加载高级自定义主题
-- 切换字体方案
-- 提供工作区路径、自定义主题目录、迁移 Workspace 选项的界面入口
-
-> 当前代码中真正持久化保存的是 `app-preferences.json` 里的 `FontOptionKey`。主题与调色板会即时生效，但并未看到完整的持久化配置落盘。
-
-### 4. EF Core 迁移插件
-
-迁移插件是当前最完整的业务插件，支持：
-
-- 配置多个数据库连接 Profile
-- 选择 Domain 项目 `.csproj`
-- 配置 `DbContext`
-- 支持数据库类型：`SQL Server` / `PostgreSQL` / `MySQL`
-- 刷新迁移列表
-- 新增迁移
-- 执行 `database update`
-- 删除最后一条迁移
-- 查看与编辑迁移文件内容
-- 输出执行日志
+- [功能特性](#功能特性)
+- [快速开始](#快速开始)
+- [项目结构](#项目结构)
+- [技术栈](#技术栈)
+- [内置插件](#内置插件)
+- [开发新插件](#开发新插件)
+- [Wiki 文档](#wiki-文档)
 
 ---
 
-## 技术栈
+## 功能特性
 
-- **.NET 10 SDK**
-- **Avalonia 12**
-- **CommunityToolkit.Mvvm**
-- **Material.Avalonia**
-- **Microsoft.Extensions.DependencyInjection**
-- **插件化架构**
-- **EF Core CLI（迁移插件）**
-
----
-
-## 项目结构
-
-```text
-TranbokTools/
-├─ Tranbok.Tools.App/                    # 桌面应用入口与主窗口壳
-├─ Tranbok.Tools.Core/                   # 宿主核心服务、配置与插件目录管理
-├─ Tranbok.Tools.Designer/               # 主题、对话框、通用控件、设计层基础设施
-├─ Tranbok.Tools.Plugin.Core/            # 插件契约、模型、基类
-├─ Tranbok.Tools.Plugin.Migration/       # EF Core 迁移插件（输出到 plugins 目录）
-├─ Tranbok.Tools.Plugin.PluginManager/   # 插件管理插件
-├─ Tranbok.Tools.Plugin.Settings/        # 设置插件
-├─ themes/                               # JSON 主题目录
-├─ Tranbok.Tools.slnx                    # 解决方案
-└─ README.md
-```
+| 能力 | 说明 |
+|---|---|
+| **插件化架构** | 通过 `IPlugin` 契约定义统一生命周期，支持内置注册与目录扫描两种接入方式 |
+| **动态导航** | 宿主根据已启用插件自动生成侧边导航，插件启停实时反映 |
+| **统一设计系统** | 完整的主题、调色板、对话框、通用控件层（`Designer` 层），插件无需重复实现 |
+| **插件变量管理** | 集中配置各插件所需的环境变量键值对，持久化存储，插件自行读取与校验 |
+| **自定义主题** | 支持内置调色板与 `themes/*.json` 外部主题，运行时热切换 |
+| **EF Core 迁移工具** | 完整的迁移管理插件，支持 SQL Server / PostgreSQL / MySQL，多 Profile 配置 |
+| **反向域名插件 ID** | ID 命名规范强制校验（`com.example.plugin`），注册时检测重复，开发期即失败 |
 
 ---
 
-## 模块说明
-
-### `Tranbok.Tools.App`
-
-桌面宿主入口。
-
-职责：
-
-- 初始化 Avalonia 应用
-- 注册 DI 容器
-- 注册内置插件：`PluginManager`、`Settings`
-- 扫描 `AppContext.BaseDirectory/plugins` 目录并加载外部插件
-- 创建主窗口与主视图模型
-
-关键文件：
-
-- `Tranbok.Tools.App/Program.cs`
-- `Tranbok.Tools.App/App.axaml.cs`
-- `Tranbok.Tools.App/ViewModels/MainViewModel.cs`
-- `Tranbok.Tools.App/Views/MainWindow.axaml`
-
-### `Tranbok.Tools.Core`
-
-宿主共享核心服务层。
-
-职责：
-
-- 插件注册目录 `PluginCatalogService`
-- 插件发现 `PluginDiscoveryService`
-- 应用偏好持久化 `AppPreferencesService`
-- 宿主信息 `AppShellService`
-
-### `Tranbok.Tools.Designer`
-
-统一 UI / 设计系统层。
-
-能力包括：
-
-- 主题服务与调色板注册
-- 内置主题 + `themes` 目录 JSON 主题加载
-- Confirm / Prompt / Sheet 对话框
-- 通用页面布局与控件
-- 插件默认视图
-
-### `Tranbok.Tools.Plugin.Core`
-
-插件契约层。
-
-核心对象：
-
-- `IPlugin`
-- `IPluginViewProvider`
-- `IPluginMetadata`
-- `BasePlugin`
-- `PluginDescriptor`
-- `PluginContext`
-
-### `Tranbok.Tools.Plugin.PluginManager`
-
-插件管理插件。
-
-### `Tranbok.Tools.Plugin.Settings`
-
-设置插件。
-
-### `Tranbok.Tools.Plugin.Migration`
-
-EF Core 迁移插件。
-
----
-
-## 插件机制
-
-### 插件生命周期契约
-
-```csharp
-public interface IPlugin : IAsyncDisposable
-{
-    PluginDescriptor Descriptor { get; }
-
-    ValueTask InitializeAsync(PluginContext context, CancellationToken cancellationToken = default);
-    ValueTask StartAsync(CancellationToken cancellationToken = default);
-    ValueTask StopAsync(CancellationToken cancellationToken = default);
-}
-```
-
-### 插件视图接入
-
-- 插件实现 `IPluginViewProvider` 后，宿主会将其主视图渲染到主内容区
-- 插件实现 `IPluginHeaderActionsProvider` 后，宿主会将最多 3 个动作按钮显示在页头
-
-### 当前实际加载方式
-
-#### 内置插件
-由 `App.axaml.cs` 直接注册：
-
-- `PluginManagerPlugin`
-- `SettingsPlugin`
-
-#### 外部插件
-宿主会扫描：
-
-- `AppContext.BaseDirectory/plugins`
-
-并递归查找所有 `*.dll`，使用反射寻找实现 `IPlugin` 的非抽象类型，实例化后调用：
-
-1. `InitializeAsync`
-2. `StartAsync`
-3. 注册到 `PluginCatalogService`
-
-### 当前插件系统边界
-
-虽然 `Plugin.Core` 中存在 `PluginManifest`、依赖图、兼容性等类型，但当前加载流程实际采用的是：
-
-- `AssemblyLoadContext.Default.LoadFromAssemblyPath(...)`
-- `Activator.CreateInstance(...)`
-- 反射发现实现 `IPlugin` 的类型
-
-因此当前版本更接近“基础反射发现式插件系统”，而不是完整的隔离 / 依赖解析 / manifest 驱动插件平台。
-
----
-
-## 运行与构建
+## 快速开始
 
 ### 环境要求
 
-- **.NET 10 SDK**
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - 可运行 Avalonia 桌面应用的图形环境
-- 若使用迁移插件，需要本机可执行：
-  - `dotnet`
-  - `dotnet ef`
+- （可选）`dotnet ef` 全局工具，仅 EF Core 迁移插件需要
 
 ### 构建
 
 ```bash
+git clone <repo-url>
+cd TranbokTools
 dotnet build Tranbok.Tools.slnx
 ```
 
@@ -243,235 +63,158 @@ dotnet build Tranbok.Tools.slnx
 dotnet run --project Tranbok.Tools.App/Tranbok.Tools.App.csproj
 ```
 
-也可以直接用 Visual Studio / Rider 打开解决方案运行 `Tranbok.Tools.App`。
+> 也可直接用 **Visual Studio** 或 **JetBrains Rider** 打开 `Tranbok.Tools.slnx` 后运行 `Tranbok.Tools.App`。
 
 ---
 
-## 插件接入说明
+## 项目结构
 
-### 哪些插件是内置的
+```
+TranbokTools/
+├── Tranbok.Tools.App/                # 桌面宿主入口：DI 配置、插件注册、主窗口
+├── Tranbok.Tools.Core/               # 宿主核心服务：插件目录、偏好持久化、变量存储
+├── Tranbok.Tools.Designer/           # 统一设计系统：主题、控件、对话框
+├── Tranbok.Tools.Plugin.Core/        # 插件契约层：接口、基类、模型
+├── Tranbok.Tools.Plugin.Settings/    # 内置插件：应用设置
+├── Tranbok.Tools.Plugin.PluginManager/ # 内置插件：插件管理
+├── Tranbok.Tools.Plugin.Migration/   # 外部插件：EF Core 迁移工具
+├── themes/                           # 自定义主题 JSON 文件
+└── Tranbok.Tools.slnx
+```
 
-当前主应用内置注册：
-
-- `PluginManager`
-- `Settings`
-
-### 哪些插件通过目录加载
-
-仓库里的迁移插件项目：
-
-- `Tranbok.Tools.Plugin.Migration`
-
-其 `.csproj` 配置会将构建输出写入：
-
-- `Tranbok.Tools.App/bin/<Configuration>/net10.0/plugins/Migration/`
-
-因此它在运行时是通过插件扫描目录被宿主加载，而不是由 `App` 直接源码注册。
+宿主在启动时会扫描 `<AppDir>/plugins/` 目录，递归发现所有实现 `IPlugin` 的程序集并自动加载。迁移插件的 `.csproj` 已配置将构建输出写入该目录。
 
 ---
 
-## 迁移插件使用说明
+## 技术栈
 
-### 前置要求
+| 库 / 框架 | 版本 | 用途 |
+|---|---|---|
+| .NET | 10 | 运行时与基础类库 |
+| Avalonia | 12.0 | 跨平台桌面 UI 框架 |
+| CommunityToolkit.Mvvm | 8.4 | MVVM 源生成器、ObservableObject |
+| Material.Avalonia | 3.15 | Material Design 主题基础 |
+| Material.Icons.Avalonia | 3.0 | 图标库 |
+| Microsoft.Extensions.DependencyInjection | 10.0 | 依赖注入容器 |
 
-迁移插件对目标业务项目有明确要求，缺一不可：
+---
 
-1. 你需要选择一个 **Domain 项目 `.csproj`**
-2. 该项目所在目录必须存在 `DesignSettings.json`
-3. `DesignSettings.json` 必须至少提供：
-   - `dotnetVersion`
-   - `packages`
-4. `packages` 中必须包含：
-   - `Microsoft.EntityFrameworkCore.Design`
-5. 你需要填写目标 `DbContext` 名称
-6. 迁移操作依赖本机 `dotnet ef`
+## 内置插件
 
-### 最小 `DesignSettings.json` 示例
+### `tranbok.settings` — 设置
 
-```json
+- 深色 / 浅色主题切换
+- 内置调色板与自定义 JSON 主题
+- 全局字体方案
+- 工作区路径配置
+- **插件变量管理**：集中配置各插件的环境变量键值对
+
+### `tranbok.plugin-manager` — 插件管理
+
+- 查看所有已注册插件（名称、版本、标签、内置状态）
+- 调整导航排序
+- 切换插件启用状态
+
+### `tranbok.migration` — EF Core 迁移工具（外部插件）
+
+- 多 Profile 数据库连接配置
+- 新增 / 执行 / 回滚迁移
+- 支持 SQL Server / PostgreSQL / MySQL
+- 迁移文件查看与编辑
+- 详见 → [迁移插件使用指南](./docs/wiki/Migration-Plugin.md)
+
+---
+
+## 开发新插件
+
+### 1. 创建项目
+
+```bash
+dotnet new classlib -n Tranbok.Tools.Plugin.MyPlugin -f net10.0
+```
+
+在 `.csproj` 中添加引用：
+
+```xml
+<ProjectReference Include="..\Tranbok.Tools.Plugin.Core\Tranbok.Tools.Plugin.Core.csproj" />
+<!-- 需要宿主服务时 -->
+<ProjectReference Include="..\Tranbok.Tools.Core\Tranbok.Tools.Core.csproj" />
+<!-- 需要 UI 控件时 -->
+<ProjectReference Include="..\Tranbok.Tools.Designer\Tranbok.Tools.Designer.csproj" />
+```
+
+### 2. 声明元数据
+
+```csharp
+public sealed class MyPluginMetadata : PluginBaseMetadata
 {
-  "dotnetVersion": "net10.0",
-  "packages": [
-    {
-      "packageName": "Microsoft.EntityFrameworkCore.Design",
-      "version": "10.0.0"
-    },
-    {
-      "packageName": "Microsoft.EntityFrameworkCore.SqlServer",
-      "version": "10.0.0"
-    }
-  ]
+    public static MyPluginMetadata Instance { get; } = new();
+
+    // ID 必须遵循反向域名约定，格式：{namespace}.{name}
+    public override string Id => "com.example.my-plugin";
+    public override string Name => "我的插件";
+    public override string Version => "1.0.0";
+    public override string Icon => "Star";
+
+    // 可选：声明插件所需的环境变量
+    public override IReadOnlyList<PluginVariableDefinition> VariableDefinitions =>
+    [
+        new("MY_API_KEY", "", "API 密钥", "调用外部服务所需的密钥"),
+    ];
 }
 ```
 
-> 数据库类型为 PostgreSQL / MySQL 时，需提供对应 Provider 包，代码也会在缺失时按 `Microsoft.EntityFrameworkCore.Design` 的版本补全必需 Provider 引用。
+> **ID 格式规则**：全小写字母、数字、连字符，至少两段，以 `.` 分隔。违反规则将在 `CreateDescriptor` 阶段抛出异常。
 
-### 典型流程
+### 3. 实现插件
 
-1. 在迁移页面选择或新建一个配置
-2. 选择 Domain 项目 `.csproj`
-3. 填写 Profile 名称、数据库类型、`DbContext`、连接字符串
-4. 刷新迁移列表
-5. 执行需要的操作：
-   - 新增迁移
-   - 执行 `database update`
-   - 删除最后一条迁移
-6. 在右侧查看或编辑迁移文件内容
-
-### 迁移插件实际工作方式
-
-迁移插件不会直接在目标业务项目内执行所有操作，而是：
-
-- 在插件工作目录下构建一个临时 Workspace 工程
-- 自动生成 `DesignTimeFactory.cs`
-- 调用 `dotnet restore` / `dotnet build` / `dotnet ef ...`
-- 将迁移输出复制到插件输出目录
-
-### 支持的数据库类型
-
-- SQL Server
-- PostgreSQL
-- MySQL
-
----
-
-## 配置文件与输出目录
-
-### 应用偏好
-
-宿主会在应用目录写入：
-
-- `app-preferences.json`
-
-当前已确认持久化字段：
-
-- `fontOptionKey`
-
-### 主题目录
-
-自定义主题从以下目录加载：
-
-- `themes/*.json`
-
-仓库示例：
-
-- `themes/emerald-dark.json`
-
-### 迁移插件配置文件
-
-迁移插件优先写入 / 读取：
-
-- `Plugins/Migration/.tranbok-tools.json`
-- `Plugins/Migration/setting.json`
-
-同时兼容读取旧路径：
-
-- `<Domain项目目录>/.tranbok-tools.json`
-- `<Domain项目目录>/Migration/setting.json`
-
-### 迁移插件工作目录
-
-迁移插件会在应用目录下生成：
-
-- `Plugins/Migration/WorkSpace/...`
-- `Plugins/Migration/Output/...`
-
-用途：
-
-- `WorkSpace/`：临时生成的迁移执行工程
-- `Output/`：迁移输出文件目录
-
-> 如果你需要整理仓库或发布目录，建议把这些运行期生成内容视为构建/工具产物处理。
-
----
-
-## 自定义主题 JSON 格式
-
-代码会从 `themes` 目录读取所有 `.json` 文件，并反序列化为 `ThemePalette`。示例字段如下：
-
-```json
+```csharp
+public sealed class MyPlugin : BasePlugin, IVisualPlugin
 {
-  "key": "emerald-dark-custom",
-  "label": "Emerald Dark Custom",
-  "description": "示例主题",
-  "baseVariant": "Dark",
-  "accentBrush": "#36CFC9",
-  "accentForegroundBrush": "#081B1A",
-  "backgroundBrush": "#0B1212",
-  "surfaceBrush": "#121A1A",
-  "surfaceElevatedBrush": "#182323",
-  "borderBrush": "#274240",
-  "textPrimaryBrush": "#F1FBFA",
-  "textSecondaryBrush": "#A7C7C4",
-  "textMutedBrush": "#6B8B88",
-  "badgeSuccessBackgroundBrush": "#1B3028",
-  "badgeWarningBackgroundBrush": "#322A18",
-  "badgeDangerBackgroundBrush": "#351D22"
+    public override PluginDescriptor Descriptor { get; } =
+        CreateDescriptor<MyPlugin>(MyPluginMetadata.Instance);
+
+    public override Control GetMainView() => new MyView { DataContext = _viewModel };
 }
 ```
 
-实际可参考：
+### 4. 接入宿主
 
-- `themes/emerald-dark.json`
+**内置插件**：在 `App.axaml.cs` 中注册
 
----
+```csharp
+services.AddSingleton<MyPlugin>();
+// 在 RegisterBuiltInPluginsAsync 中：
+await plugin.InitializeAsync(context);
+await plugin.StartAsync();
+catalog.Register(plugin);
+```
 
-## 开发说明
+**目录插件**：配置 `.csproj` 输出到插件目录即可
 
-### 分层建议
-
-新增功能建议按现有结构扩展：
-
-- **App**：宿主入口、窗口壳与导航
-- **Core**：跨插件共享服务
-- **Designer**：主题、对话框、控件、通用页面能力
-- **Plugin.Core**：插件契约与模型
-- **Plugin.***：具体插件实现
-
-### 新增插件建议步骤
-
-1. 新建 `Tranbok.Tools.Plugin.YourPlugin` 项目
-2. 引用 `Tranbok.Tools.Plugin.Core`，按需引用 `Core` / `Designer`
-3. 实现插件元数据与 `IPlugin`
-4. 如需 UI，提供主视图
-5. 选择接入方式：
-   - 作为内置插件在 `App.axaml.cs` 中注册
-   - 构建输出到 `plugins` 目录，由宿主自动发现
+```xml
+<PropertyGroup>
+  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  <OutputPath>../Tranbok.Tools.App/bin/$(Configuration)/net10.0/plugins/MyPlugin/</OutputPath>
+</PropertyGroup>
+```
 
 ---
 
-## 代码阅读入口
+## Wiki 文档
 
-如果你要快速理解项目，建议按以下顺序阅读：
+详细文档位于 [`docs/wiki/`](./docs/wiki/)：
 
-1. `Tranbok.Tools.App/App.axaml.cs`
-2. `Tranbok.Tools.App/ViewModels/MainViewModel.cs`
-3. `Tranbok.Tools.Plugin.Core/Abstractions/IPlugin.cs`
-4. `Tranbok.Tools.Plugin.Core/Base/BasePlugin.cs`
-5. `Tranbok.Tools.Core/Services/PluginDiscoveryService.cs`
-6. `Tranbok.Tools.Plugin.Settings/ViewModels/SettingsViewModel.cs`
-7. `Tranbok.Tools.Plugin.PluginManager/ViewModels/PluginManagerViewModel.cs`
-8. `Tranbok.Tools.Plugin.Migration/ViewModels/MigrationViewModel.cs`
-9. `Tranbok.Tools.Plugin.Migration/Services/MigrationService.cs`
-
----
-
-## 当前状态
-
-当前仓库已经具备一个可继续扩展的桌面工具平台基础：
-
-- 宿主壳层完整
-- 插件目录机制可用
-- 公共 Designer 层较完整
-- 设置与插件管理功能已可使用
-- EF Core 迁移插件已具备较完整业务流程
-
-其中最成熟的业务模块是：
-
-- `Tranbok.Tools.Plugin.Migration`
+| 文档 | 内容 |
+|---|---|
+| [架构概览](./docs/wiki/Architecture.md) | 分层结构、模块职责、数据流 |
+| [插件系统](./docs/wiki/Plugin-System.md) | 生命周期、接入契约、加载机制 |
+| [插件变量管理](./docs/wiki/Plugin-Variable-Management.md) | 声明变量、在设置页管理、读取变量值 |
+| [自定义主题](./docs/wiki/Theme-Customization.md) | JSON 主题格式、配色字段参考 |
+| [迁移插件指南](./docs/wiki/Migration-Plugin.md) | 完整使用说明、DesignSettings 格式 |
 
 ---
 
 ## 许可证
 
-本项目许可证以仓库中的 `LICENSE` 文件为准。
+本项目许可证以仓库中的 [`LICENSE`](./LICENSE) 文件为准。
