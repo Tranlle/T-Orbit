@@ -21,12 +21,6 @@ public partial class PluginCard : UserControl
     public static readonly StyledProperty<object?> FooterContentProperty =
         AvaloniaProperty.Register<PluginCard, object?>(nameof(FooterContent));
 
-    public static readonly StyledProperty<double> CardWidthProperty =
-        AvaloniaProperty.Register<PluginCard, double>(nameof(CardWidth), 400d);
-
-    public static readonly StyledProperty<Thickness> CardMarginProperty =
-        AvaloniaProperty.Register<PluginCard, Thickness>(nameof(CardMargin), new Thickness(0, 0, 20, 20));
-
     public PluginCard()
     {
         InitializeComponent();
@@ -60,18 +54,6 @@ public partial class PluginCard : UserControl
     {
         get => GetValue(FooterContentProperty);
         set => SetValue(FooterContentProperty, value);
-    }
-
-    public double CardWidth
-    {
-        get => GetValue(CardWidthProperty);
-        set => SetValue(CardWidthProperty, value);
-    }
-
-    public Thickness CardMargin
-    {
-        get => GetValue(CardMarginProperty);
-        set => SetValue(CardMarginProperty, value);
     }
 
     private void InitializeComponent()

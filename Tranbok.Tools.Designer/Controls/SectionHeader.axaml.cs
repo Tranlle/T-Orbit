@@ -4,18 +4,18 @@ using Avalonia.Markup.Xaml;
 
 namespace Tranbok.Tools.Designer.Controls;
 
-public partial class PageHeader : UserControl
+public partial class SectionHeader : UserControl
 {
     public static readonly StyledProperty<string?> TitleProperty =
-        AvaloniaProperty.Register<PageHeader, string?>(nameof(Title));
+        AvaloniaProperty.Register<SectionHeader, string?>(nameof(Title));
 
     public static readonly StyledProperty<string?> DescriptionProperty =
-        AvaloniaProperty.Register<PageHeader, string?>(nameof(Description));
+        AvaloniaProperty.Register<SectionHeader, string?>(nameof(Description));
 
     public static readonly StyledProperty<object?> ActionContentProperty =
-        AvaloniaProperty.Register<PageHeader, object?>(nameof(ActionContent));
+        AvaloniaProperty.Register<SectionHeader, object?>(nameof(ActionContent));
 
-    public PageHeader()
+    public SectionHeader()
     {
         InitializeComponent();
     }

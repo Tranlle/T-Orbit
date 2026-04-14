@@ -4,26 +4,43 @@
              x:Class="Tranbok.Tools.Designer.Controls.ActionBar"
              x:DataType="controls:ActionBar"
              x:Name="Root">
-  <Border Classes="card">
-    <StackPanel Spacing="16">
-      <Grid ColumnDefinitions="*,Auto"
-            ColumnSpacing="16">
-        <ContentPresenter Content="{Binding LeadContent, ElementName=Root}"
-                          VerticalAlignment="Center" />
+  <!-- Outer border provides card shape + shadow -->
+  <Border Background="{DynamicResource TranbokSurfaceElevatedBrush}"
+          BorderBrush="{DynamicResource TranbokBorderBrush}"
+          BorderThickness="1"
+          CornerRadius="{DynamicResource TranbokRadiusLarge}"
+          BoxShadow="0 4 24 0 #22000000"
+          Padding="0">
+    <StackPanel Spacing="0">
 
-        <StackPanel Grid.Column="1"
-                    Orientation="Horizontal"
-                    Spacing="12"
-                    VerticalAlignment="Center">
-          <TextBlock Text="{Binding StatusText, ElementName=Root}"
-                     VerticalAlignment="Center" />
-          <ProgressBar Width="120"
-                       IsIndeterminate="True"
-                       IsVisible="{Binding IsBusy, ElementName=Root}" />
-        </StackPanel>
-      </Grid>
+      <!-- Accent stripe -->
+      <Border Height="3"
+              Background="{DynamicResource TranbokAccentBrush}"
+              CornerRadius="15,15,0,0" />
 
-      <ContentPresenter Content="{Binding ActionsContent, ElementName=Root}" />
+      <!-- Content area -->
+      <StackPanel Spacing="16" Margin="20,14,20,16">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+          <ContentPresenter Content="{Binding LeadContent, ElementName=Root}"
+                            VerticalAlignment="Center" />
+          <StackPanel Grid.Column="1"
+                      Orientation="Horizontal"
+                      Spacing="12"
+                      VerticalAlignment="Center">
+            <TextBlock Text="{Binding StatusText, ElementName=Root}"
+                       Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                       FontSize="12"
+                       VerticalAlignment="Center" />
+            <ProgressBar Width="120"
+                         Height="4"
+                         IsIndeterminate="True"
+                         IsVisible="{Binding IsBusy, ElementName=Root}"
+                         Foreground="{DynamicResource TranbokAccentBrush}" />
+          </StackPanel>
+        </Grid>
+        <ContentPresenter Content="{Binding ActionsContent, ElementName=Root}" />
+      </StackPanel>
+
     </StackPanel>
   </Border>
 </UserControl>

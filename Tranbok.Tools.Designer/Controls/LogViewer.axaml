@@ -6,17 +6,28 @@
              x:Name="Root">
   <Border Classes="card">
     <Grid RowDefinitions="Auto,12,*">
-      <controls:CardHeader Title="{Binding Title, ElementName=Root}"
-                           Description="{Binding Description, ElementName=Root}"
-                           ActionContent="{Binding ActionContent, ElementName=Root}" />
-      <TextBox Grid.Row="2"
-               Text="{Binding Text, ElementName=Root}"
-               IsReadOnly="True"
-               AcceptsReturn="True"
-               TextWrapping="Wrap"
-               VerticalContentAlignment="Top"
-               ScrollViewer.HorizontalScrollBarVisibility="Auto"
-               ScrollViewer.VerticalScrollBarVisibility="Auto" />
+      <controls:SectionHeader Title="{Binding Title, ElementName=Root}"
+                              Description="{Binding Description, ElementName=Root}"
+                              ActionContent="{Binding ActionContent, ElementName=Root}" />
+      <Border Grid.Row="2"
+              Background="{DynamicResource TranbokBackgroundBrush}"
+              BorderBrush="{DynamicResource TranbokBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="{DynamicResource TranbokRadiusMedium}">
+        <TextBox Text="{Binding Text, ElementName=Root}"
+                 IsReadOnly="True"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 VerticalContentAlignment="Top"
+                 FontFamily="{DynamicResource TranbokMonoFontFamily}"
+                 FontSize="12"
+                 Foreground="{DynamicResource TranbokTextSecondaryBrush}"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 Padding="12,10"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" />
+      </Border>
     </Grid>
   </Border>
 </UserControl>

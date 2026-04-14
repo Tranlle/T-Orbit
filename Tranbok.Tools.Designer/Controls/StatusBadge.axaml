@@ -6,9 +6,12 @@
              x:Name="Root">
   <Border Background="{Binding BadgeBackground, ElementName=Root}"
           CornerRadius="999"
-          Padding="12,6"
+          Padding="12,5"
           VerticalAlignment="Center">
     <TextBlock Text="{Binding Text, ElementName=Root}"
-               Foreground="{Binding BadgeForeground, ElementName=Root}" />
+               Foreground="{Binding BadgeForeground, ElementName=Root}"
+               FontSize="12"
+               LineHeight="16"
+               VerticalAlignment="Center" />
   </Border>
 </UserControl>

@@ -18,6 +18,8 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             BaseVariant = ThemeVariant.Dark,
             AccentBrush = "#5B8CFF",
             AccentForegroundBrush = "#FFFFFF",
+            AccentSubtleBrush = "#1D273D",
+            AccentSubtleForegroundBrush = "#8AADFF",
             BackgroundBrush = "#0F1115",
             SurfaceBrush = "#151923",
             SurfaceElevatedBrush = "#1B2130",
@@ -26,8 +28,11 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             TextSecondaryBrush = "#AAB4C4",
             TextMutedBrush = "#738094",
             BadgeSuccessBackgroundBrush = "#1F2D23",
+            BadgeSuccessForegroundBrush = "#5ADE97",
             BadgeWarningBackgroundBrush = "#322818",
-            BadgeDangerBackgroundBrush = "#331C22"
+            BadgeWarningForegroundBrush = "#F0C878",
+            BadgeDangerBackgroundBrush = "#331C22",
+            BadgeDangerForegroundBrush = "#F47482"
         },
         new ThemePalette
         {
@@ -37,6 +42,8 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             BaseVariant = ThemeVariant.Light,
             AccentBrush = "#5B72D6",
             AccentForegroundBrush = "#FFFFFF",
+            AccentSubtleBrush = "#E8ECFA",
+            AccentSubtleForegroundBrush = "#3D55C0",
             BackgroundBrush = "#EDEFF4",
             SurfaceBrush = "#F5F7FB",
             SurfaceElevatedBrush = "#E7EBF3",
@@ -45,8 +52,11 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             TextSecondaryBrush = "#475569",
             TextMutedBrush = "#64748B",
             BadgeSuccessBackgroundBrush = "#DDEFE4",
+            BadgeSuccessForegroundBrush = "#1A7A42",
             BadgeWarningBackgroundBrush = "#F6EAD8",
-            BadgeDangerBackgroundBrush = "#F4DEE2"
+            BadgeWarningForegroundBrush = "#8A5010",
+            BadgeDangerBackgroundBrush = "#F4DEE2",
+            BadgeDangerForegroundBrush = "#B52438"
         },
         new ThemePalette
         {
@@ -56,6 +66,8 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             BaseVariant = ThemeVariant.Dark,
             AccentBrush = "#2EC4A6",
             AccentForegroundBrush = "#0D1A17",
+            AccentSubtleBrush = "#163028",
+            AccentSubtleForegroundBrush = "#4ED4BC",
             BackgroundBrush = "#0E1413",
             SurfaceBrush = "#131C1A",
             SurfaceElevatedBrush = "#182321",
@@ -64,8 +76,11 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             TextSecondaryBrush = "#A8C7BF",
             TextMutedBrush = "#6D8B83",
             BadgeSuccessBackgroundBrush = "#1C3027",
+            BadgeSuccessForegroundBrush = "#4ED4BC",
             BadgeWarningBackgroundBrush = "#332A16",
-            BadgeDangerBackgroundBrush = "#331D21"
+            BadgeWarningForegroundBrush = "#E8C070",
+            BadgeDangerBackgroundBrush = "#331D21",
+            BadgeDangerForegroundBrush = "#F07282"
         },
         new ThemePalette
         {
@@ -75,6 +90,8 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             BaseVariant = ThemeVariant.Dark,
             AccentBrush = "#8B7CFF",
             AccentForegroundBrush = "#FFFFFF",
+            AccentSubtleBrush = "#22203A",
+            AccentSubtleForegroundBrush = "#A99EFF",
             BackgroundBrush = "#100F17",
             SurfaceBrush = "#171622",
             SurfaceElevatedBrush = "#1E1C2B",
@@ -83,8 +100,11 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             TextSecondaryBrush = "#B8B3D6",
             TextMutedBrush = "#7C7798",
             BadgeSuccessBackgroundBrush = "#1D2E25",
+            BadgeSuccessForegroundBrush = "#5ADE97",
             BadgeWarningBackgroundBrush = "#322815",
-            BadgeDangerBackgroundBrush = "#351D28"
+            BadgeWarningForegroundBrush = "#F0C878",
+            BadgeDangerBackgroundBrush = "#351D28",
+            BadgeDangerForegroundBrush = "#F47482"
         }
     ];
 }

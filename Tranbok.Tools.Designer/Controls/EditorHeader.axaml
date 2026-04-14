@@ -4,13 +4,33 @@
              x:Class="Tranbok.Tools.Designer.Controls.EditorHeader"
              x:DataType="controls:EditorHeader"
              x:Name="Root">
-  <Grid ColumnDefinitions="*,Auto"
-        ColumnSpacing="12">
-    <TextBlock Classes="field-value"
-               Text="{Binding Title, ElementName=Root}"
-               VerticalAlignment="Center" />
-    <ContentPresenter Grid.Column="1"
-                      Content="{Binding ActionContent, ElementName=Root}"
-                      VerticalAlignment="Center" />
+  <Grid RowDefinitions="Auto,1"
+        RowSpacing="0">
+    <Grid Grid.Row="0"
+          ColumnDefinitions="*,Auto"
+          ColumnSpacing="12"
+          Margin="0,0,0,12">
+      <!-- Code chip: filename in monospace -->
+      <Border Background="{DynamicResource TranbokSurfaceElevatedBrush}"
+              BorderBrush="{DynamicResource TranbokBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="{DynamicResource TranbokRadiusSmall}"
+              Padding="12,6"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center">
+        <TextBlock Text="{Binding Title, ElementName=Root}"
+                   FontFamily="{DynamicResource TranbokMonoFontFamily}"
+                   FontSize="13"
+                   Foreground="{DynamicResource TranbokAccentSubtleForegroundBrush}"
+                   VerticalAlignment="Center" />
+      </Border>
+      <ContentPresenter Grid.Column="1"
+                        Content="{Binding ActionContent, ElementName=Root}"
+                        VerticalAlignment="Center" />
+    </Grid>
+    <!-- Bottom separator -->
+    <Border Grid.Row="1"
+            BorderBrush="{DynamicResource TranbokBorderBrush}"
+            BorderThickness="0,1,0,0" />
   </Grid>
 </UserControl>

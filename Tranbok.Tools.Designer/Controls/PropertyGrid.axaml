@@ -19,20 +19,25 @@
   <ItemsControl ItemsSource="{Binding ItemsSource, ElementName=Root}">
     <ItemsControl.ItemsPanel>
       <ItemsPanelTemplate>
-        <StackPanel Spacing="10" />
+        <StackPanel Spacing="0" />
       </ItemsPanelTemplate>
     </ItemsControl.ItemsPanel>
     <ItemsControl.ItemTemplate>
       <DataTemplate x:DataType="models:PropertyGridItem">
-        <Grid ColumnDefinitions="Auto,*"
-              ColumnSpacing="16">
-          <TextBlock Classes="field-label"
-                     Width="{Binding LabelColumnWidth, ElementName=Root}"
-                     Text="{Binding Label}" />
-          <ContentControl Grid.Column="1"
-                          Content="{Binding Value}"
-                          VerticalAlignment="Center" />
-        </Grid>
+        <Border BorderBrush="{DynamicResource TranbokBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="0,10">
+          <Grid ColumnDefinitions="Auto,*"
+                ColumnSpacing="16">
+            <TextBlock Classes="field-label"
+                       Width="{Binding LabelColumnWidth, ElementName=Root}"
+                       Text="{Binding Label}"
+                       FontSize="12" />
+            <ContentControl Grid.Column="1"
+                            Content="{Binding Value}"
+                            VerticalAlignment="Center" />
+          </Grid>
+        </Border>
       </DataTemplate>
     </ItemsControl.ItemTemplate>
   </ItemsControl>

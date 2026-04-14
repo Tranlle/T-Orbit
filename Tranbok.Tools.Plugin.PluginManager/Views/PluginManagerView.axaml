@@ -12,68 +12,52 @@
       <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                     VerticalScrollBarVisibility="Auto">
         <StackPanel Spacing="20">
-          <TextBlock Classes="caption-muted" Text="通过卡片中的启用开关和排序值，直接控制插件的挂载与卸载。" TextWrapping="Wrap" />
+          <TextBlock Classes="caption-muted"
+                     Text="通过卡片中的启用开关和排序值，直接控制插件的挂载与卸载。"
+                     TextWrapping="Wrap" />
 
           <ItemsControl ItemsSource="{Binding Plugins}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
-                <WrapPanel Orientation="Horizontal" ItemWidth="420" />
+                <UniformGrid Columns="2" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
               <DataTemplate x:DataType="models:PluginEntry">
                 <designer:PluginCard Title="{Binding Name}"
-                                     Description="{Binding Description}">
+                                     Description="{Binding Description}"
+                                     Margin="0,0,12,12">
                   <designer:PluginCard.HeaderContent>
-                    <WrapPanel Orientation="Horizontal"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Center"
-                               ItemHeight="28">
-                      <Border Background="{DynamicResource TranbokBadgeWarningBackgroundBrush}"
-                              CornerRadius="999"
-                              Padding="12,0"
-                              Margin="0,0,8,0"
-                              Height="28"
-                              VerticalAlignment="Center"
-                              IsVisible="{Binding IsBuiltIn}">
-                        <TextBlock Text="{Binding BuiltInHint}"
-                                   FontSize="12"
-                                   LineHeight="12"
-                                   Foreground="{DynamicResource TranbokTextMutedBrush}"
-                                   TextAlignment="Center"
-                                   VerticalAlignment="Center" />
-                      </Border>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Spacing="6">
+                      <designer:StatusBadge Text="{Binding BuiltInHint}"
+                                            BadgeBackground="{DynamicResource TranbokBadgeWarningBackgroundBrush}"
+                                            BadgeForeground="{DynamicResource TranbokBadgeWarningForegroundBrush}"
+                                            IsVisible="{Binding IsBuiltIn}" />
                       <ItemsControl ItemsSource="{Binding DisplayTags}">
                         <ItemsControl.ItemsPanel>
                           <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" />
+                            <StackPanel Orientation="Horizontal" Spacing="6" />
                           </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                           <DataTemplate>
-                            <Border Background="{DynamicResource TranbokSurfaceElevatedBrush}"
-                                    BorderBrush="{DynamicResource TranbokBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="999"
-                                    Padding="12,0"
-                                    Margin="0,0,8,0"
-                                    Height="28"
-                                    VerticalAlignment="Center">
-                              <TextBlock Text="{Binding}"
-                                         FontSize="12"
-                                         LineHeight="12"
-                                         Foreground="{DynamicResource TranbokTextMutedBrush}"
-                                         TextAlignment="Center"
-                                         VerticalAlignment="Center" />
-                            </Border>
+                            <designer:StatusBadge Text="{Binding}"
+                                                  BadgeBackground="{DynamicResource TranbokSurfaceElevatedBrush}"
+                                                  BadgeForeground="{DynamicResource TranbokTextMutedBrush}" />
                           </DataTemplate>
                         </ItemsControl.ItemTemplate>
                       </ItemsControl>
-                    </WrapPanel>
+                    </StackPanel>
                   </designer:PluginCard.HeaderContent>
 
                   <designer:PluginCard.DetailsContent>
-                    <Grid ColumnDefinitions="92,*" RowDefinitions="Auto,Auto" RowSpacing="12" ColumnSpacing="12">
+                    <Grid ColumnDefinitions="92,*"
+                          RowDefinitions="Auto,Auto"
+                          RowSpacing="10"
+                          ColumnSpacing="12">
                       <TextBlock Grid.Row="0" Classes="field-label" Text="插件 ID" />
                       <TextBlock Grid.Row="0" Grid.Column="1" Classes="field-value" Text="{Binding Id}" TextWrapping="Wrap" />
 
@@ -83,44 +67,39 @@
                   </designer:PluginCard.DetailsContent>
 
                   <designer:PluginCard.FooterContent>
-                    <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,12,88" RowDefinitions="Auto,Auto" RowSpacing="12">
-                      <TextBlock Grid.Row="0"
-                                 Text="启用"
+                    <StackPanel Spacing="10">
+                      <Grid ColumnDefinitions="Auto,8,Auto,*,Auto,8,88"
+                            VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="启用"
+                                   FontSize="14"
+                                   VerticalAlignment="Center" />
+
+                        <ToggleSwitch Grid.Column="2"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                      IsEnabled="{Binding CanDisable}" />
+
+                        <TextBlock Grid.Column="4"
+                                   Text="排序"
+                                   FontSize="14"
+                                   VerticalAlignment="Center" />
+
+                        <TextBox Grid.Column="6"
+                                 Height="32"
+                                 MinHeight="32"
+                                 Padding="10,0"
+                                 Text="{Binding Sort, Mode=TwoWay}"
                                  FontSize="14"
-                                 FontWeight="Normal"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
                                  VerticalAlignment="Center" />
+                      </Grid>
 
-                      <ToggleSwitch Grid.Row="0"
-                                    Grid.Column="2"
-                                    VerticalAlignment="Center"
-                                    IsChecked="{Binding IsEnabled, Mode=TwoWay}"
-                                    IsEnabled="{Binding CanDisable}" />
-
-                      <TextBlock Grid.Row="0"
-                                 Grid.Column="4"
-                                 Text="排序"
-                                 FontSize="14"
-                                 FontWeight="Normal"
-                                 VerticalAlignment="Center" />
-
-                      <TextBox Grid.Row="0"
-                               Grid.Column="6"
-                               Width="88"
-                               Height="28"
-                               MinHeight="28"
-                               Padding="10,0"
-                               Text="{Binding Sort, Mode=TwoWay}"
-                               FontSize="14"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               VerticalAlignment="Center" />
-
-                      <TextBlock Grid.Row="1"
-                                 Grid.ColumnSpan="5"
-                                 Classes="caption-muted"
+                      <TextBlock Classes="caption-muted"
                                  Text="排序值越小越靠前；关闭后插件将从导航中卸载。"
                                  TextWrapping="Wrap" />
-                    </Grid>
+                    </StackPanel>
                   </designer:PluginCard.FooterContent>
                 </designer:PluginCard>
               </DataTemplate>

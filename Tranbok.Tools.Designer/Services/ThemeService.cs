@@ -108,6 +108,8 @@ public sealed class ThemeService : IThemeService
 
         ApplyBrush("TranbokAccentBrush", palette.AccentBrush);
         ApplyBrush("TranbokAccentForegroundBrush", palette.AccentForegroundBrush);
+        ApplyBrush("TranbokAccentSubtleBrush", palette.AccentSubtleBrush);
+        ApplyBrush("TranbokAccentSubtleForegroundBrush", palette.AccentSubtleForegroundBrush);
         ApplyBrush("TranbokBackgroundBrush", palette.BackgroundBrush);
         ApplyBrush("TranbokSurfaceBrush", palette.SurfaceBrush);
         ApplyBrush("TranbokSurfaceElevatedBrush", palette.SurfaceElevatedBrush);
@@ -116,8 +118,11 @@ public sealed class ThemeService : IThemeService
         ApplyBrush("TranbokTextSecondaryBrush", palette.TextSecondaryBrush);
         ApplyBrush("TranbokTextMutedBrush", palette.TextMutedBrush);
         ApplyBrush("TranbokBadgeSuccessBackgroundBrush", palette.BadgeSuccessBackgroundBrush);
+        ApplyBrush("TranbokBadgeSuccessForegroundBrush", palette.BadgeSuccessForegroundBrush);
         ApplyBrush("TranbokBadgeWarningBackgroundBrush", palette.BadgeWarningBackgroundBrush);
+        ApplyBrush("TranbokBadgeWarningForegroundBrush", palette.BadgeWarningForegroundBrush);
         ApplyBrush("TranbokBadgeDangerBackgroundBrush", palette.BadgeDangerBackgroundBrush);
+        ApplyBrush("TranbokBadgeDangerForegroundBrush", palette.BadgeDangerForegroundBrush);
         ApplyBrush("ComboBoxDropDownBackground", palette.SurfaceBrush);
         ApplyBrush("ComboBoxDropDownBorderBrush", palette.BorderBrush);
         ApplyBrush("ComboBoxItemBackground", palette.SurfaceBrush);

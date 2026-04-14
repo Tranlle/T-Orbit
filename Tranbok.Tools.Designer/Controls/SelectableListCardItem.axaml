@@ -8,29 +8,34 @@
     <Style Selector="Border#Card">
       <Setter Property="Background" Value="{DynamicResource TranbokSurfaceBrush}" />
       <Setter Property="BorderBrush" Value="Transparent" />
-      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="BorderThickness" Value="3,1,1,1" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.12" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
     </Style>
     <Style Selector="Border#Card:pointerover">
       <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
     </Style>
     <Style Selector="UserControl.selected Border#Card">
-      <Setter Property="Background" Value="{DynamicResource TranbokSurfaceElevatedBrush}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource TranbokBorderBrush}" />
+      <Setter Property="Background" Value="{DynamicResource TranbokAccentSubtleBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TranbokAccentBrush}" />
     </Style>
   </UserControl.Styles>
 
   <Border x:Name="Card"
           Margin="0"
-          Padding="16,10"
+          Padding="14,10"
           MinHeight="60"
-          CornerRadius="12">
+          CornerRadius="{DynamicResource TranbokRadiusMedium}">
     <Grid ColumnDefinitions="*,Auto"
           ColumnSpacing="12"
           VerticalAlignment="Center">
       <ContentPresenter Content="{Binding BodyContent, ElementName=Root}"
                         VerticalAlignment="Center" />
-
       <ContentPresenter Grid.Column="1"
                         Content="{Binding ActionContent, ElementName=Root}"
                         VerticalAlignment="Center" />

@@ -4,16 +4,36 @@
              x:Class="Tranbok.Tools.Designer.Controls.SplitWorkspace"
              x:DataType="controls:SplitWorkspace"
              x:Name="Root">
+  <UserControl.Styles>
+    <Style Selector="GridSplitter.workspace-splitter">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+      <Setter Property="Width" Value="2" />
+    </Style>
+    <Style Selector="GridSplitter.workspace-splitter:pointerover">
+      <Setter Property="Background" Value="{DynamicResource TranbokBorderBrush}" />
+    </Style>
+    <Style Selector="GridSplitter.workspace-splitter:pressed">
+      <Setter Property="Background" Value="{DynamicResource TranbokAccentBrush}" />
+    </Style>
+  </UserControl.Styles>
+
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="{Binding LeftWidth, ElementName=Root}"
                         MinWidth="{Binding LeftMinWidth, ElementName=Root}" />
-      <ColumnDefinition Width="{Binding GapWidth, ElementName=Root}" />
+      <ColumnDefinition Width="16" />
       <ColumnDefinition Width="*"
                         MinWidth="{Binding RightMinWidth, ElementName=Root}" />
     </Grid.ColumnDefinitions>
 
     <ContentPresenter Content="{Binding LeftContent, ElementName=Root}" />
+
+    <GridSplitter Grid.Column="1"
+                  Classes="workspace-splitter"
+                  ResizeDirection="Columns" />
+
     <ContentPresenter Grid.Column="2"
                       Content="{Binding RightContent, ElementName=Root}" />
   </Grid>

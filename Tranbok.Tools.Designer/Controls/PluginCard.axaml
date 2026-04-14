@@ -4,15 +4,12 @@
              x:Class="Tranbok.Tools.Designer.Controls.PluginCard"
              x:DataType="controls:PluginCard"
              x:Name="Root">
-  <Border Classes="card"
-          Width="{Binding CardWidth, ElementName=Root}"
-          Margin="{Binding CardMargin, ElementName=Root}">
+  <Border Classes="card">
     <StackPanel Spacing="16">
-      <StackPanel Spacing="10">
+      <StackPanel Spacing="8">
         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
           <TextBlock Text="{Binding Title, ElementName=Root}"
-                     FontSize="18"
-                     FontWeight="SemiBold"
+                     Classes="section-title"
                      VerticalAlignment="Center" />
 
           <ContentPresenter Grid.Column="1"

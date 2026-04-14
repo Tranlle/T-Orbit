@@ -9,9 +9,6 @@ public partial class SplitWorkspace : UserControl
     public static readonly StyledProperty<GridLength> LeftWidthProperty =
         AvaloniaProperty.Register<SplitWorkspace, GridLength>(nameof(LeftWidth), new GridLength(320));
 
-    public static readonly StyledProperty<GridLength> GapWidthProperty =
-        AvaloniaProperty.Register<SplitWorkspace, GridLength>(nameof(GapWidth), new GridLength(20));
-
     public static readonly StyledProperty<double> LeftMinWidthProperty =
         AvaloniaProperty.Register<SplitWorkspace, double>(nameof(LeftMinWidth), 240d);
 
@@ -33,12 +30,6 @@ public partial class SplitWorkspace : UserControl
     {
         get => GetValue(LeftWidthProperty);
         set => SetValue(LeftWidthProperty, value);
-    }
-
-    public GridLength GapWidth
-    {
-        get => GetValue(GapWidthProperty);
-        set => SetValue(GapWidthProperty, value);
     }
 
     public double LeftMinWidth

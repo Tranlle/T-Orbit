@@ -11,13 +11,18 @@
       <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                     VerticalScrollBarVisibility="Auto">
         <StackPanel Spacing="20">
+
           <designer:SectionCard Title="主题设置"
-                                Description="保留全局主题服务，支持明暗切换、配色方案切换和全局字体调整。">
+                                Description="管理明暗切换、配色方案与全局字体。">
             <designer:SectionCard.Body>
-              <Grid ColumnDefinitions="*,20,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
+              <Grid ColumnDefinitions="*,20,*"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                    RowSpacing="16">
                 <designer:FormField Grid.Row="0" Grid.Column="0" Label="应用名称">
                   <designer:FormField.Body>
-                    <TextBox Classes="form-control" Text="{Binding AppName, Mode=TwoWay}" PlaceholderText="应用名称" />
+                    <TextBox Classes="form-control"
+                             Text="{Binding AppName, Mode=TwoWay}"
+                             PlaceholderText="应用名称" />
                   </designer:FormField.Body>
                 </designer:FormField>
 
@@ -55,13 +60,13 @@
                 <Border Grid.Row="3"
                         Grid.ColumnSpan="3"
                         IsVisible="{Binding IsInterFontWarningVisible}"
-                        Background="#3B2E1D"
-                        BorderBrush="#5A4730"
+                        Background="{DynamicResource TranbokBadgeWarningBackgroundBrush}"
+                        BorderBrush="{DynamicResource TranbokBorderBrush}"
                         BorderThickness="1"
-                        CornerRadius="10"
+                        CornerRadius="{DynamicResource TranbokRadiusSmall}"
                         Padding="12,10">
                   <TextBlock Text="{Binding FontWarningMessage}"
-                             Foreground="#F2C879"
+                             Foreground="{DynamicResource TranbokBadgeWarningForegroundBrush}"
                              TextWrapping="Wrap" />
                 </Border>
 
@@ -73,7 +78,7 @@
           </designer:SectionCard>
 
           <designer:SectionCard Title="高级主题"
-                                Description="保留自定义 palette 扩展入口。">
+                                Description="自定义 palette 扩展入口。">
             <designer:SectionCard.Body>
               <StackPanel Spacing="16">
                 <CheckBox Content="显示高级主题设置"
@@ -92,7 +97,8 @@
 
                   <designer:FormField Label="自定义主题目录">
                     <designer:FormField.Body>
-                      <TextBox Classes="form-control" Text="{Binding CustomThemeDirectory, Mode=TwoWay}" />
+                      <TextBox Classes="form-control"
+                               Text="{Binding CustomThemeDirectory, Mode=TwoWay}" />
                     </designer:FormField.Body>
                   </designer:FormField>
                 </StackPanel>
@@ -105,11 +111,13 @@
             <designer:SectionCard.Body>
               <designer:FormField Label="工作区路径">
                 <designer:FormField.Body>
-                  <TextBox Classes="form-control" Text="{Binding WorkspaceRoot, Mode=TwoWay}" />
+                  <TextBox Classes="form-control"
+                           Text="{Binding WorkspaceRoot, Mode=TwoWay}" />
                 </designer:FormField.Body>
               </designer:FormField>
             </designer:SectionCard.Body>
           </designer:SectionCard>
+
         </StackPanel>
       </ScrollViewer>
     </designer:ToolPageLayout.BodyContent>
