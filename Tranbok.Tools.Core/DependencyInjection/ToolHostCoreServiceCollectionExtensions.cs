@@ -8,6 +8,7 @@ public static class ToolHostCoreServiceCollectionExtensions
     public static IServiceCollection AddToolHostCore(this IServiceCollection services)
     {
         services.AddSingleton<IAppShellService, AppShellService>();
+        services.AddSingleton<IAppPreferencesService, AppPreferencesService>();
         services.AddSingleton<IPluginCatalogService, PluginCatalogService>();
         services.AddSingleton<IPluginDiscoveryService, PluginDiscoveryService>();
         return services;

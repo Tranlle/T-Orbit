@@ -2,40 +2,98 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Tranbok.Tools.Plugin.Migration.ViewModels"
              xmlns:models="using:Tranbok.Tools.Designer.Models"
+             xmlns:designer="using:Tranbok.Tools.Designer.Controls"
              x:Class="Tranbok.Tools.Plugin.Migration.Views.EditProfileSheetView"
              x:DataType="vm:MigrationViewModel">
-  <Border Classes="card" Padding="0">
-    <StackPanel Spacing="16">
-      <TextBlock Classes="section-title" Text="编辑配置" />
-      <Grid ColumnDefinitions="*,20,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
-        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="8">
-          <TextBlock Classes="form-label" Text="项目路径" />
-          <TextBox Text="{Binding EditingProjectPath, Mode=TwoWay}" PlaceholderText="请选择 Domain 项目 .csproj 路径" />
+  <UserControl.Styles>
+    <Style Selector="TextBlock.section-title">
+      <Setter Property="FontSize" Value="{DynamicResource SheetSectionTitleFontSize}" />
+    </Style>
+    <Style Selector="TextBlock.form-label">
+      <Setter Property="FontSize" Value="{DynamicResource SheetLabelFontSize}" />
+      <Setter Property="MinHeight" Value="20" />
+    </Style>
+    <Style Selector="TextBlock.caption-muted">
+      <Setter Property="FontSize" Value="{DynamicResource SheetCaptionFontSize}" />
+      <Setter Property="MinHeight" Value="18" />
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="Height" Value="{DynamicResource SheetControlHeight}" />
+      <Setter Property="MinHeight" Value="{DynamicResource SheetControlHeight}" />
+      <Setter Property="Padding" Value="14,0" />
+    </Style>
+    <Style Selector="TextBox, ComboBox">
+      <Setter Property="Height" Value="{DynamicResource SheetControlHeight}" />
+      <Setter Property="MinHeight" Value="{DynamicResource SheetControlHeight}" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="UseFloatingWatermark" Value="False" />
+    </Style>
+  </UserControl.Styles>
+
+  <StackPanel Spacing="10">
+    <designer:SectionCard Title="项目与配置标识">
+      <designer:SectionCard.Body>
+        <Grid ColumnDefinitions="*,10,*"
+              RowDefinitions="Auto,Auto"
+              RowSpacing="6">
+          <designer:FormField Grid.Row="0"
+                              Grid.ColumnSpan="3"
+                              Label="Domain 项目路径">
+            <designer:FormField.Body>
+              <designer:PathPickerField Path="{Binding EditingProjectPath, Mode=TwoWay}"
+                                        PlaceholderText="请选择 Domain 项目 .csproj 路径"
+                                        BrowseText="选择项目"
+                                        BrowseCommand="{Binding BrowseProjectPathCommand}" />
+            </designer:FormField.Body>
+          </designer:FormField>
+
+          <designer:FormField Grid.Row="1"
+                              Grid.Column="0"
+                              Label="配置名称">
+            <designer:FormField.Body>
+              <TextBox Text="{Binding EditingProfile.ProfileName, Mode=TwoWay}"
+                       PlaceholderText="例如 开发环境" />
+            </designer:FormField.Body>
+          </designer:FormField>
+
+          <designer:FormField Grid.Row="1"
+                              Grid.Column="2"
+                              Label="DbContext">
+            <designer:FormField.Body>
+              <TextBox Text="{Binding EditingProfile.ContextName, Mode=TwoWay}"
+                       PlaceholderText="例如 AppDbContext" />
+            </designer:FormField.Body>
+          </designer:FormField>
+        </Grid>
+      </designer:SectionCard.Body>
+    </designer:SectionCard>
+
+    <designer:SectionCard Title="数据库与连接信息">
+      <designer:SectionCard.Body>
+        <StackPanel Spacing="6">
+          <designer:FormField Label="数据库类型">
+            <designer:FormField.Body>
+              <ComboBox ItemsSource="{Binding DbTypeOptions}"
+                        SelectedItem="{Binding SelectedEditingDbTypeOption, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                  <DataTemplate x:DataType="models:DesignerOptionItem">
+                    <TextBlock Text="{Binding Label}" />
+                  </DataTemplate>
+                </ComboBox.ItemTemplate>
+              </ComboBox>
+            </designer:FormField.Body>
+          </designer:FormField>
+
+          <designer:FormField Label="连接字符串">
+            <designer:FormField.Body>
+              <TextBox Text="{Binding EditingProfile.ConnectionString, Mode=TwoWay}"
+                       PlaceholderText="请输入数据库连接字符串" />
+            </designer:FormField.Body>
+          </designer:FormField>
         </StackPanel>
-        <StackPanel Grid.Row="0" Grid.Column="2" Spacing="8">
-          <TextBlock Classes="form-label" Text="配置名称" />
-          <TextBox Text="{Binding EditingProfile.ProfileName, Mode=TwoWay}" PlaceholderText="例如 开发环境 / 生产环境" />
-        </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
-          <TextBlock Classes="form-label" Text="数据库类型" />
-          <ComboBox ItemsSource="{Binding DbTypeOptions}"
-                    SelectedItem="{Binding SelectedEditingDbTypeOption, Mode=TwoWay}">
-            <ComboBox.ItemTemplate>
-              <DataTemplate x:DataType="models:DesignerOptionItem">
-                <TextBlock Text="{Binding Label}" />
-              </DataTemplate>
-            </ComboBox.ItemTemplate>
-          </ComboBox>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="2" Spacing="8">
-          <TextBlock Classes="form-label" Text="DbContext" />
-          <TextBox Text="{Binding EditingProfile.ContextName, Mode=TwoWay}" PlaceholderText="例如 AppDbContext" />
-        </StackPanel>
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Spacing="8">
-          <TextBlock Classes="form-label" Text="连接字符串" />
-          <TextBox Text="{Binding EditingProfile.ConnectionString, Mode=TwoWay}" PlaceholderText="请输入数据库连接字符串" />
-        </StackPanel>
-      </Grid>
-    </StackPanel>
-  </Border>
+      </designer:SectionCard.Body>
+    </designer:SectionCard>
+  </StackPanel>
 </UserControl>

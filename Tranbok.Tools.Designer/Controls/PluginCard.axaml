@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.PluginCard"
+             x:DataType="controls:PluginCard"
+             x:Name="Root">
+  <Border Classes="card"
+          Width="{Binding CardWidth, ElementName=Root}"
+          Margin="{Binding CardMargin, ElementName=Root}">
+    <StackPanel Spacing="16">
+      <StackPanel Spacing="10">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+          <TextBlock Text="{Binding Title, ElementName=Root}"
+                     FontSize="18"
+                     FontWeight="SemiBold"
+                     VerticalAlignment="Center" />
+
+          <ContentPresenter Grid.Column="1"
+                            Content="{Binding HeaderContent, ElementName=Root}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center" />
+        </Grid>
+
+        <TextBlock Classes="caption-muted"
+                   Text="{Binding Description, ElementName=Root}"
+                   TextWrapping="Wrap" />
+      </StackPanel>
+
+      <ContentPresenter Content="{Binding DetailsContent, ElementName=Root}" />
+
+      <Border BorderBrush="{DynamicResource TranbokBorderBrush}" BorderThickness="0,1,0,0" />
+
+      <ContentPresenter Content="{Binding FooterContent, ElementName=Root}" />
+    </StackPanel>
+  </Border>
+</UserControl>

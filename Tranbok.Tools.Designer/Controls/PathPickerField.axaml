@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:Tranbok.Tools.Designer.Controls"
+             x:Class="Tranbok.Tools.Designer.Controls.PathPickerField"
+             x:DataType="controls:PathPickerField"
+             x:Name="Root">
+  <Grid ColumnDefinitions="*,Auto"
+        ColumnSpacing="12">
+    <TextBox Text="{Binding Path, ElementName=Root, Mode=TwoWay}"
+             IsReadOnly="{Binding IsReadOnly, ElementName=Root}"
+             PlaceholderText="{Binding PlaceholderText, ElementName=Root}" />
+    <Button Grid.Column="1"
+            Content="{Binding BrowseText, ElementName=Root}"
+            MinWidth="96"
+            Command="{Binding BrowseCommand, ElementName=Root}" />
+  </Grid>
+</UserControl>

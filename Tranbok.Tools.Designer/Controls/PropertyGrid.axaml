@@ -2,9 +2,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:Tranbok.Tools.Designer.Controls"
              xmlns:models="using:Tranbok.Tools.Designer.Models"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              x:Class="Tranbok.Tools.Designer.Controls.PropertyGrid"
              x:DataType="controls:PropertyGrid"
              x:Name="Root">
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="{x:Type system:String}">
+      <TextBlock Text="{Binding}"
+                 TextWrapping="NoWrap"
+                 TextTrimming="CharacterEllipsis"
+                 ToolTip.Tip="{Binding}"
+                 VerticalAlignment="Center" />
+    </DataTemplate>
+  </UserControl.DataTemplates>
+
   <ItemsControl ItemsSource="{Binding ItemsSource, ElementName=Root}">
     <ItemsControl.ItemsPanel>
       <ItemsPanelTemplate>
@@ -18,9 +29,9 @@
           <TextBlock Classes="field-label"
                      Width="{Binding LabelColumnWidth, ElementName=Root}"
                      Text="{Binding Label}" />
-          <ContentPresenter Grid.Column="1"
-                            Content="{Binding Value}"
-                            VerticalAlignment="Center" />
+          <ContentControl Grid.Column="1"
+                          Content="{Binding Value}"
+                          VerticalAlignment="Center" />
         </Grid>
       </DataTemplate>
     </ItemsControl.ItemTemplate>

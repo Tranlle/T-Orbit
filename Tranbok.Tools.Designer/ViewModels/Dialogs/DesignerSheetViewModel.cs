@@ -13,4 +13,9 @@ public partial class DesignerSheetViewModel : ObservableObject
     [ObservableProperty] private string cancelText = "取消";
     [ObservableProperty] private DesignerDialogIcon icon = DesignerDialogIcon.Info;
     [ObservableProperty] private string? note;
+    [ObservableProperty] private double baseFontSize = 13;
+    [ObservableProperty] private double dialogWidth = 880;
+    [ObservableProperty] private double dialogHeight = 640;
+    [ObservableProperty] private bool lockSize = true;
+    [ObservableProperty] private bool hideSystemDecorations = true;
 }

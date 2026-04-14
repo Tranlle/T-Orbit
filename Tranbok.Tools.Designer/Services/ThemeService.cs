@@ -10,6 +10,7 @@ public sealed class ThemeService : IThemeService
 {
     private readonly ThemePaletteRegistry _registry;
     private string _currentPaletteKey;
+    private string _currentFontOptionKey = "system";
 
     public ThemeService(ThemePaletteRegistry registry)
     {
@@ -19,6 +20,7 @@ public sealed class ThemeService : IThemeService
 
     public ThemeVariant CurrentTheme => Application.Current?.RequestedThemeVariant ?? ThemeVariant.Default;
     public string CurrentPaletteKey => _currentPaletteKey;
+    public string CurrentFontOptionKey => _currentFontOptionKey;
 
     public IReadOnlyList<ThemePalette> GetAvailablePalettes() => _registry.GetAll();
 
@@ -52,6 +54,35 @@ public sealed class ThemeService : IThemeService
 
         _currentPaletteKey = palette.Key;
         ApplyPalette(palette);
+    }
+
+    public void SetFontOption(string fontOptionKey)
+    {
+        _currentFontOptionKey = string.IsNullOrWhiteSpace(fontOptionKey) ? "system" : fontOptionKey.Trim().ToLowerInvariant();
+
+        if (Application.Current is null)
+            return;
+
+        Application.Current.Resources["TranbokAppFontFamily"] = ResolveFontFamily(_currentFontOptionKey);
+    }
+
+    public FontFamily ResolveFontFamily(string fontOptionKey)
+    {
+        var normalized = string.IsNullOrWhiteSpace(fontOptionKey) ? "system" : fontOptionKey.Trim().ToLowerInvariant();
+
+        var familyName = normalized switch
+        {
+            "inter" => "Inter",
+            "segoe-ui" => "Segoe UI",
+            "microsoft-yahei-ui" => "Microsoft YaHei UI",
+            "arial" => "Arial",
+            "bahnschrift" => "Bahnschrift",
+            _ when OperatingSystem.IsWindows() => "Segoe UI, Inter",
+            _ when OperatingSystem.IsMacOS() => ".AppleSystemUIFont, SF Pro Text, Helvetica Neue, Inter",
+            _ => "Noto Sans, DejaVu Sans, Ubuntu, Inter"
+        };
+
+        return new FontFamily(familyName);
     }
 
     public void ApplyTheme(string paletteKey)

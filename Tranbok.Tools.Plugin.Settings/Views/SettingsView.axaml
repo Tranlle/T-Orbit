@@ -4,84 +4,114 @@
              xmlns:designer="using:Tranbok.Tools.Designer.Controls"
              x:Class="Tranbok.Tools.Plugin.Settings.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                VerticalScrollBarVisibility="Auto">
-    <StackPanel Spacing="20">
-    <designer:SectionCard Title="主题设置"
-                          Description="保留全局主题服务，支持明暗切换和配色方案切换。">
-      <designer:SectionCard.Body>
-        <Grid ColumnDefinitions="*,20,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
-          <designer:FormField Grid.Row="0" Grid.Column="0" Label="应用名称">
-            <designer:FormField.Body>
-              <TextBox Classes="form-control" Text="{Binding AppName, Mode=TwoWay}" PlaceholderText="应用名称" />
-            </designer:FormField.Body>
-          </designer:FormField>
+  <designer:ToolPageLayout HeaderBodyGapHeight="0"
+                           BodyFooterGapHeight="0"
+                           FooterHeight="0">
+    <designer:ToolPageLayout.BodyContent>
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="20">
+          <designer:SectionCard Title="主题设置"
+                                Description="保留全局主题服务，支持明暗切换、配色方案切换和全局字体调整。">
+            <designer:SectionCard.Body>
+              <Grid ColumnDefinitions="*,20,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
+                <designer:FormField Grid.Row="0" Grid.Column="0" Label="应用名称">
+                  <designer:FormField.Body>
+                    <TextBox Classes="form-control" Text="{Binding AppName, Mode=TwoWay}" PlaceholderText="应用名称" />
+                  </designer:FormField.Body>
+                </designer:FormField>
 
-          <designer:FormField Grid.Row="0" Grid.Column="2" Label="主题模式">
-            <designer:FormField.Body>
-              <ComboBox Classes="form-control"
-                        ItemsSource="{Binding ThemeOptions}"
-                        SelectedItem="{Binding SelectedThemeOption, Mode=TwoWay}"
-                        DisplayMemberBinding="{Binding Label}" />
-            </designer:FormField.Body>
-          </designer:FormField>
+                <designer:FormField Grid.Row="0" Grid.Column="2" Label="主题模式">
+                  <designer:FormField.Body>
+                    <ComboBox Classes="form-control"
+                              ItemsSource="{Binding ThemeOptions}"
+                              SelectedItem="{Binding SelectedThemeOption, Mode=TwoWay}"
+                              DisplayMemberBinding="{Binding Label}" />
+                  </designer:FormField.Body>
+                </designer:FormField>
 
-          <designer:FormField Grid.Row="1" Grid.ColumnSpan="3"
-                              Label="内置配色方案"
-                              Description="{Binding SelectedPaletteOption.Description}">
-            <designer:FormField.Body>
-              <ComboBox Classes="form-control"
-                        ItemsSource="{Binding PaletteOptions}"
-                        SelectedItem="{Binding SelectedPaletteOption, Mode=TwoWay}"
-                        DisplayMemberBinding="{Binding Label}" />
-            </designer:FormField.Body>
-          </designer:FormField>
+                <designer:FormField Grid.Row="1" Grid.ColumnSpan="3"
+                                    Label="内置配色方案"
+                                    Description="{Binding SelectedPaletteOption.Description}">
+                  <designer:FormField.Body>
+                    <ComboBox Classes="form-control"
+                              ItemsSource="{Binding PaletteOptions}"
+                              SelectedItem="{Binding SelectedPaletteOption, Mode=TwoWay}"
+                              DisplayMemberBinding="{Binding Label}" />
+                  </designer:FormField.Body>
+                </designer:FormField>
 
-          <CheckBox Grid.Row="2" Grid.ColumnSpan="3"
-                    Content="迁移默认启用 Workspace 模式"
-                    IsChecked="{Binding UseWorkspaceForMigrations, Mode=TwoWay}" />
-        </Grid>
-      </designer:SectionCard.Body>
-    </designer:SectionCard>
+                <designer:FormField Grid.Row="2" Grid.ColumnSpan="3"
+                                    Label="全局字体"
+                                    Description="{Binding SelectedFontOption.Description}">
+                  <designer:FormField.Body>
+                    <ComboBox Classes="form-control"
+                              ItemsSource="{Binding FontOptions}"
+                              SelectedItem="{Binding SelectedFontOption, Mode=TwoWay}"
+                              DisplayMemberBinding="{Binding Label}" />
+                  </designer:FormField.Body>
+                </designer:FormField>
 
-    <designer:SectionCard Title="高级主题"
-                          Description="保留自定义 palette 扩展入口。">
-      <designer:SectionCard.Body>
-        <StackPanel Spacing="16">
-          <CheckBox Content="显示高级主题设置"
-                    IsChecked="{Binding ShowAdvancedThemeSettings, Mode=TwoWay}" />
+                <Border Grid.Row="3"
+                        Grid.ColumnSpan="3"
+                        IsVisible="{Binding IsInterFontWarningVisible}"
+                        Background="#3B2E1D"
+                        BorderBrush="#5A4730"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="12,10">
+                  <TextBlock Text="{Binding FontWarningMessage}"
+                             Foreground="#F2C879"
+                             TextWrapping="Wrap" />
+                </Border>
 
-          <StackPanel Spacing="16" IsVisible="{Binding ShowAdvancedThemeSettings}">
-            <designer:FormField Label="高级主题方案"
-                                Description="{Binding SelectedAdvancedPaletteOption.Description}">
-              <designer:FormField.Body>
-                <ComboBox Classes="form-control"
-                          ItemsSource="{Binding AdvancedPaletteOptions}"
-                          SelectedItem="{Binding SelectedAdvancedPaletteOption, Mode=TwoWay}"
-                          DisplayMemberBinding="{Binding Label}" />
-              </designer:FormField.Body>
-            </designer:FormField>
+                <CheckBox Grid.Row="4" Grid.ColumnSpan="3"
+                          Content="迁移默认启用 Workspace 模式"
+                          IsChecked="{Binding UseWorkspaceForMigrations, Mode=TwoWay}" />
+              </Grid>
+            </designer:SectionCard.Body>
+          </designer:SectionCard>
 
-            <designer:FormField Label="自定义主题目录">
-              <designer:FormField.Body>
-                <TextBox Classes="form-control" Text="{Binding CustomThemeDirectory, Mode=TwoWay}" />
-              </designer:FormField.Body>
-            </designer:FormField>
-          </StackPanel>
+          <designer:SectionCard Title="高级主题"
+                                Description="保留自定义 palette 扩展入口。">
+            <designer:SectionCard.Body>
+              <StackPanel Spacing="16">
+                <CheckBox Content="显示高级主题设置"
+                          IsChecked="{Binding ShowAdvancedThemeSettings, Mode=TwoWay}" />
+
+                <StackPanel Spacing="16" IsVisible="{Binding ShowAdvancedThemeSettings}">
+                  <designer:FormField Label="高级主题方案"
+                                      Description="{Binding SelectedAdvancedPaletteOption.Description}">
+                    <designer:FormField.Body>
+                      <ComboBox Classes="form-control"
+                                ItemsSource="{Binding AdvancedPaletteOptions}"
+                                SelectedItem="{Binding SelectedAdvancedPaletteOption, Mode=TwoWay}"
+                                DisplayMemberBinding="{Binding Label}" />
+                    </designer:FormField.Body>
+                  </designer:FormField>
+
+                  <designer:FormField Label="自定义主题目录">
+                    <designer:FormField.Body>
+                      <TextBox Classes="form-control" Text="{Binding CustomThemeDirectory, Mode=TwoWay}" />
+                    </designer:FormField.Body>
+                  </designer:FormField>
+                </StackPanel>
+              </StackPanel>
+            </designer:SectionCard.Body>
+          </designer:SectionCard>
+
+          <designer:SectionCard Title="工作区"
+                                Description="配置当前工具宿主的工作区路径。">
+            <designer:SectionCard.Body>
+              <designer:FormField Label="工作区路径">
+                <designer:FormField.Body>
+                  <TextBox Classes="form-control" Text="{Binding WorkspaceRoot, Mode=TwoWay}" />
+                </designer:FormField.Body>
+              </designer:FormField>
+            </designer:SectionCard.Body>
+          </designer:SectionCard>
         </StackPanel>
-      </designer:SectionCard.Body>
-    </designer:SectionCard>
-
-    <designer:SectionCard Title="工作区"
-                          Description="配置当前工具宿主的工作区路径。">
-      <designer:SectionCard.Body>
-        <designer:FormField Label="工作区路径">
-          <designer:FormField.Body>
-            <TextBox Classes="form-control" Text="{Binding WorkspaceRoot, Mode=TwoWay}" />
-          </designer:FormField.Body>
-        </designer:FormField>
-      </designer:SectionCard.Body>
-    </designer:SectionCard>
-  </StackPanel>
-  </ScrollViewer>
+      </ScrollViewer>
+    </designer:ToolPageLayout.BodyContent>
+  </designer:ToolPageLayout>
 </UserControl>

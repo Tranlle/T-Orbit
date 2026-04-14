@@ -18,6 +18,9 @@ public partial class SelectableListCardItem : UserControl
     public static readonly StyledProperty<bool> IsSelectedProperty =
         AvaloniaProperty.Register<SelectableListCardItem, bool>(nameof(IsSelected));
 
+    public static readonly StyledProperty<object?> BodyContentProperty =
+        AvaloniaProperty.Register<SelectableListCardItem, object?>(nameof(BodyContent));
+
     public static readonly StyledProperty<object?> ActionContentProperty =
         AvaloniaProperty.Register<SelectableListCardItem, object?>(nameof(ActionContent));
 
@@ -49,6 +52,12 @@ public partial class SelectableListCardItem : UserControl
     {
         get => GetValue(IsSelectedProperty);
         set => SetValue(IsSelectedProperty, value);
+    }
+
+    public object? BodyContent
+    {
+        get => GetValue(BodyContentProperty);
+        set => SetValue(BodyContentProperty, value);
     }
 
     public object? ActionContent

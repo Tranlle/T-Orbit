@@ -21,24 +21,19 @@
   </UserControl.Styles>
 
   <Border x:Name="Card"
-          Margin="0,0,0,10"
-          Padding="14"
+          Margin="0"
+          Padding="16,10"
+          MinHeight="60"
           CornerRadius="12">
     <Grid ColumnDefinitions="*,Auto"
-          ColumnSpacing="12">
-      <StackPanel Spacing="4">
-        <TextBlock Text="{Binding Title, ElementName=Root}"
-                   FontWeight="SemiBold" />
-        <TextBlock Classes="caption-muted"
-                   Text="{Binding Subtitle, ElementName=Root}" />
-        <TextBlock Classes="caption-muted"
-                   Text="{Binding Meta, ElementName=Root}"
-                   TextTrimming="CharacterEllipsis" />
-      </StackPanel>
+          ColumnSpacing="12"
+          VerticalAlignment="Center">
+      <ContentPresenter Content="{Binding BodyContent, ElementName=Root}"
+                        VerticalAlignment="Center" />
 
       <ContentPresenter Grid.Column="1"
                         Content="{Binding ActionContent, ElementName=Root}"
-                        VerticalAlignment="Top" />
+                        VerticalAlignment="Center" />
     </Grid>
   </Border>
 </UserControl>

@@ -4,11 +4,12 @@
              x:Class="Tranbok.Tools.Designer.Controls.FormField"
              x:DataType="controls:FormField"
              x:Name="Root">
-  <StackPanel Spacing="8">
+  <StackPanel Spacing="6">
     <TextBlock Classes="form-label"
                Text="{Binding Label, ElementName=Root}" />
     <ContentPresenter Content="{Binding Body, ElementName=Root}" />
-    <TextBlock Classes="caption-muted"
+    <TextBlock x:Name="DescriptionText"
+               Classes="caption-muted"
                Text="{Binding Description, ElementName=Root}"
                TextWrapping="Wrap" />
   </StackPanel>

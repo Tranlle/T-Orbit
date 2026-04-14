@@ -44,7 +44,8 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
             var services = Context.Services ?? throw new InvalidOperationException("Plugin services are unavailable.");
             var shellService = services.GetRequiredService<IAppShellService>();
             var themeService = services.GetRequiredService<IThemeService>();
-            _viewModel = new SettingsViewModel(shellService, themeService);
+            var preferencesService = services.GetRequiredService<IAppPreferencesService>();
+            _viewModel = new SettingsViewModel(shellService, themeService, preferencesService);
             _headerActions =
             [
                 new PluginHeaderAction("重置设置", _viewModel.ResetCommand),

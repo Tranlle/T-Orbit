@@ -1,7 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -141,6 +145,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     public IRelayCommand RollbackSelectedCommand { get; }
     public IRelayCommand CancelOperationCommand { get; }
     public IRelayCommand ClearLogCommand { get; }
+    public IRelayCommand BrowseProjectPathCommand { get; }
     public IRelayCommand<DbConnectionProfile> SelectProfileCommand { get; }
     public IRelayCommand<MigrationEntry> SelectMigrationCommand { get; }
 
@@ -159,6 +164,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         RollbackSelectedCommand = new AsyncRelayCommand(RollbackSelectedAsync);
         CancelOperationCommand = new RelayCommand(() => _cts?.Cancel());
         ClearLogCommand = new RelayCommand(() => OutputLog = string.Empty);
+        BrowseProjectPathCommand = new AsyncRelayCommand(BrowseProjectPathAsync);
         SelectProfileCommand = new RelayCommand<DbConnectionProfile>(profile =>
         {
             if (profile is not null)
@@ -693,10 +699,31 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
             ConfirmText = confirmText,
             CancelText = "取消",
             Icon = DesignerDialogIcon.Info,
-            Content = content
+            Content = content,
+            BaseFontSize = 13,
+            DialogWidth = 900,
+            DialogHeight = 680,
+            LockSize = true,
+            HideSystemDecorations = true
         });
 
         return result.IsConfirmed;
+    }
+
+    private async Task BrowseProjectPathAsync()
+    {
+        if (_dialogService is null || TryGetOwnerWindow() is not { } owner)
+            return;
+
+        var file = await _dialogService.PickFileAsync(owner, "选择 Domain 项目文件", [new FilePickerFileType("C# Project")
+        {
+            Patterns = ["*.csproj"],
+            AppleUniformTypeIdentifiers = ["public.xml"],
+            MimeTypes = ["text/xml", "application/xml"]
+        }]);
+
+        if (!string.IsNullOrWhiteSpace(file))
+            EditingProjectPath = file;
     }
 
     private Window? TryGetOwnerWindow()

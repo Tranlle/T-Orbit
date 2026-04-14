@@ -5,11 +5,12 @@
              x:DataType="controls:SectionCard"
              x:Name="Root">
   <Border Classes="card">
-    <StackPanel Spacing="16">
+    <StackPanel Spacing="10">
       <StackPanel Spacing="4">
         <TextBlock Classes="section-title"
                    Text="{Binding Title, ElementName=Root}" />
-        <TextBlock Classes="caption-muted"
+        <TextBlock x:Name="DescriptionText"
+                   Classes="caption-muted"
                    Text="{Binding Description, ElementName=Root}"
                    TextWrapping="Wrap" />
       </StackPanel>
