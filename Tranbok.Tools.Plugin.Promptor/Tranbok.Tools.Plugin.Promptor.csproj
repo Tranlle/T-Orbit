@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ToolHostPluginId>Promptor</ToolHostPluginId>
+    <ToolHostPluginOutputDir>..\Tranbok.Tools.App\bin\$(Configuration)\net10.0\plugins\$(ToolHostPluginId)\</ToolHostPluginOutputDir>
+    <OutDir>$(ToolHostPluginOutputDir)</OutDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tranbok.Tools.Plugin.Core\Tranbok.Tools.Plugin.Core.csproj" />
+    <ProjectReference Include="..\Tranbok.Tools.Designer\Tranbok.Tools.Designer.csproj" />
+    <ProjectReference Include="..\Tranbok.Tools.Core\Tranbok.Tools.Core.csproj" />
+  </ItemGroup>
+
+</Project>

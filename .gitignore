@@ -40,3 +40,5 @@ TestResults.xml
 /Tranbok.Tools.Plugin.PluginManager/bin/
 /temp/
 /TranbokTools.wiki
+/Tranbok.Tools.Plugin.Promptor/obj/
+/Tranbok.Tools.Plugin.Promptor/bin/
