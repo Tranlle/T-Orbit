@@ -27,6 +27,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     private readonly string _pluginId;
     private readonly PromptOptimizationService _service = new();
     private CancellationTokenSource? _cts;
+    private CancellationTokenSource? _copyCts;
 
     [ObservableProperty]
     private string rawInput = string.Empty;
@@ -39,6 +40,9 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 
     [ObservableProperty]
     private bool isBusy;
+
+    [ObservableProperty]
+    private bool isCopied;
 
     [ObservableProperty]
     private string statusMessage = "就绪";
@@ -62,7 +66,9 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     public bool HasRawInput        => !string.IsNullOrWhiteSpace(RawInput);
     public bool HasOptimizedOutput => !string.IsNullOrWhiteSpace(OptimizedOutput);
     public bool IsIdle             => !IsBusy;
+    public bool CanOptimize        => HasRawInput && !IsBusy;
     public string StrategyDescription => SelectedStrategyOption?.Description ?? string.Empty;
+    public string CopyButtonText   => IsCopied ? "✓ 已复制" : "复制结果";
 
     public IRelayCommand OptimizeCommand    { get; }
     public IRelayCommand CopyCommand        { get; }
@@ -97,6 +103,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     partial void OnRawInputChanged(string value)              => RaiseDerivedProperties();
     partial void OnOptimizedOutputChanged(string value)       => RaiseDerivedProperties();
     partial void OnIsBusyChanged(bool value)                  => RaiseDerivedProperties();
+    partial void OnIsCopiedChanged(bool value)                => OnPropertyChanged(nameof(CopyButtonText));
     partial void OnSelectedStrategyOptionChanged(DesignerOptionItem? value) => RaiseDerivedProperties();
 
     private void RaiseDerivedProperties()
@@ -104,6 +111,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         OnPropertyChanged(nameof(HasRawInput));
         OnPropertyChanged(nameof(HasOptimizedOutput));
         OnPropertyChanged(nameof(IsIdle));
+        OnPropertyChanged(nameof(CanOptimize));
         OnPropertyChanged(nameof(StrategyDescription));
     }
 
@@ -222,6 +230,18 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
             {
                 await clipboard.SetTextAsync(OptimizedOutput);
                 StatusMessage = "✓ 已复制到剪贴板";
+
+                // 按钮文案反馈：1.5s 后恢复
+                _copyCts?.Cancel();
+                _copyCts = new CancellationTokenSource();
+                var token = _copyCts.Token;
+                IsCopied = true;
+                try
+                {
+                    await Task.Delay(1500, token);
+                    IsCopied = false;
+                }
+                catch (OperationCanceledException) { /* 新一次复制触发，不重置 */ }
             }
         }
         catch (Exception ex)
@@ -302,6 +322,8 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     {
         _cts?.Cancel();
         _cts?.Dispose();
+        _copyCts?.Cancel();
+        _copyCts?.Dispose();
         _service.Dispose();
     }
 }

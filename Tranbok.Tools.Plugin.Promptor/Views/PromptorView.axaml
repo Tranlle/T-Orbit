@@ -68,7 +68,7 @@
                 <Button Content="查看日志"
                         Command="{Binding ShowLogCommand}" />
 
-                <Button Content="复制结果"
+                <Button Content="{Binding CopyButtonText}"
                         Command="{Binding CopyCommand}"
                         IsEnabled="{Binding HasOptimizedOutput}" />
 
@@ -84,8 +84,9 @@
 
                 <Button Classes="accent"
                         Content="优化提示词"
+                        ToolTip.Tip="Ctrl+Enter"
                         Command="{Binding OptimizeCommand}"
-                        IsEnabled="{Binding IsIdle}" />
+                        IsEnabled="{Binding CanOptimize}" />
 
               </StackPanel>
             </designer:ActionGroup.Body>
@@ -114,7 +115,7 @@
               <TextBox Grid.Row="2"
                        Classes="multiline"
                        Text="{Binding RawInput, Mode=TwoWay}"
-                       PlaceholderText="请在此输入需要优化的提示词内容…"
+                       PlaceholderText="请在此输入需要优化的提示词内容… （Ctrl+Enter 快速优化）"
                        AcceptsReturn="True"
                        AcceptsTab="True"
                        TextWrapping="Wrap"
