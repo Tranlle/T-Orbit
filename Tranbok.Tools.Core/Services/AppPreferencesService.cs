@@ -1,39 +1,25 @@
-using System.Text.Json;
 using Tranbok.Tools.Core.Models;
 
 namespace Tranbok.Tools.Core.Services;
 
 public sealed class AppPreferencesService : IAppPreferencesService
 {
-    private const string PreferencesFileName = "app-preferences.json";
+    // 作用域常量供 StorageService 迁移时引用
+    internal const string StorageScope  = "tranbok.app";
+    internal const string KeyFontOption = "fontOptionKey";
 
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    private readonly IStorageService _storage;
+
+    public AppPreferencesService(IStorageService storage) => _storage = storage;
+
+    public AppPreferences Load() => new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true
+        FontOptionKey = _storage.GetKv(StorageScope, KeyFontOption) ?? "system"
     };
-
-    private static string PreferencesFilePath => Path.Combine(AppContext.BaseDirectory, PreferencesFileName);
-
-    public AppPreferences Load()
-    {
-        if (!File.Exists(PreferencesFilePath))
-            return new AppPreferences();
-
-        try
-        {
-            var json = File.ReadAllText(PreferencesFilePath);
-            return JsonSerializer.Deserialize<AppPreferences>(json, JsonOptions) ?? new AppPreferences();
-        }
-        catch
-        {
-            return new AppPreferences();
-        }
-    }
 
     public void Save(AppPreferences preferences)
     {
         ArgumentNullException.ThrowIfNull(preferences);
-        File.WriteAllText(PreferencesFilePath, JsonSerializer.Serialize(preferences, JsonOptions));
+        _storage.SetKv(StorageScope, KeyFontOption, preferences.FontOptionKey);
     }
 }

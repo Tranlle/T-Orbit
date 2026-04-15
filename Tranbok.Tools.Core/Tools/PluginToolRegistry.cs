@@ -5,25 +5,31 @@ namespace Tranbok.Tools.Core.Tools;
 
 /// <summary>
 /// 宿主工具注册中心实现（Singleton）。
-/// 当前支持的工具：<see cref="IPluginEncryptionTool"/>（按插件 ID 懒创建，各自独立密钥）。
+/// <para>
+/// 采用工厂注册模式：新增 Tool 类型只需在 DI 配置时调用 <see cref="RegisterFactory{T}"/>，
+/// 无需修改本类。每个插件的工具实例按 pluginId 懒创建并缓存。
+/// </para>
 /// </summary>
 public sealed class PluginToolRegistry : IPluginToolRegistry
 {
-    // 每个 pluginId 对应一个独立的 AesGcmPluginEncryptionTool 实例
-    private readonly ConcurrentDictionary<string, AesGcmPluginEncryptionTool> _encryptionTools
-        = new(StringComparer.OrdinalIgnoreCase);
+    // 工厂：toolType → (pluginId → IPluginTool)
+    private readonly Dictionary<Type, Func<string, IPluginTool>> _factories = [];
 
+    // 缓存：(pluginId, toolType) → IPluginTool
+    private readonly ConcurrentDictionary<(string, Type), IPluginTool> _cache = new();
+
+    /// <summary>
+    /// 注册一种 Tool 类型的工厂函数（应在应用启动时调用）。
+    /// </summary>
+    public void RegisterFactory<T>(Func<string, T> factory) where T : class, IPluginTool
+        => _factories[typeof(T)] = pluginId => factory(pluginId);
+
+    /// <inheritdoc/>
     public T? GetTool<T>(string pluginId) where T : class, IPluginTool
     {
-        if (typeof(T) == typeof(IPluginEncryptionTool))
-        {
-            var tool = _encryptionTools.GetOrAdd(
-                pluginId,
-                id => new AesGcmPluginEncryptionTool(id));
-            return tool as T;
-        }
+        if (!_factories.TryGetValue(typeof(T), out var factory))
+            return null;
 
-        // 未来可在此扩展更多 Tool 类型
-        return null;
+        return _cache.GetOrAdd((pluginId, typeof(T)), _ => factory(pluginId)) as T;
     }
 }

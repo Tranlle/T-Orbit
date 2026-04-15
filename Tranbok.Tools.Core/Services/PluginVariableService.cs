@@ -1,6 +1,4 @@
-using System.Text.Json;
 using Tranbok.Tools.Core.Models;
-using Tranbok.Tools.Core.Tools;
 using Tranbok.Tools.Plugin.Core.Abstractions;
 using Tranbok.Tools.Plugin.Core.Tools;
 
@@ -8,101 +6,114 @@ namespace Tranbok.Tools.Core.Services;
 
 public sealed class PluginVariableService : IPluginVariableService
 {
-    private const string StoreFileName = "plugin-variables.json";
-
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true
-    };
-
-    private static string StoreFilePath =>
-        Path.Combine(AppContext.BaseDirectory, StoreFileName);
+    // 作用域前缀，供 StorageService 迁移时引用
+    internal static string ScopeFor(string pluginId) => $"vars:{pluginId}";
 
     private readonly IPluginCatalogService _pluginCatalog;
     private readonly IPluginToolRegistry   _toolRegistry;
+    private readonly IStorageService       _storage;
 
     public PluginVariableService(
         IPluginCatalogService pluginCatalog,
-        IPluginToolRegistry toolRegistry)
+        IPluginToolRegistry   toolRegistry,
+        IStorageService       storage)
     {
         _pluginCatalog = pluginCatalog;
         _toolRegistry  = toolRegistry;
+        _storage       = storage;
     }
 
-    // ── Load ──────────────────────────────────────────────────────────────────
+    // ── Load（构建 PluginVariableStore 供 Settings UI 使用）──────────────────
 
     public PluginVariableStore Load()
     {
-        if (!File.Exists(StoreFilePath))
-            return new PluginVariableStore();
+        var store = new PluginVariableStore();
 
-        try
+        foreach (var plugin in _pluginCatalog.Plugins)
         {
-            var json = File.ReadAllText(StoreFilePath);
-            return JsonSerializer.Deserialize<PluginVariableStore>(json, JsonOptions)
-                   ?? new PluginVariableStore();
+            var defs = plugin.Plugin.Descriptor.VariableDefinitions;
+            if (defs is null || defs.Count == 0) continue;
+
+            var scope   = ScopeFor(plugin.Id);
+            var dbRows  = _storage.GetAllKvWithMeta(scope)
+                .ToDictionary(r => r.Key, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var def in defs)
+            {
+                if (dbRows.TryGetValue(def.Key, out var row))
+                {
+                    store.Entries.Add(new PluginVariableEntry
+                    {
+                        PluginId    = plugin.Id,
+                        Key         = def.Key,
+                        Value       = row.Value ?? string.Empty,
+                        IsEncrypted = row.IsEncrypted
+                    });
+                }
+                // 未存储的条目不写入 store，Save 时按 defs 驱动写入
+            }
         }
-        catch
-        {
-            return new PluginVariableStore();
-        }
+
+        return store;
     }
 
-    // ── Save（明文传入，IsEncrypted=true 的条目由基座 Tool 加密后写盘）─────────
+    // ── Save（明文传入，IsEncrypted=true 的条目由基座 Tool 加密后写库）────────
 
     public void Save(PluginVariableStore store)
     {
         ArgumentNullException.ThrowIfNull(store);
 
-        foreach (var entry in store.Entries.Where(e => e.IsEncrypted && !string.IsNullOrEmpty(e.Value)))
+        foreach (var entry in store.Entries)
         {
-            var tool = _toolRegistry.GetTool<IPluginEncryptionTool>(entry.PluginId);
-            if (tool is not null)
-                entry.Value = tool.Encrypt(entry.Value);
-        }
+            var value = entry.Value;
+            if (entry.IsEncrypted && !string.IsNullOrEmpty(value))
+            {
+                var tool = _toolRegistry.GetTool<IPluginEncryptionTool>(entry.PluginId);
+                if (tool is not null)
+                    value = tool.Encrypt(value);
+            }
 
-        File.WriteAllText(StoreFilePath, JsonSerializer.Serialize(store, JsonOptions));
+            _storage.SetKvWithMeta(
+                ScopeFor(entry.PluginId),
+                entry.Key,
+                value,
+                entry.IsEncrypted);
+        }
     }
 
-    // ── GetValue（用于 Settings UI 显示；自动用 Tool 解密加密字段）────────────
+    // ── GetValue（Settings UI 用，自动解密加密字段）───────────────────────────
 
     public string? GetValue(string pluginId, string key)
     {
-        var store = Load();
-        var entry = store.Entries.FirstOrDefault(e =>
-            string.Equals(e.PluginId, pluginId, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(e.Key,      key,      StringComparison.OrdinalIgnoreCase));
+        var scope = ScopeFor(pluginId);
+        var rows  = _storage.GetAllKvWithMeta(scope);
+        var row   = rows.FirstOrDefault(r =>
+            string.Equals(r.Key, key, StringComparison.OrdinalIgnoreCase));
 
-        if (entry is not null)
+        if (row is not null)
         {
-            if (entry.IsEncrypted && !string.IsNullOrEmpty(entry.Value))
+            if (row.IsEncrypted && !string.IsNullOrEmpty(row.Value))
             {
                 var tool = _toolRegistry.GetTool<IPluginEncryptionTool>(pluginId);
-                return tool?.TryDecrypt(entry.Value) ?? string.Empty;
+                return tool?.TryDecrypt(row.Value) ?? string.Empty;
             }
-            return entry.Value;
+            return row.Value;
         }
 
-        // 回退到元数据默认值
         return GetDefaultValue(pluginId, key);
     }
 
     // ── InjectAll（将原始存储值推送给插件，由插件自行解密）──────────────────────
-    //
-    //  设计原则：基座不解密，只负责把存储的原始值（可能是密文）传给插件。
-    //  插件在 OnVariablesInjected 中调用 Context.GetTool<IPluginEncryptionTool>() 自行解密。
 
     public void InjectAll()
     {
-        var store = Load();
         foreach (var entry in _pluginCatalog.Plugins)
-            InjectToPlugin(entry.Plugin, store);
+            InjectToPlugin(entry.Plugin);
     }
 
     // ── Private ───────────────────────────────────────────────────────────────
 
-    private void InjectToPlugin(IPlugin plugin, PluginVariableStore store)
+    private void InjectToPlugin(IPlugin plugin)
     {
         if (plugin is not IPluginVariableReceiver receiver)
             return;
@@ -111,16 +122,17 @@ public sealed class PluginVariableService : IPluginVariableService
         if (definitions is null || definitions.Count == 0)
             return;
 
-        var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var scope  = ScopeFor(plugin.Descriptor.Id);
+        var dbDict = _storage.GetAllKvWithMeta(scope)
+            .ToDictionary(r => r.Key, r => r.Value, StringComparer.OrdinalIgnoreCase);
 
+        var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var def in definitions)
         {
-            var entry = store.Entries.FirstOrDefault(e =>
-                string.Equals(e.PluginId, plugin.Descriptor.Id, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(e.Key,      def.Key,              StringComparison.OrdinalIgnoreCase));
-
             // 传原始值：有存储值则传存储值（可能是密文），否则传默认值（明文）
-            dict[def.Key] = entry is not null ? entry.Value : def.DefaultValue;
+            dict[def.Key] = dbDict.TryGetValue(def.Key, out var val)
+                ? val ?? string.Empty
+                : def.DefaultValue;
         }
 
         receiver.OnVariablesInjected(dict);

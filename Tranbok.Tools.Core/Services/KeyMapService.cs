@@ -1,22 +1,13 @@
-using System.Text.Json;
 using Tranbok.Tools.Core.Models;
 
 namespace Tranbok.Tools.Core.Services;
 
 public sealed class KeyMapService : IKeyMapService
 {
-    private const string StoreFileName = "keymap-bindings.json";
-
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true
-    };
-
-    private static string StoreFilePath =>
-        Path.Combine(AppContext.BaseDirectory, StoreFileName);
-
+    private readonly IStorageService _storage;
     private readonly List<KeyMapEntry> _entries = [];
+
+    public KeyMapService(IStorageService storage) => _storage = storage;
 
     public IReadOnlyList<KeyMapEntry> Entries => _entries;
 
@@ -35,15 +26,15 @@ public sealed class KeyMapService : IKeyMapService
 
         _entries.Add(new KeyMapEntry
         {
-            Id = id,
-            PluginId = pluginId,
-            PluginName = pluginName,
-            Name = name,
+            Id          = id,
+            PluginId    = pluginId,
+            PluginName  = pluginName,
+            Name        = name,
             Description = description,
-            DefaultKey = defaultKey,
-            Handler = handler,
-            IsEnabled = existing?.IsEnabled ?? true,
-            CustomKey = existing?.CustomKey
+            DefaultKey  = defaultKey,
+            Handler     = handler,
+            IsEnabled   = existing?.IsEnabled ?? true,
+            CustomKey   = existing?.CustomKey
         });
     }
 
@@ -69,47 +60,24 @@ public sealed class KeyMapService : IKeyMapService
 
     public void Load()
     {
-        if (!File.Exists(StoreFilePath))
-            return;
-
-        try
+        var stored = _storage.LoadKeyMapBindings();
+        foreach (var row in stored)
         {
-            var json = File.ReadAllText(StoreFilePath);
-            var store = JsonSerializer.Deserialize<KeyMapStore>(json, JsonOptions);
-            if (store is null)
-                return;
-
-            foreach (var stored in store.Entries)
-            {
-                var entry = _entries.FirstOrDefault(e => e.Id == stored.Id);
-                if (entry is null)
-                    continue;
-
-                entry.CustomKey = stored.CustomKey;
-                entry.IsEnabled = stored.IsEnabled;
-            }
-        }
-        catch
-        {
-            // 文件损坏时静默回退到默认值
+            var entry = _entries.FirstOrDefault(e => e.Id == row.Id);
+            if (entry is null) continue;
+            entry.CustomKey = row.CustomKey;
+            entry.IsEnabled = row.IsEnabled;
         }
     }
 
     public void Save()
     {
-        var store = new KeyMapStore
+        _storage.SaveKeyMapBindings(_entries.Select(e => new KeyMapStoreEntry
         {
-            Entries = _entries
-                .Select(e => new KeyMapStoreEntry
-                {
-                    Id = e.Id,
-                    CustomKey = e.CustomKey,
-                    IsEnabled = e.IsEnabled
-                })
-                .ToList()
-        };
-
-        File.WriteAllText(StoreFilePath, JsonSerializer.Serialize(store, JsonOptions));
+            Id        = e.Id,
+            CustomKey = e.CustomKey,
+            IsEnabled = e.IsEnabled
+        }));
     }
 
     public void Reset(string? id = null)
@@ -125,9 +93,7 @@ public sealed class KeyMapService : IKeyMapService
         else
         {
             var entry = _entries.FirstOrDefault(e => e.Id == id);
-            if (entry is null)
-                return;
-
+            if (entry is null) return;
             entry.CustomKey = null;
             entry.IsEnabled = true;
         }
