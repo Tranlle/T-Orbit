@@ -5,6 +5,8 @@
              x:DataType="controls:StatusBadge"
              x:Name="Root">
   <Border Background="{Binding BadgeBackground, ElementName=Root}"
+          BorderBrush="{DynamicResource TOrbitBorderBrush}"
+          BorderThickness="1"
           CornerRadius="999"
           Padding="10,4"
           VerticalAlignment="Center">
@@ -12,6 +14,7 @@
                Foreground="{Binding BadgeForeground, ElementName=Root}"
                FontSize="11"
                FontWeight="Medium"
+               LetterSpacing="0.2"
                LineHeight="14"
                VerticalAlignment="Center" />
   </Border>

@@ -1,0 +1,96 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TOrbit.Plugin.Migration.ViewModels"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        x:Class="TOrbit.Plugin.Migration.Views.MigrationFileDialog"
+        x:DataType="vm:MigrationFileDialogViewModel"
+        Width="980"
+        Height="720"
+        MinWidth="760"
+        MinHeight="520"
+        CanResize="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Title="迁移文件">
+  <Window.Styles>
+    <Style Selector="Button.icon-tool">
+      <Setter Property="Width" Value="34" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="MinWidth" Value="34" />
+      <Setter Property="MinHeight" Value="34" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+  </Window.Styles>
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Border Grid.Row="0"
+            Background="{DynamicResource TOrbitSurfaceBrush}"
+            BorderBrush="{DynamicResource TOrbitBorderBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="20,16">
+      <Grid ColumnDefinitions="*,Auto"
+            ColumnSpacing="16">
+        <StackPanel Spacing="4">
+          <TextBlock Text="MIGRATION FILE"
+                     Classes="eyebrow" />
+          <TextBlock Text="{Binding FileName}"
+                     FontSize="18"
+                     FontWeight="SemiBold"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center">
+          <Button Classes="icon-tool"
+                  ToolTip.Tip="启用编辑"
+                  Command="{Binding EnableEditCommand}"
+                  IsEnabled="{Binding CanEnableEdit}">
+            <materialIcons:MaterialIcon Kind="PencilOutline"
+                                        Width="16"
+                                        Height="16" />
+          </Button>
+          <Button Classes="icon-tool accent"
+                  ToolTip.Tip="保存"
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding CanSave}">
+            <materialIcons:MaterialIcon Kind="ContentSaveOutline"
+                                        Width="16"
+                                        Height="16" />
+          </Button>
+          <Button Classes="icon-tool"
+                  ToolTip.Tip="退出编辑"
+                  Command="{Binding ExitEditCommand}"
+                  IsEnabled="{Binding CanExitEdit}">
+            <materialIcons:MaterialIcon Kind="CloseCircleOutline"
+                                        Width="16"
+                                        Height="16" />
+          </Button>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <TextBox Grid.Row="1"
+             Margin="20,18,20,18"
+             Text="{Binding Content, Mode=TwoWay}"
+             AcceptsReturn="True"
+             AcceptsTab="True"
+             IsReadOnly="{Binding !IsEditing}"
+             TextWrapping="NoWrap"
+             VerticalContentAlignment="Top"
+             FontFamily="{DynamicResource TOrbitMonoFontFamily}"
+             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+             ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+    <Border Grid.Row="2"
+            Background="{DynamicResource TOrbitSurfaceBrush}"
+            BorderBrush="{DynamicResource TOrbitBorderBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="20,12">
+      <TextBlock Text="先启用编辑，再保存修改；退出编辑会放弃未保存内容。"
+                 Classes="caption-muted"
+                 MinHeight="0" />
+    </Border>
+  </Grid>
+</Window>

@@ -4,10 +4,6 @@
              xmlns:designer="using:TOrbit.Designer.Controls"
              x:Class="TOrbit.Designer.Views.DefaultPluginView"
              x:DataType="viewModels:DefaultPluginViewModel">
-  <designer:SectionCard Title="{Binding Title}">
-    <designer:SectionCard.Body>
-      <designer:EmptyState Title="{Binding Title}"
-                           Description="{Binding Description}" />
-    </designer:SectionCard.Body>
-  </designer:SectionCard>
+  <designer:EmptyState Title="{Binding Title}"
+                       Description="{Binding Description}" />
 </UserControl>

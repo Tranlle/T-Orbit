@@ -4,19 +4,29 @@
              x:Class="TOrbit.Designer.Controls.EmptyState"
              x:DataType="controls:EmptyState"
              x:Name="Root">
-  <StackPanel MaxWidth="620"
-              Spacing="12"
-              HorizontalAlignment="Center">
-    <TextBlock Classes="section-title"
-               Text="{Binding Title, ElementName=Root}"
-               HorizontalAlignment="Center"
-               TextAlignment="Center" />
-    <TextBlock Classes="caption-muted"
-               Text="{Binding Description, ElementName=Root}"
-               TextWrapping="Wrap"
-               HorizontalAlignment="Center"
-               TextAlignment="Center" />
-    <ContentPresenter Content="{Binding ActionContent, ElementName=Root}"
-                      HorizontalAlignment="Center" />
-  </StackPanel>
+  <Border Background="{DynamicResource TOrbitSurfaceBrush}"
+          BorderBrush="{DynamicResource TOrbitBorderBrush}"
+          BorderThickness="1"
+          CornerRadius="{DynamicResource TOrbitRadiusXLarge}"
+          Padding="28,24">
+    <StackPanel MaxWidth="540"
+                Spacing="12"
+                HorizontalAlignment="Center">
+      <TextBlock Classes="eyebrow"
+                 Text="Empty" 
+                 HorizontalAlignment="Center" />
+      <TextBlock Classes="section-title"
+                 Text="{Binding Title, ElementName=Root}"
+                 HorizontalAlignment="Center"
+                 TextAlignment="Center" />
+      <TextBlock Classes="caption-muted"
+                 MinHeight="0"
+                 Text="{Binding Description, ElementName=Root}"
+                 TextWrapping="Wrap"
+                 HorizontalAlignment="Center"
+                 TextAlignment="Center" />
+      <ContentPresenter Content="{Binding ActionContent, ElementName=Root}"
+                        HorizontalAlignment="Center" />
+    </StackPanel>
+  </Border>
 </UserControl>

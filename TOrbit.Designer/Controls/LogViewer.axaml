@@ -4,16 +4,16 @@
              x:Class="TOrbit.Designer.Controls.LogViewer"
              x:DataType="controls:LogViewer"
              x:Name="Root">
-  <Border Classes="card" Padding="0">
+  <Border Classes="workspace-panel" Padding="0">
     <Grid RowDefinitions="Auto,*">
-
-      <!-- Header -->
       <Grid Grid.Row="0"
             ColumnDefinitions="*,Auto"
             ColumnSpacing="12"
-            Margin="18,14,16,14">
-        <StackPanel Spacing="2" VerticalAlignment="Center">
-          <TextBlock Classes="subsection-title"
+            Margin="18,14,16,12">
+        <StackPanel Spacing="3" VerticalAlignment="Center">
+          <TextBlock Classes="eyebrow"
+                     Text="Log" />
+          <TextBlock Classes="section-title"
                      Text="{Binding Title, ElementName=Root}" />
           <TextBlock Classes="caption-muted"
                      Text="{Binding Description, ElementName=Root}"
@@ -24,7 +24,6 @@
                           VerticalAlignment="Center" />
       </Grid>
 
-      <!-- Log output -->
       <Border Grid.Row="1"
               Background="{DynamicResource TOrbitBackgroundBrush}"
               BorderBrush="{DynamicResource TOrbitBorderBrush}"

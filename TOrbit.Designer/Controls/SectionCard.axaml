@@ -4,11 +4,12 @@
              x:Class="TOrbit.Designer.Controls.SectionCard"
              x:DataType="controls:SectionCard"
              x:Name="Root">
-  <Border Classes="card">
-    <StackPanel Spacing="0">
-
-      <!-- Header -->
-      <StackPanel Spacing="3" Margin="0,0,0,14">
+  <Border Classes="workspace-panel"
+          Padding="18">
+    <StackPanel Spacing="16">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="eyebrow"
+                   Text="Section" />
         <TextBlock Classes="section-title"
                    Text="{Binding Title, ElementName=Root}" />
         <TextBlock Classes="caption-muted"
@@ -17,14 +18,10 @@
                    TextWrapping="Wrap" />
       </StackPanel>
 
-      <!-- Separator -->
       <Border BorderBrush="{DynamicResource TOrbitBorderBrush}"
-              BorderThickness="0,1,0,0"
-              Margin="0,0,0,16" />
+              BorderThickness="0,1,0,0" />
 
-      <!-- Body -->
       <ContentPresenter Content="{Binding Body, ElementName=Root}" />
-
     </StackPanel>
   </Border>
 </UserControl>

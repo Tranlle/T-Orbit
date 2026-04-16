@@ -14,6 +14,7 @@ using TOrbit.Designer.ViewModels;
 using TOrbit.Designer.ViewModels.Dialogs;
 using TOrbit.Plugin.Migration.Models;
 using TOrbit.Plugin.Migration.Services;
+using TOrbit.Plugin.Migration.Views;
 
 namespace TOrbit.Plugin.Migration.ViewModels;
 
@@ -88,7 +89,6 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     public IReadOnlyList<PropertyGridItem> ActiveProfileProperties =>
     [
         new PropertyGridItem { Label = "数据库类型", Value = CurrentDatabaseTypeDisplay },
-        new PropertyGridItem { Label = "项目路径", Value = ProjectPath },
         new PropertyGridItem
         {
             Label = "迁移文件",
@@ -146,7 +146,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     public IRelayCommand DeleteProfileCommand { get; }
     public IRelayCommand OpenEditProfileCommand { get; }
     public IRelayCommand ShowNewPanelCommand { get; }
-    public IRelayCommand SaveEditorCommand { get; }
+    public IRelayCommand OpenMigrationFileCommand { get; }
     public IRelayCommand ExecuteUpdateCommand { get; }
     public IRelayCommand RollbackSelectedCommand { get; }
     public IRelayCommand CancelOperationCommand { get; }
@@ -168,12 +168,12 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
 
         InitializeProfilesFromExistingConfig();
 
-        RefreshCommand = new AsyncRelayCommand(RefreshMigrationsAsync);
+        RefreshCommand = new AsyncRelayCommand(ReloadProfilesAsync);
         AddProfileCommand = new RelayCommand(AddProfile);
         DeleteProfileCommand = new AsyncRelayCommand(DeleteProfileAsync);
         OpenEditProfileCommand = new AsyncRelayCommand(OpenEditProfileAsync);
         ShowNewPanelCommand = new AsyncRelayCommand(OpenNewMigrationPanelAsync);
-        SaveEditorCommand = new RelayCommand(SaveEditor);
+        OpenMigrationFileCommand = new AsyncRelayCommand(OpenMigrationFileAsync);
         ExecuteUpdateCommand = new AsyncRelayCommand(ExecuteUpdateAsync);
         RollbackSelectedCommand = new AsyncRelayCommand(RollbackSelectedAsync);
         CancelOperationCommand = new RelayCommand(() => _cts?.Cancel());
@@ -255,24 +255,29 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         OnPropertyChanged(nameof(OrderedProfiles));
     }
 
-    private void InitializeProfilesFromExistingConfig()
+    private void InitializeProfilesFromExistingConfig(string? preferredProfileId = null)
     {
+        _isInitializing = true;
+        DbProfiles.Clear();
+        ClearMigrationSelection();
+
         var settings = _configurationStore.LoadSettings();
         var config = _configurationStore.LoadConfig();
         var resolvedProjectPath = !string.IsNullOrWhiteSpace(settings.ProjectPath) ? settings.ProjectPath : config.ProjectPath;
         var profiles = settings.Profiles.Count > 0 ? settings.Profiles : config.Profiles;
 
-        if (!string.IsNullOrWhiteSpace(resolvedProjectPath))
-            ProjectPath = resolvedProjectPath;
+        ProjectPath = !string.IsNullOrWhiteSpace(resolvedProjectPath) ? resolvedProjectPath : string.Empty;
 
         if (profiles.Count > 0)
         {
             foreach (var profile in profiles)
                 DbProfiles.Add(ToRuntimeProfile(profile));
 
-            var activeProfileId = settings.ActiveProfileId ?? config.ActiveProfileId;
+            var activeProfileId = preferredProfileId ?? settings.ActiveProfileId ?? config.ActiveProfileId;
             ActiveProfile = DbProfiles.FirstOrDefault(profile => profile.Id == activeProfileId) ?? DbProfiles.First();
             ActiveProfile.IsSelected = true;
+            _isInitializing = false;
+            RaiseDerivedProperties();
             return;
         }
 
@@ -280,6 +285,8 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         DbProfiles.Add(defaultProfile);
         ActiveProfile = defaultProfile;
         ActiveProfile.IsSelected = true;
+        _isInitializing = false;
+        RaiseDerivedProperties();
     }
 
     private DbConnectionProfile CreateDefaultProfile()
@@ -422,7 +429,20 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         Migrations.Clear();
         SelectedMigration = null;
         EditorContent = string.Empty;
+        IsEditorDirty = false;
         RaiseDerivedProperties();
+    }
+
+    private async Task ReloadProfilesAsync()
+    {
+        var currentProfileId = ActiveProfile?.Id;
+        InitializeProfilesFromExistingConfig(currentProfileId);
+
+        AppendLog("✓ Reloaded profile list from configuration store");
+        StatusMessage = "配置列表已重新读取";
+
+        if (HasProjectPath && HasSelectedProfile)
+            await RefreshMigrationsAsync();
     }
 
     private async Task RefreshMigrationsAsync()
@@ -603,13 +623,40 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         IsEditorDirty = false;
     }
 
-    private void SaveEditor()
+    private async Task OpenMigrationFileAsync()
     {
-        if (SelectedMigration is null || !IsEditorDirty || string.IsNullOrWhiteSpace(SelectedMigration.FilePath))
+        if (SelectedMigration is null)
+        {
+            await ShowAlertAsync("无法查看迁移文件", "请先选择一个迁移项。");
+            return;
+        }
+
+        if (TryGetOwnerWindow() is not { } owner)
             return;
 
-        _service.SaveMigrationFile(SelectedMigration.FilePath, EditorContent);
-        SelectedMigration.Content = EditorContent;
+        LoadSelectedFileContent();
+
+        var dialogViewModel = new MigrationFileDialogViewModel(
+            SelectedMigrationFileName,
+            EditorContent,
+            SaveEditorContent);
+
+        var dialog = new MigrationFileDialog(dialogViewModel)
+        {
+            Icon = owner.Icon
+        };
+
+        await dialog.ShowDialog(owner);
+    }
+
+    private void SaveEditorContent(string content)
+    {
+        if (SelectedMigration is null || string.IsNullOrWhiteSpace(SelectedMigration.FilePath))
+            return;
+
+        _service.SaveMigrationFile(SelectedMigration.FilePath, content);
+        SelectedMigration.Content = content;
+        EditorContent = content;
         IsEditorDirty = false;
         AppendLog($"✓ Saved {Path.GetFileName(SelectedMigration.FilePath)}");
         StatusMessage = "文件已保存";

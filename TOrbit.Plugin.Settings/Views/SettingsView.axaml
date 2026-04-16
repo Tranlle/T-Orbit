@@ -5,147 +5,214 @@
              xmlns:designer="using:TOrbit.Designer.Controls"
              x:Class="TOrbit.Plugin.Settings.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
+  <UserControl.Styles>
+    <Style Selector="Border.settings-section">
+      <Setter Property="Padding" Value="0,0,0,18" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </Style>
+    <Style Selector="Border.settings-section:last-child">
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+  </UserControl.Styles>
+
   <designer:ToolPageLayout HeaderBodyGapHeight="0"
                            BodyFooterGapHeight="0"
                            FooterHeight="0">
     <designer:ToolPageLayout.BodyContent>
-      <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                    VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="16">
-          <designer:SectionCard Title="主题设置"
-                                Description="管理配色、字体和窗口关闭行为。">
-            <designer:SectionCard.Body>
-              <Grid ColumnDefinitions="*,20,*"
-                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
-                    RowSpacing="14">
-                <designer:FormField Grid.Row="0" Grid.Column="0" Label="应用名称">
-                  <designer:FormField.Body>
-                    <TextBox Classes="form-control"
-                             Text="{Binding AppName, Mode=TwoWay}"
-                             PlaceholderText="应用名称" />
-                  </designer:FormField.Body>
-                </designer:FormField>
-
-                <designer:FormField Grid.Row="1" Grid.ColumnSpan="3"
-                                    Label="内置配色"
-                                    Description="{Binding SelectedPaletteOption.Description, TargetNullValue=''}">
-                  <designer:FormField.Body>
-                    <ComboBox Classes="form-control"
-                              ItemsSource="{Binding PaletteOptions}"
-                              SelectedItem="{Binding SelectedPaletteOption, Mode=TwoWay}"
-                              DisplayMemberBinding="{Binding Label}" />
-                  </designer:FormField.Body>
-                </designer:FormField>
-
-                <designer:FormField Grid.Row="2" Grid.ColumnSpan="3"
-                                    Label="全局字体"
-                                    Description="{Binding SelectedFontOption.Description, TargetNullValue=''}">
-                  <designer:FormField.Body>
-                    <ComboBox Classes="form-control"
-                              ItemsSource="{Binding FontOptions}"
-                              SelectedItem="{Binding SelectedFontOption, Mode=TwoWay}"
-                              DisplayMemberBinding="{Binding Label}" />
-                  </designer:FormField.Body>
-                </designer:FormField>
-
-                <Border Grid.Row="3"
-                        Grid.ColumnSpan="3"
-                        IsVisible="{Binding IsInterFontWarningVisible}"
-                        Background="{DynamicResource TOrbitBadgeWarningBackgroundBrush}"
-                        BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{DynamicResource TOrbitRadiusSmall}"
-                        Padding="12,9">
-                  <TextBlock Text="{Binding FontWarningMessage}"
-                             FontSize="12"
-                             Foreground="{DynamicResource TOrbitBadgeWarningForegroundBrush}"
+      <designer:SplitWorkspace LeftWidth="380"
+                               LeftMinWidth="320"
+                               RightMinWidth="520">
+        <designer:SplitWorkspace.LeftContent>
+          <Border Classes="workspace-panel">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+              <StackPanel Margin="20"
+                          Spacing="20">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="PREFERENCES"
+                             Classes="eyebrow" />
+                  <TextBlock Text="宿主设置"
+                             FontSize="18"
+                             FontWeight="SemiBold" />
+                  <TextBlock Text="管理宿主外观、托盘行为、工作区路径以及迁移默认模式。"
+                             Classes="caption-muted"
+                             MinHeight="0"
                              TextWrapping="Wrap" />
+                </StackPanel>
+
+                <Border Classes="settings-section">
+                  <StackPanel Spacing="14">
+                    <StackPanel Spacing="2">
+                      <TextBlock Text="基础"
+                                 Classes="section-title" />
+                      <TextBlock Text="影响整个宿主的外观和关闭行为。"
+                                 Classes="caption-muted"
+                                 MinHeight="0" />
+                    </StackPanel>
+
+                    <designer:FormField Label="应用名称">
+                      <designer:FormField.Body>
+                        <TextBox Classes="form-control"
+                                 Text="{Binding AppName, Mode=TwoWay}"
+                                 PlaceholderText="应用名称" />
+                      </designer:FormField.Body>
+                    </designer:FormField>
+
+                    <designer:FormField Label="内置配色"
+                                        Description="{Binding SelectedPaletteOption.Description, TargetNullValue=''}">
+                      <designer:FormField.Body>
+                        <ComboBox Classes="form-control"
+                                  ItemsSource="{Binding PaletteOptions}"
+                                  SelectedItem="{Binding SelectedPaletteOption, Mode=TwoWay}"
+                                  DisplayMemberBinding="{Binding Label}" />
+                      </designer:FormField.Body>
+                    </designer:FormField>
+
+                    <designer:FormField Label="全局字体"
+                                        Description="{Binding SelectedFontOption.Description, TargetNullValue=''}">
+                      <designer:FormField.Body>
+                        <ComboBox Classes="form-control"
+                                  ItemsSource="{Binding FontOptions}"
+                                  SelectedItem="{Binding SelectedFontOption, Mode=TwoWay}"
+                                  DisplayMemberBinding="{Binding Label}" />
+                      </designer:FormField.Body>
+                    </designer:FormField>
+
+                    <Border IsVisible="{Binding IsInterFontWarningVisible}"
+                            Background="{DynamicResource TOrbitBadgeWarningBackgroundBrush}"
+                            BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource TOrbitRadiusMedium}"
+                            Padding="12,10">
+                      <TextBlock Text="{Binding FontWarningMessage}"
+                                 FontSize="12"
+                                 Foreground="{DynamicResource TOrbitBadgeWarningForegroundBrush}"
+                                 TextWrapping="Wrap" />
+                    </Border>
+
+                    <Grid ColumnDefinitions="*,Auto"
+                          ColumnSpacing="16"
+                          VerticalAlignment="Center">
+                      <StackPanel Spacing="2">
+                        <TextBlock Text="关闭按钮行为"
+                                   Classes="subsection-title" />
+                        <TextBlock Text="关闭主窗口时最小化到托盘，或直接退出应用。"
+                                   Classes="caption-muted"
+                                   MinHeight="0"
+                                   TextWrapping="Wrap" />
+                      </StackPanel>
+                      <ToggleSwitch Grid.Column="1"
+                                    IsChecked="{Binding MinimizeToTrayOnClose, Mode=TwoWay}"
+                                    OnContent="最小化到托盘"
+                                    OffContent="直接退出" />
+                    </Grid>
+                  </StackPanel>
                 </Border>
 
-                <designer:FormField Grid.Row="4" Grid.ColumnSpan="3"
-                                    Label="关闭按钮行为"
-                                    Description="关闭主窗口时最小化到托盘，或直接退出应用。">
-                  <designer:FormField.Body>
-                    <ToggleSwitch IsChecked="{Binding MinimizeToTrayOnClose, Mode=TwoWay}"
-                                  OnContent="最小化到托盘"
-                                  OffContent="直接退出" />
-                  </designer:FormField.Body>
-                </designer:FormField>
+                <Border Classes="settings-section">
+                  <StackPanel Spacing="14">
+                    <StackPanel Spacing="2">
+                      <TextBlock Text="扩展主题"
+                                 Classes="section-title" />
+                      <TextBlock Text="控制扩展配色与自定义主题目录。"
+                                 Classes="caption-muted"
+                                 MinHeight="0" />
+                    </StackPanel>
 
-                <CheckBox Grid.Row="5"
-                          Grid.ColumnSpan="3"
-                          Content="迁移默认启用 Workspace 模式"
-                          IsChecked="{Binding UseWorkspaceForMigrations, Mode=TwoWay}" />
-              </Grid>
-            </designer:SectionCard.Body>
-          </designer:SectionCard>
+                    <CheckBox Content="显示高级主题设置"
+                              IsChecked="{Binding ShowAdvancedThemeSettings, Mode=TwoWay}" />
 
-          <designer:SectionCard Title="高级主题"
-                                Description="管理扩展配色和自定义主题目录。">
-            <designer:SectionCard.Body>
-              <StackPanel Spacing="14">
-                <CheckBox Content="显示高级主题设置"
-                          IsChecked="{Binding ShowAdvancedThemeSettings, Mode=TwoWay}" />
-                <StackPanel Spacing="14" IsVisible="{Binding ShowAdvancedThemeSettings}">
-                  <designer:FormField Label="扩展配色"
-                                      Description="{Binding SelectedAdvancedPaletteOption.Description, TargetNullValue=''}">
-                    <designer:FormField.Body>
-                      <ComboBox Classes="form-control"
-                                ItemsSource="{Binding AdvancedPaletteOptions}"
-                                SelectedItem="{Binding SelectedAdvancedPaletteOption, Mode=TwoWay}"
-                                DisplayMemberBinding="{Binding Label}" />
-                    </designer:FormField.Body>
-                  </designer:FormField>
+                    <StackPanel Spacing="14"
+                                IsVisible="{Binding ShowAdvancedThemeSettings}">
+                      <designer:FormField Label="扩展配色"
+                                          Description="{Binding SelectedAdvancedPaletteOption.Description, TargetNullValue=''}">
+                        <designer:FormField.Body>
+                          <ComboBox Classes="form-control"
+                                    ItemsSource="{Binding AdvancedPaletteOptions}"
+                                    SelectedItem="{Binding SelectedAdvancedPaletteOption, Mode=TwoWay}"
+                                    DisplayMemberBinding="{Binding Label}" />
+                        </designer:FormField.Body>
+                      </designer:FormField>
 
-                  <designer:FormField Label="主题目录">
+                      <designer:FormField Label="主题目录">
+                        <designer:FormField.Body>
+                          <TextBox Classes="form-control"
+                                   Text="{Binding CustomThemeDirectory, Mode=TwoWay}" />
+                        </designer:FormField.Body>
+                      </designer:FormField>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+
+                <StackPanel Spacing="14">
+                  <StackPanel Spacing="2">
+                    <TextBlock Text="工作区与迁移"
+                               Classes="section-title" />
+                    <TextBlock Text="配置当前宿主工作区，以及 Migration 插件的默认工作方式。"
+                               Classes="caption-muted"
+                               MinHeight="0" />
+                  </StackPanel>
+
+                  <designer:FormField Label="工作区路径">
                     <designer:FormField.Body>
                       <TextBox Classes="form-control"
-                               Text="{Binding CustomThemeDirectory, Mode=TwoWay}" />
+                               Text="{Binding WorkspaceRoot, Mode=TwoWay}" />
                     </designer:FormField.Body>
                   </designer:FormField>
+
+                  <CheckBox Content="迁移默认启用 Workspace 模式"
+                            IsChecked="{Binding UseWorkspaceForMigrations, Mode=TwoWay}" />
                 </StackPanel>
               </StackPanel>
-            </designer:SectionCard.Body>
-          </designer:SectionCard>
+            </ScrollViewer>
+          </Border>
+        </designer:SplitWorkspace.LeftContent>
 
-          <designer:SectionCard Title="工作区"
-                                Description="配置当前工具宿主的工作区路径。">
-            <designer:SectionCard.Body>
-              <designer:FormField Label="工作区路径">
-                <designer:FormField.Body>
-                  <TextBox Classes="form-control"
-                           Text="{Binding WorkspaceRoot, Mode=TwoWay}" />
-                </designer:FormField.Body>
-              </designer:FormField>
-            </designer:SectionCard.Body>
-          </designer:SectionCard>
-
-          <designer:SectionCard Title="插件变量管理"
-                                Description="集中管理插件所需变量；保存前会按元数据规则做校验。">
-            <designer:SectionCard.Body>
-              <StackPanel Spacing="12">
-                <Grid ColumnDefinitions="*,Auto">
-                  <TextBlock Grid.Column="0"
-                             Classes="caption-muted"
-                             VerticalAlignment="Center"
-                             Text="{Binding PluginVariableSummary}" />
+        <designer:SplitWorkspace.RightContent>
+          <Border Classes="workspace-panel">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+              <StackPanel Margin="20"
+                          Spacing="18">
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="16">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="VARIABLES"
+                               Classes="eyebrow" />
+                    <TextBlock Text="插件变量"
+                               FontSize="18"
+                               FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding PluginVariableSummary}"
+                               Classes="caption-muted"
+                               MinHeight="0"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
                   <Button Grid.Column="1"
                           Command="{Binding ShowAddVariableFormCommand}"
                           IsVisible="{Binding !ShowAddVariableForm}"
                           Classes="accent"
-                          Content="新增变量" />
+                          Content="新增变量"
+                          VerticalAlignment="Center" />
                 </Grid>
 
                 <Border IsVisible="{Binding ShowAddVariableForm}"
                         Background="{DynamicResource TOrbitSurfaceHoverBrush}"
                         BorderBrush="{DynamicResource TOrbitAccentBrush}"
                         BorderThickness="1"
-                        CornerRadius="{DynamicResource TOrbitRadiusMedium}"
-                        Padding="16">
+                        CornerRadius="{DynamicResource TOrbitRadiusLarge}"
+                        Padding="18">
                   <StackPanel Spacing="12">
-                    <TextBlock Classes="subsection-title" Text="新增插件变量" />
+                    <StackPanel Spacing="2">
+                      <TextBlock Classes="section-title"
+                                 Text="新增插件变量" />
+                      <TextBlock Classes="caption-muted"
+                                 MinHeight="0"
+                                 Text="设置页只负责保存，校验提醒会展示在对应插件页面头部。" />
+                    </StackPanel>
 
-                    <Grid ColumnDefinitions="*,16,*" RowSpacing="10">
+                    <Grid ColumnDefinitions="*,16,*">
                       <designer:FormField Grid.Column="0" Label="所属插件">
                         <designer:FormField.Body>
                           <ComboBox Classes="form-control"
@@ -164,9 +231,11 @@
                       </designer:FormField>
                     </Grid>
 
-                    <StackPanel Spacing="6" IsVisible="{Binding HasAddFormKeyHints}">
+                    <StackPanel Spacing="6"
+                                IsVisible="{Binding HasAddFormKeyHints}">
                       <TextBlock Classes="caption-muted"
-                                 Text="插件已声明的变量键（点击可快速填充）：" />
+                                 MinHeight="0"
+                                 Text="已声明变量键，点击可快速填充：" />
                       <ItemsControl ItemsSource="{Binding AddFormKeyHints}">
                         <ItemsControl.ItemsPanel>
                           <ItemsPanelTemplate>
@@ -177,10 +246,10 @@
                           <DataTemplate x:DataType="models:DesignerOptionItem">
                             <Button Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).FillKeyFromHintCommand}"
                                     CommandParameter="{Binding}"
-                                    Height="26"
-                                    MinHeight="26"
+                                    Height="28"
+                                    MinHeight="28"
                                     Padding="10,0"
-                                    Margin="0,0,6,6"
+                                    Margin="0,0,8,8"
                                     FontSize="11"
                                     ToolTip.Tip="{Binding Description}">
                               <TextBlock Text="{Binding Label}" FontSize="11" />
@@ -211,32 +280,35 @@
                               IsVisible="{Binding HasPluginVariables}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:PluginVariableGroupViewModel">
-                      <StackPanel Margin="0,4,0,14">
-                        <StackPanel Spacing="6" Margin="0,0,0,8">
-                          <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="{Binding PluginName}"
-                                       Classes="subsection-title"
-                                       VerticalAlignment="Center" />
-                            <Border Background="{DynamicResource TOrbitSurfaceElevatedBrush}"
-                                    BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="999"
-                                    Padding="7,2">
-                              <TextBlock Text="{Binding Count}"
-                                         FontSize="11"
-                                         Foreground="{DynamicResource TOrbitTextMutedBrush}"
-                                         VerticalAlignment="Center" />
-                            </Border>
-                          </StackPanel>
+                      <Border Classes="card"
+                              Padding="18"
+                              Margin="0,0,0,14">
+                        <StackPanel Spacing="14">
+                          <Grid ColumnDefinitions="*,Auto"
+                                ColumnSpacing="12">
+                            <StackPanel Spacing="6">
+                              <StackPanel Orientation="Horizontal"
+                                          Spacing="8">
+                                <TextBlock Text="{Binding PluginName}"
+                                           Classes="section-title"
+                                           VerticalAlignment="Center" />
+                                <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                                        BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="999"
+                                        Padding="8,3">
+                                  <TextBlock Text="{Binding Count}"
+                                             FontSize="11"
+                                             Foreground="{DynamicResource TOrbitTextMutedBrush}" />
+                                </Border>
+                              </StackPanel>
 
-                          <StackPanel Orientation="Horizontal" Spacing="6">
-                            <TextBlock Text="Capabilities:"
-                                       Classes="caption-muted"
-                                       VerticalAlignment="Center" />
-                            <TextBlock Text="{Binding CapabilitySummary}"
-                                       Classes="caption-muted"
-                                       VerticalAlignment="Center" />
-                          </StackPanel>
+                              <TextBlock Text="{Binding CapabilitySummary}"
+                                         Classes="caption-muted"
+                                         MinHeight="0"
+                                         TextWrapping="Wrap" />
+                            </StackPanel>
+                          </Grid>
 
                           <ItemsControl ItemsSource="{Binding CapabilityTags}">
                             <ItemsControl.ItemsPanel>
@@ -251,7 +323,7 @@
                                         BorderThickness="1"
                                         CornerRadius="999"
                                         Padding="8,3"
-                                        Margin="0,0,6,0">
+                                        Margin="0,0,8,8">
                                   <TextBlock Text="{Binding .}"
                                              FontSize="11"
                                              Foreground="{DynamicResource TOrbitTextMutedBrush}" />
@@ -259,72 +331,73 @@
                               </DataTemplate>
                             </ItemsControl.ItemTemplate>
                           </ItemsControl>
-                        </StackPanel>
 
-                        <Grid ColumnDefinitions="*,180,32"
-                              ColumnSpacing="8"
-                              Margin="4,0,4,4">
-                          <TextBlock Grid.Column="0" Classes="field-label" Text="变量键" />
-                          <TextBlock Grid.Column="1" Classes="field-label" Text="当前值" />
-                        </Grid>
-                        <Border BorderBrush="{DynamicResource TOrbitBorderBrush}" BorderThickness="0,1,0,0" />
+                          <Grid ColumnDefinitions="*,220,32"
+                                ColumnSpacing="10">
+                            <TextBlock Grid.Column="0" Classes="field-label" Text="变量键" />
+                            <TextBlock Grid.Column="1" Classes="field-label" Text="当前值" />
+                          </Grid>
 
-                        <ItemsControl ItemsSource="{Binding Variables}">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:PluginVariableItemViewModel">
-                              <Border BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                                      BorderThickness="0,0,0,1"
-                                      Padding="4,7">
-                                <Grid ColumnDefinitions="*,180,32"
-                                      ColumnSpacing="8"
-                                      VerticalAlignment="Center">
-                                  <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                      <TextBlock Text="{Binding Key}"
-                                                 FontFamily="{DynamicResource TOrbitMonoFontFamily}"
-                                                 FontSize="12" />
-                                      <Border IsVisible="{Binding IsEncrypted}"
-                                              Background="{DynamicResource TOrbitBadgeInfoBackgroundBrush}"
-                                              CornerRadius="4"
-                                              Padding="5,1"
-                                              VerticalAlignment="Center">
-                                        <TextBlock Text="加密"
-                                                   FontSize="10"
-                                                   Foreground="{DynamicResource TOrbitBadgeInfoForegroundBrush}" />
-                                      </Border>
+                          <ItemsControl ItemsSource="{Binding Variables}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate x:DataType="vm:PluginVariableItemViewModel">
+                                <Border BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                                        BorderThickness="0,1,0,0"
+                                        Padding="0,12,0,0">
+                                  <Grid ColumnDefinitions="*,220,32"
+                                        ColumnSpacing="10"
+                                        VerticalAlignment="Center">
+                                    <StackPanel Grid.Column="0"
+                                                Spacing="4"
+                                                VerticalAlignment="Center">
+                                      <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="{Binding Key}"
+                                                   FontFamily="{DynamicResource TOrbitMonoFontFamily}"
+                                                   FontSize="12" />
+                                        <Border IsVisible="{Binding IsEncrypted}"
+                                                Background="{DynamicResource TOrbitBadgeInfoBackgroundBrush}"
+                                                CornerRadius="4"
+                                                Padding="5,1"
+                                                VerticalAlignment="Center">
+                                          <TextBlock Text="加密"
+                                                     FontSize="10"
+                                                     Foreground="{DynamicResource TOrbitBadgeInfoForegroundBrush}" />
+                                        </Border>
+                                      </StackPanel>
+                                      <TextBlock Text="{Binding Description}"
+                                                 Classes="caption-muted"
+                                                 MinHeight="0"
+                                                 IsVisible="{Binding IsFromMetadata}"
+                                                 TextWrapping="Wrap" />
                                     </StackPanel>
-                                    <TextBlock Text="{Binding Description}"
-                                               Classes="caption-muted"
-                                               IsVisible="{Binding IsFromMetadata}"
-                                               TextWrapping="Wrap" />
-                                  </StackPanel>
 
-                                  <TextBox Grid.Column="1"
-                                           Classes="form-control"
-                                           Text="{Binding Value, Mode=TwoWay}"
-                                           PasswordChar="{Binding PasswordChar}"
-                                           Height="30"
-                                           MinHeight="30"
-                                           VerticalAlignment="Center" />
+                                    <TextBox Grid.Column="1"
+                                             Classes="form-control"
+                                             Text="{Binding Value, Mode=TwoWay}"
+                                             PasswordChar="{Binding PasswordChar}"
+                                             Height="32"
+                                             MinHeight="32"
+                                             VerticalAlignment="Center" />
 
-                                  <Button Grid.Column="2"
-                                          Command="{Binding DeleteCommand}"
-                                          Classes="danger"
-                                          Width="30"
-                                          Height="30"
-                                          MinHeight="30"
-                                          Padding="0"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Center"
-                                          ToolTip.Tip="删除此变量"
-                                          Content="×"
-                                          FontSize="14" />
-                                </Grid>
-                              </Border>
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                      </StackPanel>
+                                    <Button Grid.Column="2"
+                                            Command="{Binding DeleteCommand}"
+                                            Classes="danger"
+                                            Width="32"
+                                            Height="32"
+                                            MinHeight="32"
+                                            Padding="0"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            ToolTip.Tip="删除此变量"
+                                            Content="×"
+                                            FontSize="14" />
+                                  </Grid>
+                                </Border>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+                        </StackPanel>
+                      </Border>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -333,10 +406,10 @@
                            IsVisible="{Binding !HasPluginVariables}"
                            Text="暂未配置任何插件变量，点击“新增变量”开始添加。" />
               </StackPanel>
-            </designer:SectionCard.Body>
-          </designer:SectionCard>
-        </StackPanel>
-      </ScrollViewer>
+            </ScrollViewer>
+          </Border>
+        </designer:SplitWorkspace.RightContent>
+      </designer:SplitWorkspace>
     </designer:ToolPageLayout.BodyContent>
   </designer:ToolPageLayout>
 </UserControl>

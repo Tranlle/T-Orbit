@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TOrbit.Plugin.Promptor.ViewModels"
              xmlns:designer="using:TOrbit.Designer.Controls"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:DataType="vm:PromptorViewModel"
              x:Class="TOrbit.Plugin.Promptor.Views.PromptorView">
 
   <UserControl.Styles>
-    <!-- ComboBox 紧凑模式，用于 ActionBar 内联控件 -->
     <Style Selector="ComboBox.inline-compact">
       <Setter Property="Height" Value="34" />
       <Setter Property="MinHeight" Value="34" />
@@ -15,112 +15,147 @@
       <Setter Property="VerticalAlignment" Value="Center" />
       <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
+    <Style Selector="Button.promptor-icon">
+      <Setter Property="Width" Value="34" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="MinWidth" Value="34" />
+      <Setter Property="MinHeight" Value="34" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
   </UserControl.Styles>
 
-  <!-- 无底部 Footer，只保留 Header + Body -->
   <designer:ToolPageLayout FooterHeight="0"
                            BodyFooterGapHeight="0">
-
-    <!-- ═══ 操作栏 ════════════════════════════════════════════════════ -->
     <designer:ToolPageLayout.HeaderContent>
-      <designer:ActionBar StatusText="{Binding StatusMessage}"
-                          IsBusy="{Binding IsBusy}">
-
-        <designer:ActionBar.LeadContent>
-          <!-- 策略选择器 -->
-          <StackPanel Orientation="Horizontal"
-                      Spacing="8"
-                      VerticalAlignment="Center">
-            <TextBlock Text="优化策略"
-                       FontSize="13"
-                       Foreground="{DynamicResource TOrbitTextSecondaryBrush}"
-                       VerticalAlignment="Center" />
-            <ComboBox Classes="inline-compact"
-                      MinWidth="110"
-                      ItemsSource="{Binding StrategyOptions}"
-                      SelectedItem="{Binding SelectedStrategyOption, Mode=TwoWay}"
-                      DisplayMemberBinding="{Binding Label}" />
-            <TextBlock Text="{Binding StrategyDescription}"
-                       FontSize="13"
-                       Foreground="{DynamicResource TOrbitTextMutedBrush}"
-                       VerticalAlignment="Center" />
+      <Border Classes="workspace-panel"
+              Padding="20,18">
+        <Grid ColumnDefinitions="2.2*,20,Auto"
+              ColumnSpacing="0">
+          <StackPanel Spacing="4">
+            <TextBlock Text="PROMPT LAB"
+                       Classes="eyebrow" />
+            <TextBlock Text="提示词优化工作台"
+                       FontSize="18"
+                       FontWeight="SemiBold" />
+            <TextBlock Text="{Binding StatusMessage}"
+                       Classes="caption-muted"
+                       MinHeight="0"
+                       TextWrapping="Wrap" />
           </StackPanel>
-        </designer:ActionBar.LeadContent>
 
-        <designer:ActionBar.ActionsContent>
-          <designer:ActionGroup>
-            <designer:ActionGroup.Body>
-              <StackPanel Orientation="Horizontal" Spacing="8">
-
-                <Button Content="清空全部"
-                        Command="{Binding ClearAllCommand}"
-                        IsEnabled="{Binding IsIdle}" />
-
-                <Button Content="查看日志"
-                        Command="{Binding ShowLogCommand}" />
-
-                <Button Content="{Binding CopyButtonText}"
-                        Command="{Binding CopyCommand}"
-                        IsEnabled="{Binding HasOptimizedOutput}" />
-
-                <Button Content="取消"
-                        Command="{Binding CancelCommand}"
-                        IsVisible="{Binding IsBusy}" />
-
-                <!-- 分隔线 -->
-                <Border Width="1"
-                        VerticalAlignment="Stretch"
-                        Margin="4,8"
-                        Background="{DynamicResource TOrbitBorderBrush}" />
-
-                <Button Classes="accent"
-                        Content="优化提示词"
-                        ToolTip.Tip="Ctrl+Enter"
-                        Command="{Binding OptimizeCommand}"
-                        IsEnabled="{Binding CanOptimize}" />
-
-              </StackPanel>
-            </designer:ActionGroup.Body>
-          </designer:ActionGroup>
-        </designer:ActionBar.ActionsContent>
-
-      </designer:ActionBar>
+          <Border Grid.Column="2"
+                  Padding="18,0,0,0"
+                  BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                  BorderThickness="1,0,0,0">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8"
+                        VerticalAlignment="Center">
+              <ComboBox Classes="inline-compact"
+                        MinWidth="120"
+                        ItemsSource="{Binding StrategyOptions}"
+                        SelectedItem="{Binding SelectedStrategyOption, Mode=TwoWay}"
+                        DisplayMemberBinding="{Binding Label}" />
+              <designer:StatusBadge Text="{Binding CopyButtonText}"
+                                    BadgeBackground="{DynamicResource TOrbitSurfaceHoverBrush}"
+                                    BadgeForeground="{DynamicResource TOrbitTextSecondaryBrush}"
+                                    IsVisible="{Binding HasOptimizedOutput}" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Border>
     </designer:ToolPageLayout.HeaderContent>
 
-    <!-- ═══ 主体工作区 ════════════════════════════════════════════════ -->
     <designer:ToolPageLayout.BodyContent>
-      <designer:SplitWorkspace LeftWidth="*"
-                               LeftMinWidth="300"
-                               RightMinWidth="300">
+      <Grid RowDefinitions="Auto,*"
+            RowSpacing="18">
+        <Border Classes="workspace-panel"
+                Padding="18,16">
+          <Grid ColumnDefinitions="*,Auto"
+                ColumnSpacing="16">
+            <StackPanel Spacing="4">
+              <TextBlock Text="策略说明"
+                         Classes="section-title" />
+              <TextBlock Text="{Binding StrategyDescription}"
+                         Classes="caption-muted"
+                         MinHeight="0"
+                         TextWrapping="Wrap" />
+            </StackPanel>
 
-        <!-- 左侧：原始提示词输入 -->
-        <designer:SplitWorkspace.LeftContent>
-          <designer:CardTextEditor
-            Title="原始提示词"
-            Text="{Binding RawInput, Mode=TwoWay}"
-            PlaceholderText="在此输入需要优化的提示词内容…"
-            AcceptsReturn="True"
-            AcceptsTab="True"
-            SubmitCommand="{Binding OptimizeCommand}" />
-        </designer:SplitWorkspace.LeftContent>
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        VerticalAlignment="Center">
+              <Button Classes="promptor-icon"
+                      ToolTip.Tip="清空全部"
+                      Command="{Binding ClearAllCommand}"
+                      IsEnabled="{Binding IsIdle}">
+                <materialIcons:MaterialIcon Kind="Broom"
+                                            Width="16"
+                                            Height="16" />
+              </Button>
+              <Button Classes="promptor-icon"
+                      ToolTip.Tip="查看日志"
+                      Command="{Binding ShowLogCommand}">
+                <materialIcons:MaterialIcon Kind="TextBoxSearchOutline"
+                                            Width="16"
+                                            Height="16" />
+              </Button>
+              <Button Classes="promptor-icon"
+                      ToolTip.Tip="{Binding CopyButtonText}"
+                      Command="{Binding CopyCommand}"
+                      IsEnabled="{Binding HasOptimizedOutput}">
+                <materialIcons:MaterialIcon Kind="ContentCopy"
+                                            Width="16"
+                                            Height="16" />
+              </Button>
+              <Button Classes="promptor-icon"
+                      ToolTip.Tip="取消"
+                      Command="{Binding CancelCommand}"
+                      IsVisible="{Binding IsBusy}">
+                <materialIcons:MaterialIcon Kind="CloseCircleOutline"
+                                            Width="16"
+                                            Height="16" />
+              </Button>
+              <Button Classes="accent"
+                      Content="优化提示词"
+                      ToolTip.Tip="Ctrl+Enter"
+                      Command="{Binding OptimizeCommand}"
+                      IsEnabled="{Binding CanOptimize}" />
+            </StackPanel>
+          </Grid>
+        </Border>
 
-        <!-- 右侧：优化结果输出 -->
-        <designer:SplitWorkspace.RightContent>
-          <designer:CardTextEditor
-            Title="优化结果"
-            Text="{Binding OptimizedOutput, Mode=TwoWay}"
-            PlaceholderText="优化结果将在此处流式显示…"
-            IsReadOnly="True">
-            <designer:CardTextEditor.ActionContent>
-              <Button Content="清空"
-                      Command="{Binding ClearOutputCommand}"
-                      IsEnabled="{Binding HasOptimizedOutput}" />
-            </designer:CardTextEditor.ActionContent>
-          </designer:CardTextEditor>
-        </designer:SplitWorkspace.RightContent>
+        <designer:SplitWorkspace Grid.Row="1"
+                                 LeftWidth="*"
+                                LeftMinWidth="300"
+                                RightMinWidth="300">
+          <designer:SplitWorkspace.LeftContent>
+            <designer:CardTextEditor
+              Title="原始提示词"
+              Description="输入待优化内容，支持多行文本和 Ctrl+Enter 快捷提交。"
+              Text="{Binding RawInput, Mode=TwoWay}"
+              PlaceholderText="在此输入需要优化的提示词内容…"
+              AcceptsReturn="True"
+              AcceptsTab="True"
+              SubmitCommand="{Binding OptimizeCommand}" />
+          </designer:SplitWorkspace.LeftContent>
 
-      </designer:SplitWorkspace>
+          <designer:SplitWorkspace.RightContent>
+            <designer:CardTextEditor
+              Title="优化结果"
+              Description="优化结果会流式输出到这里，可复制、清空或进入日志查看调用过程。"
+              Text="{Binding OptimizedOutput, Mode=TwoWay}"
+              PlaceholderText="优化结果将在此处流式显示…"
+              IsReadOnly="True">
+              <designer:CardTextEditor.ActionContent>
+                <Button Content="清空"
+                        Command="{Binding ClearOutputCommand}"
+                        IsEnabled="{Binding HasOptimizedOutput}" />
+              </designer:CardTextEditor.ActionContent>
+            </designer:CardTextEditor>
+          </designer:SplitWorkspace.RightContent>
+        </designer:SplitWorkspace>
+      </Grid>
     </designer:ToolPageLayout.BodyContent>
-
   </designer:ToolPageLayout>
 </UserControl>

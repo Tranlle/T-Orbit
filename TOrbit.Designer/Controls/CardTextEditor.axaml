@@ -23,10 +23,7 @@
   </UserControl.Styles>
 
   <Border x:Name="CardBorder"
-          Background="{DynamicResource TOrbitSurfaceElevatedBrush}"
-          BorderBrush="{DynamicResource TOrbitBorderBrush}"
-          BorderThickness="1"
-          CornerRadius="{DynamicResource TOrbitRadiusLarge}"
+          Classes="workspace-panel"
           ClipToBounds="True">
 
     <Grid RowDefinitions="Auto,Auto,*">
@@ -36,10 +33,12 @@
             ColumnDefinitions="*,Auto"
             ColumnSpacing="12"
             MinHeight="44"
-            Margin="16,0,14,0">
+            Margin="18,14,16,12">
 
-        <StackPanel Grid.Column="0" Spacing="1" VerticalAlignment="Center">
-          <TextBlock Classes="subsection-title"
+        <StackPanel Grid.Column="0" Spacing="3" VerticalAlignment="Center">
+          <TextBlock Classes="eyebrow"
+                     Text="Editor" />
+          <TextBlock Classes="section-title"
                      Text="{Binding Title, ElementName=Root}" />
           <TextBlock x:Name="DescriptionText"
                      Classes="caption-muted"
@@ -70,6 +69,7 @@
                CaretBrush="{DynamicResource TOrbitAccentBrush}"
                SelectionBrush="{DynamicResource TOrbitAccentSubtleBrush}"
                SelectionForegroundBrush="{DynamicResource TOrbitAccentSubtleForegroundBrush}"
+               FontFamily="{DynamicResource TOrbitMonoFontFamily}"
                ScrollViewer.VerticalScrollBarVisibility="Auto"
                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <TextBox.KeyBindings>

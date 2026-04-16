@@ -4,11 +4,12 @@
              x:Class="TOrbit.Designer.Controls.SectionHeader"
              x:DataType="controls:SectionHeader"
              x:Name="Root">
-  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
 
-    <!-- Left: title + description -->
-    <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-      <TextBlock Classes="section-title"
+    <StackPanel Grid.Column="0" Spacing="4" VerticalAlignment="Center">
+      <TextBlock Classes="eyebrow"
+                 Text="WORKSPACE" />
+      <TextBlock Classes="page-title"
                  Text="{Binding Title, ElementName=Root}" />
       <TextBlock Classes="caption-muted"
                  Text="{Binding Description, ElementName=Root}"
