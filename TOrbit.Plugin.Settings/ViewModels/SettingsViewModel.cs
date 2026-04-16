@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using TOrbit.Core.Models;
 using TOrbit.Core.Services;
@@ -174,6 +175,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                 CloseButtonBehavior = CloseButtonBehavior.MinimizeToTray
             });
 
+            PublishPluginValidationStates();
             StatusMessage = "设置已重置。";
         });
 
@@ -209,7 +211,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                 var hint = AddFormKeyHints.FirstOrDefault(item => string.Equals(item.Key, key, StringComparison.OrdinalIgnoreCase));
                 var hintData = hint?.Value as KeyHintData;
 
-                _pluginVariableItems.Add(new PluginVariableItemViewModel(
+                AddPluginVariableItem(new PluginVariableItemViewModel(
                     pluginId: pluginId,
                     pluginName: pluginName,
                     key: key,
@@ -221,6 +223,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                     onDelete: RemovePluginVariable));
 
                 SyncPluginVariableGroups();
+                PublishPluginValidationStates();
             }
 
             ShowAddVariableForm = false;
@@ -277,14 +280,33 @@ public sealed partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(HasAddFormKeyHints));
     }
 
+    private void AddPluginVariableItem(PluginVariableItemViewModel item)
+    {
+        item.PropertyChanged += PluginVariableItemChanged;
+        _pluginVariableItems.Add(item);
+    }
+
     private void RemovePluginVariable(PluginVariableItemViewModel item)
     {
+        item.PropertyChanged -= PluginVariableItemChanged;
         _pluginVariableItems.Remove(item);
         SyncPluginVariableGroups();
+        PublishPluginValidationStates();
+    }
+
+    private void PluginVariableItemChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(PluginVariableItemViewModel.Value))
+            return;
+
+        PublishPluginValidationStates();
     }
 
     private void LoadPluginVariables()
     {
+        foreach (var item in _pluginVariableItems)
+            item.PropertyChanged -= PluginVariableItemChanged;
+
         _pluginVariableItems.Clear();
         var store = _variableService.Load();
 
@@ -299,7 +321,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                 ? _variableService.GetValue(entry.PluginId, entry.Key) ?? entry.Value
                 : entry.Value;
 
-            _pluginVariableItems.Add(new PluginVariableItemViewModel(
+            AddPluginVariableItem(new PluginVariableItemViewModel(
                 pluginId: entry.PluginId,
                 pluginName: pluginName,
                 key: entry.Key,
@@ -326,7 +348,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                 if (!loadedKeys.Add((pluginEntry.Id, definition.Key.ToLowerInvariant())))
                     continue;
 
-                _pluginVariableItems.Add(new PluginVariableItemViewModel(
+                AddPluginVariableItem(new PluginVariableItemViewModel(
                     pluginId: pluginEntry.Id,
                     pluginName: pluginEntry.Name,
                     key: definition.Key,

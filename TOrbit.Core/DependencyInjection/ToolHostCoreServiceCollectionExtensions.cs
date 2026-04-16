@@ -13,6 +13,7 @@ public static class ToolHostCoreServiceCollectionExtensions
         // Core infrastructure services.
         services.AddSingleton<IAppDiagnosticsService, AppDiagnosticsService>();
         services.AddSingleton<IPluginValidationStatusService, PluginValidationStatusService>();
+        services.AddSingleton<IPluginExecutionGate, PluginExecutionGate>();
         services.AddSingleton<IStorageService, StorageService>();
         services.AddSingleton<IAppShellService, AppShellService>();
         services.AddSingleton<IAppPreferencesService, AppPreferencesService>();

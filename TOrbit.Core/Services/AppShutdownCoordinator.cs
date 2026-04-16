@@ -7,12 +7,17 @@ public sealed class AppShutdownCoordinator : IAppShutdownCoordinator
 {
     private readonly IPluginCatalogService _pluginCatalogService;
     private readonly IAppDiagnosticsService _diagnosticsService;
+    private readonly IPluginExecutionGate _executionGate;
     private int _hasShutdown;
 
-    public AppShutdownCoordinator(IPluginCatalogService pluginCatalogService, IAppDiagnosticsService diagnosticsService)
+    public AppShutdownCoordinator(
+        IPluginCatalogService pluginCatalogService,
+        IAppDiagnosticsService diagnosticsService,
+        IPluginExecutionGate executionGate)
     {
         _pluginCatalogService = pluginCatalogService;
         _diagnosticsService = diagnosticsService;
+        _executionGate = executionGate;
     }
 
     public async Task ShutdownAsync(CancellationToken cancellationToken = default)
@@ -23,9 +28,11 @@ public sealed class AppShutdownCoordinator : IAppShutdownCoordinator
         foreach (var entry in _pluginCatalogService.Plugins.Reverse().ToArray())
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            await StopPluginAsync(entry, cancellationToken);
-            await DisposePluginAsync(entry);
+            await _executionGate.ExecuteAsync(entry.Id, async () =>
+            {
+                await StopPluginAsync(entry, cancellationToken);
+                await DisposePluginAsync(entry);
+            }, cancellationToken);
         }
     }
 

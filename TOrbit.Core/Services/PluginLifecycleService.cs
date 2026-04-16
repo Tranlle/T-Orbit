@@ -8,10 +8,13 @@ namespace TOrbit.Core.Services;
 public sealed class PluginLifecycleService : IPluginLifecycleService
 {
     private readonly IPluginCatalogService _catalog;
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> _pluginGates = new(StringComparer.OrdinalIgnoreCase);
+    private readonly IPluginExecutionGate _executionGate;
 
-    public PluginLifecycleService(IPluginCatalogService catalog)
-        => _catalog = catalog;
+    public PluginLifecycleService(IPluginCatalogService catalog, IPluginExecutionGate executionGate)
+    {
+        _catalog = catalog;
+        _executionGate = executionGate;
+    }
 
     public async Task StopAsync(string pluginId, CancellationToken ct = default)
     {
@@ -50,24 +53,23 @@ public sealed class PluginLifecycleService : IPluginLifecycleService
         CancellationToken ct)
     {
         var entry = GetRequiredEntry(pluginId);
-        var gate = _pluginGates.GetOrAdd(pluginId, static _ => new SemaphoreSlim(1, 1));
-
-        await gate.WaitAsync(ct);
-        try
+        await _executionGate.ExecuteAsync(pluginId, async () =>
         {
-            await operation(entry);
-            entry.LastError = null;
-        }
-        catch (Exception ex)
-        {
-            entry.LastError = ex;
-            SetFaulted(entry);
-        }
-        finally
-        {
-            entry.NotifyStateChanged();
-            gate.Release();
-        }
+            try
+            {
+                await operation(entry);
+                entry.LastError = null;
+            }
+            catch (Exception ex)
+            {
+                entry.LastError = ex;
+                SetFaulted(entry);
+            }
+            finally
+            {
+                entry.NotifyStateChanged();
+            }
+        }, ct);
     }
 
     private static void SetFaulted(PluginEntry entry)

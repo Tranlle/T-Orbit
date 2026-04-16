@@ -15,7 +15,7 @@ public sealed class PluginLifecycleServiceTests
         var plugin = new ConcurrencyProbePlugin();
         catalog.Register(plugin);
 
-        var service = new PluginLifecycleService(catalog);
+        var service = new PluginLifecycleService(catalog, new PluginExecutionGate());
 
         await Task.WhenAll(
             service.StartAsync(plugin.Descriptor.Id),
