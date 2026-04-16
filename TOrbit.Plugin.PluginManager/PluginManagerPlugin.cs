@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Microsoft.Extensions.DependencyInjection;
 using TOrbit.Core.Services;
 using TOrbit.Designer.Abstractions;
 using TOrbit.Plugin.Core;
@@ -11,8 +10,13 @@ namespace TOrbit.Plugin.PluginManager;
 
 public sealed class PluginManagerPlugin : BasePlugin, IVisualPlugin
 {
+    private readonly IPluginCatalogService _pluginCatalog;
+
     private PluginManagerView? _view;
     private PluginManagerViewModel? _viewModel;
+
+    public PluginManagerPlugin(IPluginCatalogService pluginCatalog)
+        => _pluginCatalog = pluginCatalog;
 
     public override PluginDescriptor Descriptor { get; } = CreateDescriptor<PluginManagerPlugin>(PluginManagerPluginMetadata.Instance);
 
@@ -31,11 +35,7 @@ public sealed class PluginManagerPlugin : BasePlugin, IVisualPlugin
     private void EnsureView()
     {
         if (_viewModel is null)
-        {
-            var catalog = Context.Services?.GetRequiredService<IPluginCatalogService>()
-                ?? throw new InvalidOperationException("Plugin services are unavailable.");
-            _viewModel = new PluginManagerViewModel(catalog);
-        }
+            _viewModel = new PluginManagerViewModel(_pluginCatalog);
 
         _view ??= new PluginManagerView { DataContext = _viewModel };
     }

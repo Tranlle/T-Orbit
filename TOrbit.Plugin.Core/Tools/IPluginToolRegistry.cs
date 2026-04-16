@@ -7,7 +7,13 @@ namespace TOrbit.Plugin.Core.Tools;
 public interface IPluginToolRegistry
 {
     /// <summary>
-    /// 获取指定插件的工具实例。若工具类型不支持则返回 null。
+    /// 注册一种能力类型的工厂函数。应在应用启动、插件加载之前调用。
+    /// 隔离保证来自注册行为本身：只有显式注册的类型才能被插件获取。
     /// </summary>
-    T? GetTool<T>(string pluginId) where T : class, IPluginTool;
+    void RegisterFactory<T>(Func<string, T> factory) where T : class;
+
+    /// <summary>
+    /// 获取指定插件的能力实例。若类型未注册则返回 null。
+    /// </summary>
+    T? GetTool<T>(string pluginId) where T : class;
 }

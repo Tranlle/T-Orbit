@@ -12,20 +12,18 @@ namespace TOrbit.Core.Tools;
 /// </summary>
 public sealed class PluginToolRegistry : IPluginToolRegistry
 {
-    // 工厂：toolType → (pluginId → IPluginTool)
-    private readonly Dictionary<Type, Func<string, IPluginTool>> _factories = [];
+    // 工厂：type → (pluginId → object)
+    private readonly Dictionary<Type, Func<string, object>> _factories = [];
 
-    // 缓存：(pluginId, toolType) → IPluginTool
-    private readonly ConcurrentDictionary<(string, Type), IPluginTool> _cache = new();
+    // 缓存：(pluginId, type) → object
+    private readonly ConcurrentDictionary<(string, Type), object> _cache = new();
 
-    /// <summary>
-    /// 注册一种 Tool 类型的工厂函数（应在应用启动时调用）。
-    /// </summary>
-    public void RegisterFactory<T>(Func<string, T> factory) where T : class, IPluginTool
+    /// <inheritdoc/>
+    public void RegisterFactory<T>(Func<string, T> factory) where T : class
         => _factories[typeof(T)] = pluginId => factory(pluginId);
 
     /// <inheritdoc/>
-    public T? GetTool<T>(string pluginId) where T : class, IPluginTool
+    public T? GetTool<T>(string pluginId) where T : class
     {
         if (!_factories.TryGetValue(typeof(T), out var factory))
             return null;

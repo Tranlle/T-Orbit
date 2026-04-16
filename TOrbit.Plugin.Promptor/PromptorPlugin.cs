@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Microsoft.Extensions.DependencyInjection;
 using TOrbit.Designer.Abstractions;
 using TOrbit.Designer.Services;
 using TOrbit.Plugin.Core;
@@ -63,7 +62,7 @@ public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableR
     {
         if (_viewModel is null)
         {
-            var dialogService = Context.Services?.GetService<IDesignerDialogService>();
+            var dialogService = Context.GetTool<IDesignerDialogService>();
             _viewModel = new PromptorViewModel(dialogService, _resolvedVariables);
         }
 

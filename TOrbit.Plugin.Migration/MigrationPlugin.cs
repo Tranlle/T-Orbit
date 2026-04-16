@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Microsoft.Extensions.DependencyInjection;
 using TOrbit.Designer.Abstractions;
 using TOrbit.Designer.Services;
 using TOrbit.Plugin.Core;
@@ -32,7 +31,7 @@ public sealed class MigrationPlugin : BasePlugin, IVisualPlugin
     {
         if (_viewModel is null)
         {
-            var dialogService = Context.Services?.GetService<IDesignerDialogService>();
+            var dialogService = Context.GetTool<IDesignerDialogService>();
             _viewModel = new MigrationViewModel(dialogService);
         }
 

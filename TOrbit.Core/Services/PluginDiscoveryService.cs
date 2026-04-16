@@ -9,17 +9,17 @@ namespace TOrbit.Core.Services;
 public sealed class PluginDiscoveryService : IPluginDiscoveryService
 {
     private readonly IPluginCatalogService _catalog;
-    private readonly IServiceProvider _services;
+    private readonly IPluginToolRegistry _toolRegistry;
     private readonly IPluginVariableService _variableService;
     private readonly HostEnvironmentInfo _hostEnvironment;
 
     public PluginDiscoveryService(
         IPluginCatalogService catalog,
-        IServiceProvider services,
+        IPluginToolRegistry toolRegistry,
         IPluginVariableService variableService)
     {
-        _catalog        = catalog;
-        _services       = services;
+        _catalog         = catalog;
+        _toolRegistry    = toolRegistry;
         _variableService = variableService;
         _hostEnvironment = new HostEnvironmentInfo(
             ToolHostConstants.HostName,
@@ -116,7 +116,7 @@ public sealed class PluginDiscoveryService : IPluginDiscoveryService
             var context = new PluginContext(
                 plugin.Descriptor.Id,
                 pluginDirectory,
-                _services,
+                _toolRegistry,
                 _hostEnvironment,
                 PluginIsolationMode.AssemblyLoadContext,
                 new Dictionary<string, object?>());

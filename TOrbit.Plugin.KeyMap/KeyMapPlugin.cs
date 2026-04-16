@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Microsoft.Extensions.DependencyInjection;
 using TOrbit.Core.Services;
 using TOrbit.Designer.Abstractions;
 using TOrbit.Plugin.Core;
@@ -12,9 +11,14 @@ namespace TOrbit.Plugin.KeyMap;
 
 public sealed class KeyMapPlugin : BasePlugin, IVisualPlugin, IPluginHeaderActionsProvider
 {
+    private readonly IKeyMapService _keyMapService;
+
     private KeyMapView? _view;
     private KeyMapViewModel? _viewModel;
     private IReadOnlyList<PluginHeaderAction>? _headerActions;
+
+    public KeyMapPlugin(IKeyMapService keyMapService)
+        => _keyMapService = keyMapService;
 
     public override PluginDescriptor Descriptor { get; } =
         CreateDescriptor<KeyMapPlugin>(KeyMapPluginMetadata.Instance);
@@ -36,10 +40,7 @@ public sealed class KeyMapPlugin : BasePlugin, IVisualPlugin, IPluginHeaderActio
         if (_viewModel is not null)
             return;
 
-        var services = Context.Services ?? throw new InvalidOperationException("Plugin services are unavailable.");
-        var keyMapService = services.GetRequiredService<IKeyMapService>();
-
-        _viewModel = new KeyMapViewModel(keyMapService);
+        _viewModel = new KeyMapViewModel(_keyMapService);
         _headerActions =
         [
             new PluginHeaderAction("重置全部", _viewModel.ResetAllCommand),
