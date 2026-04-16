@@ -33,6 +33,9 @@ T-Orbit 不是单一业务应用，而是一个可扩展的桌面工具宿主：
 - [快速开始](#快速开始)
 - [项目结构](#项目结构)
 - [架构摘要](#架构摘要)
+- [架构图](#架构图)
+- [Screenshots / UI Preview](#screenshots--ui-preview)
+- [Roadmap / TODO](#roadmap--todo)
 - [开发插件](#开发插件)
 - [测试](#测试)
 - [文档](#文档)
@@ -157,6 +160,74 @@ T-Orbit/
   - 应用偏好
   - 快捷键绑定
   - 插件变量
+
+## 架构图
+
+```mermaid
+flowchart LR
+    A[TOrbit.App\n桌面宿主入口] --> B[TOrbit.Core\n插件 / 生命周期 / 存储 / 诊断]
+    A --> C[TOrbit.Designer\n设计系统 / 主题 / 工作台控件]
+    B --> D[TOrbit.Plugin.Core\n插件契约 / 基类 / 元数据]
+    D --> E[TOrbit.Plugin.Settings]
+    D --> F[TOrbit.Plugin.Monitor]
+    D --> G[TOrbit.Plugin.KeyMap]
+    D --> H[TOrbit.Plugin.Migration]
+    D --> I[TOrbit.Plugin.Promptor]
+
+    J[AppStartupCoordinator] --> K[Built-in Registration]
+    J --> L[External Plugin Discovery]
+    J --> M[Plugin Variable Injection]
+    J --> N[KeyMap Load]
+
+    O[AppShutdownCoordinator] --> P[PluginExecutionGate]
+    P --> Q[Serialized Stop / Dispose]
+```
+
+## Screenshots / UI Preview
+
+当前仓库尚未内置正式截图资源，下面列出当前 UI 预览重点，便于快速理解页面结构：
+
+| 页面 | 当前风格 |
+| --- | --- |
+| Main Host | 顶部品牌栏 + 左侧模块导航 + 右侧工作区内容区 |
+| Monitor | 运维控制台布局，左侧插件清单，右侧状态与诊断 |
+| Settings | 左右工作区布局，左侧宿主设置，右侧插件变量管理 |
+| KeyMap | 左侧目录检索，右侧绑定编辑器 |
+| Migration | 左侧连接配置，右侧迁移操作与文件查看弹窗 |
+| Promptor | 顶部策略控制区 + 左右双编辑工作区 |
+
+后续建议补充：
+
+- 主窗口整体截图
+- `Monitor` 页面截图
+- `Settings` 页面截图
+- `Migration` 与迁移文件弹窗截图
+
+## Roadmap / TODO
+
+### Product
+
+- 补充正式 UI 截图与 README 首页视觉素材
+- 继续完善外部插件示例与插件模板
+- 为监控页增加更细粒度的诊断筛选与清理能力
+
+### Architecture
+
+- 收窄导航与页面失效范围，减少不必要的整页重建
+- 继续抽离只读状态模型，减少 ViewModel 内散落推导
+- 为启动阶段补充更明确的预热反馈与阶段状态
+
+### Plugin Experience
+
+- 完善插件变量校验器与更贴近业务的插件页提示
+- 强化插件发现失败与兼容性错误的用户可见提示
+- 统一插件页面头部动作、状态徽标和空状态表达
+
+### Engineering
+
+- 解决运行中宿主锁定插件产物导致的开发期增量构建问题
+- 为外部插件发现、manifest 拷贝和程序集命名补更多回归测试
+- 继续扩展 `TOrbit.Core.Tests` 覆盖启动、关闭和插件加载链路
 
 ## 开发插件
 
