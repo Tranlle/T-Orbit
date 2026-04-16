@@ -15,6 +15,7 @@ public sealed class KeyMapService : IKeyMapService
     public KeyMapService(IStorageService storage) => _storage = storage;
 
     public IReadOnlyList<KeyMapEntry> Entries => _entries;
+    public event EventHandler? Changed;
 
     public void Register(
         string id,
@@ -43,6 +44,7 @@ public sealed class KeyMapService : IKeyMapService
         });
 
         RebuildIndex();
+        NotifyChanged();
     }
 
     public bool Dispatch(string keyString)
@@ -71,6 +73,7 @@ public sealed class KeyMapService : IKeyMapService
         }
 
         RebuildIndex();
+        NotifyChanged();
     }
 
     public void Save()
@@ -83,6 +86,7 @@ public sealed class KeyMapService : IKeyMapService
         }));
 
         RebuildIndex();
+        NotifyChanged();
     }
 
     public void Reset(string? id = null)
@@ -106,6 +110,7 @@ public sealed class KeyMapService : IKeyMapService
         }
 
         RebuildIndex();
+        NotifyChanged();
     }
 
     private void RebuildIndex()
@@ -120,4 +125,6 @@ public sealed class KeyMapService : IKeyMapService
             _dispatchIndex.TryAdd(entry.EffectiveKey, entry);
         }
     }
+
+    private void NotifyChanged() => Changed?.Invoke(this, EventArgs.Empty);
 }

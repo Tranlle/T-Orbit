@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TOrbit.Plugin.Settings.ViewModels"
-             xmlns:designer="using:TOrbit.Designer.Controls"
              xmlns:models="using:TOrbit.Designer.Models"
+             xmlns:designer="using:TOrbit.Designer.Controls"
              x:Class="TOrbit.Plugin.Settings.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
   <designer:ToolPageLayout HeaderBodyGapHeight="0"
@@ -12,10 +12,8 @@
       <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                     VerticalScrollBarVisibility="Auto">
         <StackPanel Spacing="16">
-
-          <!-- ═══ 主题设置 ═══════════════════════════════════════════ -->
           <designer:SectionCard Title="主题设置"
-                                Description="管理配色方案与全局字体。">
+                                Description="管理配色、字体和窗口关闭行为。">
             <designer:SectionCard.Body>
               <Grid ColumnDefinitions="*,20,*"
                     RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
@@ -29,7 +27,7 @@
                 </designer:FormField>
 
                 <designer:FormField Grid.Row="1" Grid.ColumnSpan="3"
-                                    Label="内置配色方案"
+                                    Label="内置配色"
                                     Description="{Binding SelectedPaletteOption.Description, TargetNullValue=''}">
                   <designer:FormField.Body>
                     <ComboBox Classes="form-control"
@@ -66,7 +64,7 @@
 
                 <designer:FormField Grid.Row="4" Grid.ColumnSpan="3"
                                     Label="关闭按钮行为"
-                                    Description="关闭主窗口时最小化到系统托盘，或直接退出应用。">
+                                    Description="关闭主窗口时最小化到托盘，或直接退出应用。">
                   <designer:FormField.Body>
                     <ToggleSwitch IsChecked="{Binding MinimizeToTrayOnClose, Mode=TwoWay}"
                                   OnContent="最小化到托盘"
@@ -74,22 +72,22 @@
                   </designer:FormField.Body>
                 </designer:FormField>
 
-                <CheckBox Grid.Row="5" Grid.ColumnSpan="3"
+                <CheckBox Grid.Row="5"
+                          Grid.ColumnSpan="3"
                           Content="迁移默认启用 Workspace 模式"
                           IsChecked="{Binding UseWorkspaceForMigrations, Mode=TwoWay}" />
               </Grid>
             </designer:SectionCard.Body>
           </designer:SectionCard>
 
-          <!-- ═══ 高级主题 ══════════════════════════════════════════ -->
           <designer:SectionCard Title="高级主题"
-                                Description="自定义 palette 扩展入口。">
+                                Description="管理扩展配色和自定义主题目录。">
             <designer:SectionCard.Body>
               <StackPanel Spacing="14">
                 <CheckBox Content="显示高级主题设置"
                           IsChecked="{Binding ShowAdvancedThemeSettings, Mode=TwoWay}" />
                 <StackPanel Spacing="14" IsVisible="{Binding ShowAdvancedThemeSettings}">
-                  <designer:FormField Label="高级主题方案"
+                  <designer:FormField Label="扩展配色"
                                       Description="{Binding SelectedAdvancedPaletteOption.Description, TargetNullValue=''}">
                     <designer:FormField.Body>
                       <ComboBox Classes="form-control"
@@ -98,7 +96,8 @@
                                 DisplayMemberBinding="{Binding Label}" />
                     </designer:FormField.Body>
                   </designer:FormField>
-                  <designer:FormField Label="自定义主题目录">
+
+                  <designer:FormField Label="主题目录">
                     <designer:FormField.Body>
                       <TextBox Classes="form-control"
                                Text="{Binding CustomThemeDirectory, Mode=TwoWay}" />
@@ -109,7 +108,6 @@
             </designer:SectionCard.Body>
           </designer:SectionCard>
 
-          <!-- ═══ 工作区 ════════════════════════════════════════════ -->
           <designer:SectionCard Title="工作区"
                                 Description="配置当前工具宿主的工作区路径。">
             <designer:SectionCard.Body>
@@ -122,13 +120,10 @@
             </designer:SectionCard.Body>
           </designer:SectionCard>
 
-          <!-- ═══ 插件变量管理 ════════════════════════════════════ -->
           <designer:SectionCard Title="插件变量管理"
-                                Description="集中配置各插件所需的环境变量，加密字段由各插件自行处理。">
+                                Description="集中管理插件所需变量；保存前会按元数据规则做校验。">
             <designer:SectionCard.Body>
               <StackPanel Spacing="12">
-
-                <!-- Toolbar -->
                 <Grid ColumnDefinitions="*,Auto">
                   <TextBlock Grid.Column="0"
                              Classes="caption-muted"
@@ -138,10 +133,9 @@
                           Command="{Binding ShowAddVariableFormCommand}"
                           IsVisible="{Binding !ShowAddVariableForm}"
                           Classes="accent"
-                          Content="新建变量" />
+                          Content="新增变量" />
                 </Grid>
 
-                <!-- Add variable panel -->
                 <Border IsVisible="{Binding ShowAddVariableForm}"
                         Background="{DynamicResource TOrbitSurfaceHoverBrush}"
                         BorderBrush="{DynamicResource TOrbitAccentBrush}"
@@ -149,7 +143,7 @@
                         CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                         Padding="16">
                   <StackPanel Spacing="12">
-                    <TextBlock Classes="subsection-title" Text="新建插件变量" />
+                    <TextBlock Classes="subsection-title" Text="新增插件变量" />
 
                     <Grid ColumnDefinitions="*,16,*" RowSpacing="10">
                       <designer:FormField Grid.Column="0" Label="所属插件">
@@ -160,6 +154,7 @@
                                     DisplayMemberBinding="{Binding Label}" />
                         </designer:FormField.Body>
                       </designer:FormField>
+
                       <designer:FormField Grid.Column="2" Label="变量键">
                         <designer:FormField.Body>
                           <TextBox Classes="form-control"
@@ -169,10 +164,9 @@
                       </designer:FormField>
                     </Grid>
 
-                    <!-- Key hints -->
                     <StackPanel Spacing="6" IsVisible="{Binding HasAddFormKeyHints}">
                       <TextBlock Classes="caption-muted"
-                                 Text="插件已声明的变量键（点击快速填入）：" />
+                                 Text="插件已声明的变量键（点击可快速填充）：" />
                       <ItemsControl ItemsSource="{Binding AddFormKeyHints}">
                         <ItemsControl.ItemsPanel>
                           <ItemsPanelTemplate>
@@ -183,8 +177,11 @@
                           <DataTemplate x:DataType="models:DesignerOptionItem">
                             <Button Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).FillKeyFromHintCommand}"
                                     CommandParameter="{Binding}"
-                                    Height="26" MinHeight="26" Padding="10,0"
-                                    Margin="0,0,6,6" FontSize="11"
+                                    Height="26"
+                                    MinHeight="26"
+                                    Padding="10,0"
+                                    Margin="0,0,6,6"
+                                    FontSize="11"
                                     ToolTip.Tip="{Binding Description}">
                               <TextBlock Text="{Binding Label}" FontSize="11" />
                             </Button>
@@ -197,7 +194,7 @@
                       <designer:FormField.Body>
                         <TextBox Classes="form-control"
                                  Text="{Binding AddFormValue, Mode=TwoWay}"
-                                 PlaceholderText="输入该变量的值" />
+                                 PlaceholderText="输入变量值" />
                       </designer:FormField.Body>
                     </designer:FormField>
 
@@ -210,41 +207,68 @@
                   </StackPanel>
                 </Border>
 
-                <!-- Grouped variable list -->
                 <ItemsControl ItemsSource="{Binding PluginVariableGroups}"
                               IsVisible="{Binding HasPluginVariables}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:PluginVariableGroupViewModel">
                       <StackPanel Margin="0,4,0,14">
-
-                        <!-- Group heading -->
-                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-                          <TextBlock Text="{Binding PluginName}"
-                                     Classes="subsection-title"
-                                     VerticalAlignment="Center" />
-                          <Border Background="{DynamicResource TOrbitSurfaceElevatedBrush}"
-                                  BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                                  BorderThickness="1"
-                                  CornerRadius="999"
-                                  Padding="7,2">
-                            <TextBlock Text="{Binding Count}"
-                                       FontSize="11"
-                                       Foreground="{DynamicResource TOrbitTextMutedBrush}"
+                        <StackPanel Spacing="6" Margin="0,0,0,8">
+                          <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="{Binding PluginName}"
+                                       Classes="subsection-title"
                                        VerticalAlignment="Center" />
-                          </Border>
+                            <Border Background="{DynamicResource TOrbitSurfaceElevatedBrush}"
+                                    BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="999"
+                                    Padding="7,2">
+                              <TextBlock Text="{Binding Count}"
+                                         FontSize="11"
+                                         Foreground="{DynamicResource TOrbitTextMutedBrush}"
+                                         VerticalAlignment="Center" />
+                            </Border>
+                          </StackPanel>
+
+                          <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="Capabilities:"
+                                       Classes="caption-muted"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding CapabilitySummary}"
+                                       Classes="caption-muted"
+                                       VerticalAlignment="Center" />
+                          </StackPanel>
+
+                          <ItemsControl ItemsSource="{Binding CapabilityTags}">
+                            <ItemsControl.ItemsPanel>
+                              <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                              </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate>
+                                <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                                        BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="999"
+                                        Padding="8,3"
+                                        Margin="0,0,6,0">
+                                  <TextBlock Text="{Binding .}"
+                                             FontSize="11"
+                                             Foreground="{DynamicResource TOrbitTextMutedBrush}" />
+                                </Border>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
                         </StackPanel>
 
-                        <!-- Table header -->
                         <Grid ColumnDefinitions="*,180,32"
                               ColumnSpacing="8"
                               Margin="4,0,4,4">
                           <TextBlock Grid.Column="0" Classes="field-label" Text="变量键" />
                           <TextBlock Grid.Column="1" Classes="field-label" Text="当前值" />
                         </Grid>
-                        <Border BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                                BorderThickness="0,1,0,0" />
+                        <Border BorderBrush="{DynamicResource TOrbitBorderBrush}" BorderThickness="0,1,0,0" />
 
-                        <!-- Variable rows -->
                         <ItemsControl ItemsSource="{Binding Variables}">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:PluginVariableItemViewModel">
@@ -254,8 +278,6 @@
                                 <Grid ColumnDefinitions="*,180,32"
                                       ColumnSpacing="8"
                                       VerticalAlignment="Center">
-
-                                  <!-- Key + encrypted badge + description -->
                                   <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                       <TextBlock Text="{Binding Key}"
@@ -277,7 +299,6 @@
                                                TextWrapping="Wrap" />
                                   </StackPanel>
 
-                                  <!-- Editable value -->
                                   <TextBox Grid.Column="1"
                                            Classes="form-control"
                                            Text="{Binding Value, Mode=TwoWay}"
@@ -286,12 +307,13 @@
                                            MinHeight="30"
                                            VerticalAlignment="Center" />
 
-                                  <!-- Delete button -->
                                   <Button Grid.Column="2"
                                           Command="{Binding DeleteCommand}"
                                           Classes="danger"
-                                          Width="30" Height="30"
-                                          MinHeight="30" Padding="0"
+                                          Width="30"
+                                          Height="30"
+                                          MinHeight="30"
+                                          Padding="0"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Center"
                                           ToolTip.Tip="删除此变量"
@@ -302,21 +324,17 @@
                             </DataTemplate>
                           </ItemsControl.ItemTemplate>
                         </ItemsControl>
-
                       </StackPanel>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <!-- Empty state -->
                 <TextBlock Classes="caption-muted"
                            IsVisible="{Binding !HasPluginVariables}"
-                           Text="暂无已配置的插件变量，点击「新建变量」添加第一条。" />
-
+                           Text="暂未配置任何插件变量，点击“新增变量”开始添加。" />
               </StackPanel>
             </designer:SectionCard.Body>
           </designer:SectionCard>
-
         </StackPanel>
       </ScrollViewer>
     </designer:ToolPageLayout.BodyContent>

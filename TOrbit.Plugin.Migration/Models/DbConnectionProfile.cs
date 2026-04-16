@@ -60,7 +60,7 @@ public sealed partial class DbConnectionProfile : PluginBaseViewModel
         _ => DbType.ToString()
     };
     public bool IsReady => !string.IsNullOrWhiteSpace(ConnectionString) && !string.IsNullOrWhiteSpace(ContextName);
-    public string ReadyStatusText => IsReady ? "Ready" : "UnReady";
+    public string ReadyStatusText => IsReady ? "Ready" : "Needs Config";
     public IBrush ReadyBadgeBackground => new SolidColorBrush(Color.Parse(IsReady ? "#203227" : "#41242B"));
     public IBrush ReadyBadgeForeground => new SolidColorBrush(Color.Parse("#FFFFFF"));
 

@@ -5,7 +5,7 @@ using TOrbit.Core.Services;
 
 namespace TOrbit.Plugin.KeyMap.ViewModels;
 
-public sealed partial class KeyMapViewModel : ObservableObject
+public sealed partial class KeyMapViewModel : ObservableObject, IDisposable
 {
     private readonly IKeyMapService _keyMapService;
     private List<KeyMapBindingViewModel> _allBindings = [];
@@ -25,11 +25,17 @@ public sealed partial class KeyMapViewModel : ObservableObject
     public KeyMapViewModel(IKeyMapService keyMapService)
     {
         _keyMapService = keyMapService;
+        _keyMapService.Changed += KeyMapServiceChanged;
 
         SaveCommand = new RelayCommand(DoSave);
         ResetAllCommand = new RelayCommand(DoResetAll);
         SelectBindingCommand = new RelayCommand<KeyMapBindingViewModel>(b => SelectedBinding = b);
 
+        RebuildBindings();
+    }
+
+    private void KeyMapServiceChanged(object? sender, EventArgs e)
+    {
         RebuildBindings();
     }
 
@@ -88,5 +94,10 @@ public sealed partial class KeyMapViewModel : ObservableObject
             binding.CurrentKeyDisplay = binding.DefaultKey;
             binding.IsEnabled = true;
         }
+    }
+
+    public void Dispose()
+    {
+        _keyMapService.Changed -= KeyMapServiceChanged;
     }
 }

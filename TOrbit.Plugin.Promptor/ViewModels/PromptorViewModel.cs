@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -22,8 +21,8 @@ namespace TOrbit.Plugin.Promptor.ViewModels;
 public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 {
     private readonly IDesignerDialogService? _dialogService;
-    private IReadOnlyDictionary<string, string> _variables;
     private readonly PromptOptimizationService _service = new();
+    private PromptorVariables _variables;
     private CancellationTokenSource? _cts;
     private CancellationTokenSource? _copyCts;
 
@@ -79,7 +78,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
             Key = "Concise",
             Label = "精简版",
             Value = OptimizationStrategy.Concise,
-            Description = "去冗余，保留核心表达"
+            Description = "去除冗余，保留核心表达"
         },
         new DesignerOptionItem
         {
@@ -105,9 +104,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     public IRelayCommand ShowLogCommand { get; }
     public IRelayCommand ClearLogCommand { get; }
 
-    public PromptorViewModel(
-        IDesignerDialogService? dialogService,
-        IReadOnlyDictionary<string, string> variables)
+    public PromptorViewModel(IDesignerDialogService? dialogService, PromptorVariables variables)
     {
         _dialogService = dialogService;
         _variables = variables;
@@ -130,6 +127,11 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     partial void OnIsBusyChanged(bool value) => RaiseDerivedProperties();
     partial void OnIsCopiedChanged(bool value) => OnPropertyChanged(nameof(CopyButtonText));
     partial void OnSelectedStrategyOptionChanged(DesignerOptionItem? value) => RaiseDerivedProperties();
+
+    public void UpdateVariables(PromptorVariables variables)
+    {
+        _variables = variables;
+    }
 
     private void RaiseDerivedProperties()
     {
@@ -222,6 +224,27 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         }
     }
 
+    private PromptorConfig ReadConfig()
+    {
+        var provider = string.IsNullOrWhiteSpace(_variables.Provider) ? "openai" : _variables.Provider.Trim();
+        var endpoint = _variables.ApiEndpoint?.Trim() ?? string.Empty;
+        var apiKey = _variables.ApiKey?.Trim() ?? string.Empty;
+        var model = string.IsNullOrWhiteSpace(_variables.ModelName) ? "gpt-4o" : _variables.ModelName.Trim();
+        var maxTokens = _variables.MaxTokens > 0 ? _variables.MaxTokens : 2048;
+        var temperature = double.IsFinite(_variables.Temperature) ? _variables.Temperature : 1.0;
+
+        var isOllama = string.Equals(provider, "ollama", StringComparison.OrdinalIgnoreCase);
+        var hasEndpoint = !string.IsNullOrWhiteSpace(endpoint);
+
+        if (!isOllama && !hasEndpoint && string.IsNullOrWhiteSpace(apiKey))
+        {
+            throw new InvalidOperationException(
+                "尚未配置 API Key。\n请先在“设置 -> 插件变量管理”中补充 PROMPTOR_API_KEY。");
+        }
+
+        return new PromptorConfig(provider, endpoint, apiKey, model, maxTokens, temperature);
+    }
+
     private async Task ShowLogDialogAsync()
     {
         if (_dialogService is null || TryGetOwnerWindow() is not { } owner)
@@ -290,42 +313,6 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     {
         LogEntries.Clear();
     }
-
-    private PromptorConfig ReadConfig()
-    {
-        var provider = GetVar("PROMPTOR_PROVIDER", "openai");
-        var endpoint = GetVar("PROMPTOR_API_ENDPOINT", "");
-        var apiKey = GetVar("PROMPTOR_API_KEY", "");
-        var model = GetVar("PROMPTOR_MODEL_NAME", "gpt-4o");
-        var maxTokensRaw = GetVar("PROMPTOR_MAX_TOKENS", "2048");
-        var tempRaw = GetVar("PROMPTOR_TEMPERATURE", "1.0");
-
-        if (!int.TryParse(maxTokensRaw, out var maxTokens) || maxTokens <= 0)
-            maxTokens = 2048;
-
-        if (!double.TryParse(tempRaw, CultureInfo.InvariantCulture, out var temperature))
-            temperature = 1.0;
-
-        var isOllama = string.Equals(provider, "ollama", StringComparison.OrdinalIgnoreCase);
-        var hasEndpoint = !string.IsNullOrWhiteSpace(endpoint);
-
-        if (!isOllama && !hasEndpoint && string.IsNullOrWhiteSpace(apiKey))
-        {
-            throw new InvalidOperationException(
-                "尚未配置 API 密钥。\n请在“设置 -> 插件变量管理”中添加 PROMPTOR_API_KEY 变量。");
-        }
-
-        return new PromptorConfig(provider, endpoint, apiKey, model, maxTokens, temperature);
-    }
-
-    // Called after the host reinjects plugin variables, for example after saving settings.
-    public void UpdateVariables(IReadOnlyDictionary<string, string> values)
-    {
-        _variables = values;
-    }
-
-    private string GetVar(string key, string defaultValue)
-        => _variables.TryGetValue(key, out var value) && !string.IsNullOrEmpty(value) ? value : defaultValue;
 
     private async Task ShowAlertAsync(string title, string message)
     {

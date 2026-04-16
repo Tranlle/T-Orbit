@@ -9,6 +9,7 @@ public abstract class BasePlugin : IPlugin, IPluginViewProvider
     private PluginContext? _context;
 
     public PluginContext Context => _context ?? throw new InvalidOperationException("Plugin has not been initialized.");
+    public bool IsInitialized => _context is not null;
 
     public abstract PluginDescriptor Descriptor { get; }
 
@@ -38,7 +39,8 @@ public abstract class BasePlugin : IPlugin, IPluginViewProvider
             loadMode,
             isolationMode,
             metadata.VariableDefinitions.Count > 0 ? metadata.VariableDefinitions : null,
-            metadata.Kind);
+            metadata.Kind,
+            metadata.Capabilities.Count > 0 ? metadata.Capabilities : null);
     }
 
     public virtual async ValueTask InitializeAsync(PluginContext context, CancellationToken cancellationToken = default)

@@ -46,4 +46,6 @@ public abstract class PluginBaseMetadata
     public virtual IReadOnlyList<PluginVariableDefinition> VariableDefinitions => [];
 
     public virtual PluginKind Kind => PluginKind.Visual;
+
+    public virtual IReadOnlyList<PluginCapability> Capabilities => [];
 }

@@ -16,4 +16,8 @@
     <ProjectReference Include="..\TOrbit.Core\TOrbit.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="plugin.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

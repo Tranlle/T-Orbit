@@ -51,6 +51,7 @@ public sealed class KeyMapPlugin : BasePlugin, IVisualPlugin, IPluginHeaderActio
 
     protected override ValueTask OnDisposeAsync()
     {
+        _viewModel?.Dispose();
         _view = null;
         _viewModel = null;
         _headerActions = null;

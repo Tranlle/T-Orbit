@@ -9,4 +9,8 @@ public sealed record PluginVariableDefinition(
     string DefaultValue,
     string DisplayName = "",
     string Description = "",
-    bool IsEncrypted = false);
+    bool IsEncrypted = false,
+    bool IsRequired = false,
+    IReadOnlyList<string>? AllowedValues = null,
+    string? ValidationPattern = null,
+    string? ValidationMessage = null);

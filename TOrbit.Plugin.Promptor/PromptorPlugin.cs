@@ -4,7 +4,9 @@ using TOrbit.Designer.Services;
 using TOrbit.Plugin.Core;
 using TOrbit.Plugin.Core.Abstractions;
 using TOrbit.Plugin.Core.Base;
+using TOrbit.Plugin.Core.Models;
 using TOrbit.Plugin.Core.Tools;
+using TOrbit.Plugin.Promptor.Models;
 using TOrbit.Plugin.Promptor.ViewModels;
 using TOrbit.Plugin.Promptor.Views;
 
@@ -12,45 +14,33 @@ namespace TOrbit.Plugin.Promptor;
 
 public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableReceiver
 {
-    private PromptorView?      _view;
+    private PromptorView? _view;
     private PromptorViewModel? _viewModel;
-
-    // 最后一次注入后的解密明文变量（在视图创建前暂存）
-    private IReadOnlyDictionary<string, string> _resolvedVariables =
-        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    private PromptorVariables _variables = new();
 
     public override PluginDescriptor Descriptor { get; } =
         CreateDescriptor<PromptorPlugin>(PromptorPluginMetadata.Instance);
 
-    // ── IPluginVariableReceiver ───────────────────────────────────────────────
-    //
-    //  基座调用此方法传入原始存储值（加密字段为密文）。
-    //  插件通过 Context.GetTool<IPluginEncryptionTool>() 获取基座加密 Tool 自行解密。
-
     public void OnVariablesInjected(IReadOnlyDictionary<string, string> rawValues)
     {
-        var tool      = Context.GetTool<IPluginEncryptionTool>();
-        var resolved  = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var defs      = Descriptor.VariableDefinitions ?? [];
+        var tool = Context.GetTool<IPluginEncryptionTool>();
+        var resolved = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var definitions = Descriptor.VariableDefinitions ?? [];
 
-        foreach (var def in defs)
+        foreach (var definition in definitions)
         {
-            rawValues.TryGetValue(def.Key, out var raw);
+            rawValues.TryGetValue(definition.Key, out var rawValue);
 
-            string value;
-            if (def.IsEncrypted && !string.IsNullOrEmpty(raw) && tool is not null)
-                value = tool.TryDecrypt(raw) ?? def.DefaultValue;
-            else
-                value = string.IsNullOrEmpty(raw) ? def.DefaultValue : raw;
+            var value = definition.IsEncrypted && !string.IsNullOrEmpty(rawValue) && tool is not null
+                ? tool.TryDecrypt(rawValue) ?? definition.DefaultValue
+                : string.IsNullOrEmpty(rawValue) ? definition.DefaultValue : rawValue;
 
-            resolved[def.Key] = value;
+            resolved[definition.Key] = value;
         }
 
-        _resolvedVariables = resolved;
-        _viewModel?.UpdateVariables(resolved);
+        _variables = PluginVariableBinder.Bind<PromptorVariables>(resolved);
+        _viewModel?.UpdateVariables(_variables);
     }
-
-    // ── IVisualPlugin ─────────────────────────────────────────────────────────
 
     public override Control GetMainView()
     {
@@ -63,7 +53,7 @@ public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableR
         if (_viewModel is null)
         {
             var dialogService = Context.GetTool<IDesignerDialogService>();
-            _viewModel = new PromptorViewModel(dialogService, _resolvedVariables);
+            _viewModel = new PromptorViewModel(dialogService, _variables);
         }
 
         _view ??= new PromptorView { DataContext = _viewModel };

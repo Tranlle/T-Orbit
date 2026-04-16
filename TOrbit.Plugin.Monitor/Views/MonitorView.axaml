@@ -1,16 +1,13 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TOrbit.Plugin.Monitor.ViewModels"
+             xmlns:models="using:TOrbit.Core.Models"
              xmlns:designer="using:TOrbit.Designer.Controls"
              x:Class="TOrbit.Plugin.Monitor.Views.MonitorView"
              x:DataType="vm:MonitorViewModel">
 
-  <Grid RowDefinitions="Auto,*" RowSpacing="16">
-
-    <!-- ===== Stats Header ===== -->
+  <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
     <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="16">
-
-      <!-- Left: title + subtitle -->
       <StackPanel Spacing="4" VerticalAlignment="Center">
         <TextBlock Text="插件监控" Classes="section-title" />
         <StackPanel Orientation="Horizontal" Spacing="6">
@@ -28,10 +25,14 @@
             <Run Text="{Binding FaultedCount}" />
             <Run Text=" 故障" />
           </TextBlock>
+          <TextBlock Text="·" Classes="caption-muted" />
+          <TextBlock Classes="caption-muted">
+            <Run Text="{Binding DiagnosticCount}" />
+            <Run Text=" 条诊断" />
+          </TextBlock>
         </StackPanel>
       </StackPanel>
 
-      <!-- Right: stat chips -->
       <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
         <Border Background="{DynamicResource TOrbitSurfaceElevatedBrush}"
                 BorderBrush="{DynamicResource TOrbitBorderBrush}"
@@ -39,10 +40,7 @@
                 CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                 Padding="14,8">
           <StackPanel Spacing="1">
-            <TextBlock Text="{Binding TotalCount}"
-                       FontSize="18"
-                       FontWeight="SemiBold"
-                       HorizontalAlignment="Center" />
+            <TextBlock Text="{Binding TotalCount}" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
             <TextBlock Text="总计" Classes="caption-muted" HorizontalAlignment="Center" />
           </StackPanel>
         </Border>
@@ -80,41 +78,31 @@
                 CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                 Padding="14,8">
           <StackPanel Spacing="1">
-            <TextBlock Text="{Binding DisabledCount}"
+            <TextBlock Text="{Binding ErrorDiagnosticCount}"
                        FontSize="18"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource TOrbitTextMutedBrush}"
                        HorizontalAlignment="Center" />
-            <TextBlock Text="已禁用" Classes="caption-muted" HorizontalAlignment="Center" />
+            <TextBlock Text="诊断错误" Classes="caption-muted" HorizontalAlignment="Center" />
           </StackPanel>
         </Border>
       </StackPanel>
     </Grid>
 
-    <!-- ===== Main Body ===== -->
     <Grid Grid.Row="1" ColumnDefinitions="1.3*,16,*">
-
-      <!-- Left: Plugin List -->
-      <Border Grid.Column="0"
-              Classes="card"
-              Padding="0">
+      <Border Grid.Column="0" Classes="card" Padding="0">
         <Grid RowDefinitions="Auto,*">
-
-          <!-- List header -->
           <Border Grid.Row="0"
                   Padding="16,12"
                   BorderBrush="{DynamicResource TOrbitBorderBrush}"
                   BorderThickness="0,0,0,1">
-            <TextBlock Text="运行清单"
-                       Classes="subsection-title"
-                       VerticalAlignment="Center" />
+            <TextBlock Text="运行清单" Classes="subsection-title" VerticalAlignment="Center" />
           </Border>
 
-          <!-- Plugin list -->
           <ListBox Grid.Row="1"
                    Background="Transparent"
                    BorderThickness="0"
-                   Padding="6,6,6,6"
+                   Padding="6"
                    ItemsSource="{Binding MonitorItems}"
                    SelectedItem="{Binding SelectedMonitorItem, Mode=TwoWay}">
             <ListBox.Styles>
@@ -148,21 +136,11 @@
               <DataTemplate x:DataType="vm:PluginMonitorItemViewModel">
                 <Border Padding="12,9" CornerRadius="{DynamicResource TOrbitRadiusSmall}">
                   <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" VerticalAlignment="Center">
-
-                    <!-- Name + state badge -->
                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                      <TextBlock Text="{Binding Name}"
-                                 FontSize="13"
-                                 FontWeight="SemiBold"
-                                 VerticalAlignment="Center" />
-                      <Border Background="{Binding StateBadgeBackground}"
-                              CornerRadius="999"
-                              Padding="8,3"
-                              VerticalAlignment="Center">
+                      <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" />
+                      <Border Background="{Binding StateBadgeBackground}" CornerRadius="999" Padding="8,3" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                          <Ellipse Width="5" Height="5"
-                                   VerticalAlignment="Center"
-                                   Fill="{Binding StateDotBrush}" />
+                          <Ellipse Width="5" Height="5" VerticalAlignment="Center" Fill="{Binding StateDotBrush}" />
                           <TextBlock Text="{Binding StateStatusLabel}"
                                      Foreground="{Binding StateBadgeForeground}"
                                      FontSize="11"
@@ -172,30 +150,14 @@
                       </Border>
                     </StackPanel>
 
-                    <!-- Tags -->
-                    <StackPanel Grid.Column="1"
-                                Orientation="Horizontal"
-                                Spacing="5"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center">
-                      <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}"
-                              CornerRadius="999"
-                              Padding="8,3"
-                              VerticalAlignment="Center">
-                        <TextBlock Text="{Binding KindTagLabel}"
-                                   FontSize="11"
-                                   Foreground="{DynamicResource TOrbitTextMutedBrush}" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5" HorizontalAlignment="Right" VerticalAlignment="Center">
+                      <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}" CornerRadius="999" Padding="8,3">
+                        <TextBlock Text="{Binding KindTagLabel}" FontSize="11" Foreground="{DynamicResource TOrbitTextMutedBrush}" />
                       </Border>
-                      <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}"
-                              CornerRadius="999"
-                              Padding="8,3"
-                              VerticalAlignment="Center">
-                        <TextBlock Text="{Binding SourceLabel}"
-                                   FontSize="11"
-                                   Foreground="{DynamicResource TOrbitTextMutedBrush}" />
+                      <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}" CornerRadius="999" Padding="8,3">
+                        <TextBlock Text="{Binding SourceLabel}" FontSize="11" Foreground="{DynamicResource TOrbitTextMutedBrush}" />
                       </Border>
                     </StackPanel>
-
                   </Grid>
                 </Border>
               </DataTemplate>
@@ -204,46 +166,33 @@
         </Grid>
       </Border>
 
-      <!-- Right: Detail Panel -->
       <Border Grid.Column="2" Classes="card" Padding="0">
         <Grid>
-
-          <!-- Empty state -->
           <StackPanel IsVisible="{Binding !HasSelectedMonitorItem}"
                       VerticalAlignment="Center"
                       HorizontalAlignment="Center"
                       Spacing="6"
                       Margin="24">
-            <TextBlock Text="未选择插件"
-                       Classes="subsection-title"
-                       HorizontalAlignment="Center" />
-            <TextBlock Text="从左侧列表中选择一个插件查看详情。"
+            <TextBlock Text="未选择插件" Classes="subsection-title" HorizontalAlignment="Center" />
+            <TextBlock Text="从左侧列表中选择一个插件，查看详细状态、能力声明和最近错误。"
                        Classes="caption-muted"
                        TextAlignment="Center"
                        TextWrapping="Wrap"
-                       MaxWidth="200" />
+                       MaxWidth="220" />
           </StackPanel>
 
-          <!-- Detail content -->
-          <ContentControl Content="{Binding SelectedMonitorItem}"
-                          IsVisible="{Binding HasSelectedMonitorItem}">
+          <ContentControl Content="{Binding SelectedMonitorItem}" IsVisible="{Binding HasSelectedMonitorItem}">
             <ContentControl.ContentTemplate>
               <DataTemplate x:DataType="vm:PluginMonitorItemViewModel">
                 <Grid RowDefinitions="Auto,*,Auto">
-
-                  <!-- Plugin header -->
                   <Border Grid.Row="0"
                           Padding="18,14"
                           BorderBrush="{DynamicResource TOrbitBorderBrush}"
                           BorderThickness="0,0,0,1">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                       <StackPanel Spacing="3">
-                        <TextBlock Text="{Binding Name}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold" />
-                        <TextBlock Text="{Binding Description}"
-                                   Classes="caption-muted"
-                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding Description}" Classes="caption-muted" TextWrapping="Wrap" />
                       </StackPanel>
                       <designer:StatusBadge Grid.Column="1"
                                             VerticalAlignment="Top"
@@ -253,16 +202,13 @@
                     </Grid>
                   </Border>
 
-                  <!-- Scrollable body -->
                   <ScrollViewer Grid.Row="1"
                                 Padding="18,14"
                                 HorizontalScrollBarVisibility="Disabled"
                                 VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="12">
-
-                      <!-- Info grid -->
-                      <Grid ColumnDefinitions="76,*"
-                            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                      <Grid ColumnDefinitions="88,*"
+                            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                             RowSpacing="8"
                             ColumnSpacing="12">
                         <TextBlock Text="插件 ID" Classes="field-label" />
@@ -277,21 +223,42 @@
                         <TextBlock Grid.Row="3" Text="来源" Classes="field-label" />
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SourceLabel}" Classes="field-value" />
 
-                        <TextBlock Grid.Row="4" Text="启用" Classes="field-label" />
+                        <TextBlock Grid.Row="4" Text="启用状态" Classes="field-label" />
                         <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding EnabledLabel}" Classes="field-value" />
 
-                        <TextBlock Grid.Row="5" Text="更新于" Classes="field-label" />
-                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding StateChangedAtText}" Classes="field-value" />
+                        <TextBlock Grid.Row="5" Text="能力声明" Classes="field-label" />
+                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding CapabilitySummary}" Classes="field-value" TextWrapping="Wrap" />
+
+                        <TextBlock Grid.Row="6" Text="最近更新" Classes="field-label" />
+                        <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding StateChangedAtText}" Classes="field-value" />
                       </Grid>
 
-                      <!-- Separator -->
+                      <ItemsControl ItemsSource="{Binding CapabilityTags}" IsVisible="{Binding HasCapabilities}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                          </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate>
+                            <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                                    BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="999"
+                                    Padding="8,4"
+                                    Margin="0,0,6,6">
+                              <TextBlock Text="{Binding .}" FontSize="11" Foreground="{DynamicResource TOrbitTextMutedBrush}" />
+                            </Border>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+
                       <Border BorderBrush="{DynamicResource TOrbitBorderBrush}" BorderThickness="0,1,0,0" />
 
-                      <!-- Enable toggle -->
                       <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" VerticalAlignment="Center">
                         <StackPanel Spacing="2">
                           <TextBlock Text="启用状态" FontSize="13" FontWeight="SemiBold" />
-                          <TextBlock Text="关闭后停止该插件；启用后按当前状态尝试启动。"
+                          <TextBlock Text="关闭后停止该插件，重新启用时会根据当前状态尝试恢复运行。"
                                      Classes="caption-muted"
                                      TextWrapping="Wrap" />
                         </StackPanel>
@@ -301,26 +268,22 @@
                                       IsEnabled="{Binding CanToggleEnabled}" />
                       </Grid>
 
-                      <!-- Separator -->
                       <Border BorderBrush="{DynamicResource TOrbitBorderBrush}" BorderThickness="0,1,0,0" />
 
-                      <!-- Error section -->
                       <StackPanel Spacing="6">
-                        <TextBlock Text="最后错误" FontSize="13" FontWeight="SemiBold" />
+                        <TextBlock Text="最近错误" FontSize="13" FontWeight="SemiBold" />
                         <TextBlock Text="{Binding LastErrorMessage}"
                                    FontSize="12"
                                    Foreground="{DynamicResource TOrbitBadgeDangerForegroundBrush}"
                                    TextWrapping="Wrap"
                                    IsVisible="{Binding HasError}" />
-                        <TextBlock Text="无错误记录。"
+                        <TextBlock Text="当前没有错误记录。"
                                    Classes="caption-muted"
                                    IsVisible="{Binding !HasError}" />
                       </StackPanel>
-
                     </StackPanel>
                   </ScrollViewer>
 
-                  <!-- Footer actions -->
                   <Border Grid.Row="2"
                           Padding="18,12"
                           BorderBrush="{DynamicResource TOrbitBorderBrush}"
@@ -331,15 +294,83 @@
                             IsEnabled="{Binding CanRestart}"
                             HorizontalAlignment="Right" />
                   </Border>
-
                 </Grid>
               </DataTemplate>
             </ContentControl.ContentTemplate>
           </ContentControl>
-
         </Grid>
       </Border>
-
     </Grid>
+
+    <Border Grid.Row="2"
+            Classes="card"
+            Padding="0">
+      <Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0"
+                Padding="16,12"
+                BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                BorderThickness="0,0,0,1">
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="应用诊断" Classes="subsection-title" />
+              <TextBlock Text="展示启动、插件发现和迁移过程中的告警与错误。"
+                         Classes="caption-muted" />
+            </StackPanel>
+            <Border Grid.Column="1"
+                    Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                    CornerRadius="999"
+                    Padding="10,4"
+                    VerticalAlignment="Center">
+              <TextBlock Text="{Binding DiagnosticCount}"
+                         Foreground="{DynamicResource TOrbitTextMutedBrush}" />
+            </Border>
+          </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="1"
+                    Margin="16"
+                    Spacing="8"
+                    IsVisible="{Binding !HasDiagnostics}">
+          <TextBlock Text="当前没有诊断记录。"
+                     Classes="caption-muted" />
+        </StackPanel>
+
+        <ItemsControl Grid.Row="1"
+                      Margin="16"
+                      ItemsSource="{Binding Diagnostics}"
+                      IsVisible="{Binding HasDiagnostics}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="models:AppDiagnosticEntry">
+              <Border BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                      BorderThickness="0,0,0,1"
+                      Padding="0,0,0,10"
+                      Margin="0,0,0,10">
+                <StackPanel Spacing="4">
+                  <Grid ColumnDefinitions="Auto,8,*,Auto" VerticalAlignment="Center">
+                    <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                            CornerRadius="999"
+                            Padding="8,3">
+                      <TextBlock Text="{Binding Severity}" FontSize="11" />
+                    </Border>
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding Source}"
+                               FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="3"
+                               Text="{Binding Timestamp, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"
+                               Classes="caption-muted" />
+                  </Grid>
+                  <TextBlock Text="{Binding Message}"
+                             TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding Exception.Message}"
+                             TextWrapping="Wrap"
+                             Classes="caption-muted"
+                             IsVisible="{Binding Exception}" />
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Grid>
+    </Border>
   </Grid>
 </UserControl>

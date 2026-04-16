@@ -16,4 +16,5 @@ public sealed record PluginDescriptor(
     PluginLoadMode LoadMode = PluginLoadMode.Lazy,
     PluginIsolationMode IsolationMode = PluginIsolationMode.AssemblyLoadContext,
     IReadOnlyList<PluginVariableDefinition>? VariableDefinitions = null,
-    PluginKind Kind = PluginKind.Visual);
+    PluginKind Kind = PluginKind.Visual,
+    IReadOnlyList<PluginCapability>? Capabilities = null);

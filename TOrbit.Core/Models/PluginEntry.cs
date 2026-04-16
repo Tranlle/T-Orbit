@@ -32,6 +32,7 @@ public sealed partial class PluginEntry : ObservableObject
     public string Icon => Plugin.Descriptor.Icon ?? string.Empty;
     public string Version => Plugin.Descriptor.Version;
     public string Tags => Plugin.Descriptor.Tags ?? string.Empty;
+    public IReadOnlyList<PluginCapability> Capabilities => Plugin.Descriptor.Capabilities ?? [];
     public PluginState State => Plugin is BasePlugin basePlugin ? basePlugin.State : PluginState.Unknown;
     public PluginKind Kind => Plugin.Descriptor.Kind;
     public IReadOnlyList<string> DisplayTags => Tags
@@ -39,6 +40,9 @@ public sealed partial class PluginEntry : ObservableObject
         .Where(tag => !string.IsNullOrWhiteSpace(tag))
         .Take(2)
         .ToArray();
+    public string CapabilitiesSummary => Capabilities.Count == 0
+        ? "none"
+        : string.Join(", ", Capabilities.Select(capability => capability.ToString()));
 
     public PluginEntry(
         IPlugin plugin,

@@ -49,21 +49,17 @@
             </designer:FormField.Body>
           </designer:FormField>
 
-          <designer:FormField Grid.Row="1"
-                              Grid.Column="0"
-                              Label="配置名称">
+          <designer:FormField Grid.Row="1" Grid.Column="0" Label="配置名称">
             <designer:FormField.Body>
               <TextBox Text="{Binding EditingProfile.ProfileName, Mode=TwoWay}"
-                       PlaceholderText="例如 开发环境" />
+                       PlaceholderText="例如：开发环境" />
             </designer:FormField.Body>
           </designer:FormField>
 
-          <designer:FormField Grid.Row="1"
-                              Grid.Column="2"
-                              Label="DbContext">
+          <designer:FormField Grid.Row="1" Grid.Column="2" Label="DbContext">
             <designer:FormField.Body>
               <TextBox Text="{Binding EditingProfile.ContextName, Mode=TwoWay}"
-                       PlaceholderText="例如 AppDbContext" />
+                       PlaceholderText="例如：AppDbContext" />
             </designer:FormField.Body>
           </designer:FormField>
         </Grid>

@@ -46,3 +46,5 @@ TestResults.xml
 /TOrbit.Plugin.KeyMap/bin/
 /TOrbit.Plugin.Monitor/obj/
 /TOrbit.Plugin.Monitor/bin/
+/TOrbit.Core.Tests/bin/
+/TOrbit.Core.Tests/obj/

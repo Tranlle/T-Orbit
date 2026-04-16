@@ -25,6 +25,7 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     public string Description => _entry.Description;
     public string Version => _entry.Version;
     public string Icon => _entry.Icon;
+    public PluginKind Kind => _entry.Kind;
     public string KindLabel => _entry.Kind == PluginKind.Service ? "后台服务" : "前台插件";
     public string KindTagLabel => _entry.Kind == PluginKind.Service ? "backend" : "frontend";
     public bool IsBuiltIn => _entry.IsBuiltIn;
@@ -32,6 +33,11 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     public string EnabledLabel => _entry.IsEnabled ? "已启用" : "已禁用";
     public bool CanDisable => _entry.CanDisable;
     public bool CanToggleEnabled => _entry.CanDisable || _entry.IsEnabled;
+    public IReadOnlyList<string> CapabilityTags => _entry.Capabilities.Select(FormatCapability).ToArray();
+    public bool HasCapabilities => CapabilityTags.Count > 0;
+    public string CapabilitySummary => HasCapabilities
+        ? string.Join(" / ", CapabilityTags)
+        : "未声明";
 
     public bool IsEnabled
     {
@@ -139,4 +145,13 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     {
         _entry.PropertyChanged -= EntryPropertyChanged;
     }
+
+    private static string FormatCapability(PluginCapability capability) => capability switch
+    {
+        PluginCapability.FileSystem => "FileSystem",
+        PluginCapability.LocalProcess => "LocalProcess",
+        PluginCapability.Network => "Network",
+        PluginCapability.Secrets => "Secrets",
+        _ => capability.ToString()
+    };
 }

@@ -14,6 +14,7 @@ namespace TOrbit.Core.Services;
 /// </summary>
 public sealed class StorageService : IStorageService, IDisposable
 {
+    private const string DiagnosticsSource = "StorageMigration";
     // ── 旧文件名（迁移用）────────────────────────────────────────────────────
     private const string LegacyKeyMapFile       = "keymap-bindings.json";
     private const string LegacyPreferencesFile  = "app-preferences.json";
@@ -27,6 +28,7 @@ public sealed class StorageService : IStorageService, IDisposable
 
     private readonly SqliteConnection _conn;
     private readonly ReaderWriterLockSlim _rwLock = new(LockRecursionPolicy.NoRecursion);
+    private readonly IAppDiagnosticsService? _diagnostics;
 
     // write-through 缓存：仅覆盖 GetKv / SetKv / DeleteKv 路径
     // 值为 null 表示 DB 里该行确实是 NULL；不在字典里表示尚未加载
@@ -35,7 +37,13 @@ public sealed class StorageService : IStorageService, IDisposable
     // ── 构造：开连接、建表、迁移 ─────────────────────────────────────────────
 
     public StorageService()
+        : this(null)
     {
+    }
+
+    public StorageService(IAppDiagnosticsService? diagnostics)
+    {
+        _diagnostics = diagnostics;
         var dir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "T-Orbit");
@@ -391,7 +399,13 @@ public sealed class StorageService : IStorageService, IDisposable
                 SaveKeyMapBindings(store.Entries);
             File.Delete(path);
         }
-        catch { /* 文件损坏时静默跳过，旧文件保留，服务从空白状态启动 */ }
+        catch (Exception ex)
+        {
+            _diagnostics?.ReportWarning(
+                DiagnosticsSource,
+                $"Failed to migrate legacy key map bindings from '{path}'. The legacy file has been left in place.",
+                ex);
+        }
     }
 
     private void MigrateAppPreferences()
@@ -424,7 +438,13 @@ public sealed class StorageService : IStorageService, IDisposable
             }
             File.Delete(path);
         }
-        catch { }
+        catch (Exception ex)
+        {
+            _diagnostics?.ReportWarning(
+                DiagnosticsSource,
+                $"Failed to migrate app preferences from '{path}'. The legacy file has been left in place.",
+                ex);
+        }
     }
 
     private void MigratePluginVariables()
@@ -469,7 +489,13 @@ public sealed class StorageService : IStorageService, IDisposable
             }
             File.Delete(path);
         }
-        catch { }
+        catch (Exception ex)
+        {
+            _diagnostics?.ReportWarning(
+                DiagnosticsSource,
+                $"Failed to migrate plugin variables from '{path}'. The legacy file has been left in place.",
+                ex);
+        }
     }
 
     // ── 辅助 ─────────────────────────────────────────────────────────────────

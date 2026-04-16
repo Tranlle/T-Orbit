@@ -17,6 +17,7 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
     private readonly IAppPreferencesService _preferencesService;
     private readonly IPluginCatalogService _pluginCatalog;
     private readonly IPluginVariableService _variableService;
+    private readonly IPluginValidationStatusService _validationStatusService;
 
     private SettingsView? _view;
     private SettingsViewModel? _viewModel;
@@ -27,13 +28,15 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
         IThemeService themeService,
         IAppPreferencesService preferencesService,
         IPluginCatalogService pluginCatalog,
-        IPluginVariableService variableService)
+        IPluginVariableService variableService,
+        IPluginValidationStatusService validationStatusService)
     {
         _shellService = shellService;
         _themeService = themeService;
         _preferencesService = preferencesService;
         _pluginCatalog = pluginCatalog;
         _variableService = variableService;
+        _validationStatusService = validationStatusService;
     }
 
     public override PluginDescriptor Descriptor { get; } = CreateDescriptor<SettingsPlugin>(SettingsPluginMetadata.Instance);
@@ -55,7 +58,7 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
         if (_viewModel is null)
         {
             _viewModel = new SettingsViewModel(
-                _shellService, _themeService, _preferencesService, _pluginCatalog, _variableService);
+                _shellService, _themeService, _preferencesService, _pluginCatalog, _variableService, _validationStatusService);
             _headerActions =
             [
                 new PluginHeaderAction("重置设置", _viewModel.ResetCommand),

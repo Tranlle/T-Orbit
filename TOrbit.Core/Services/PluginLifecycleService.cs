@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using TOrbit.Core.Models;
 using TOrbit.Plugin.Core.Base;
 using TOrbit.Plugin.Core.Enums;
@@ -7,62 +8,54 @@ namespace TOrbit.Core.Services;
 public sealed class PluginLifecycleService : IPluginLifecycleService
 {
     private readonly IPluginCatalogService _catalog;
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> _pluginGates = new(StringComparer.OrdinalIgnoreCase);
 
     public PluginLifecycleService(IPluginCatalogService catalog)
         => _catalog = catalog;
 
     public async Task StopAsync(string pluginId, CancellationToken ct = default)
     {
-        var entry = GetRequiredEntry(pluginId);
-        if (!entry.CanDisable)
-            return;
+        await ExecuteSerializedAsync(pluginId, async entry =>
+        {
+            if (!entry.CanDisable)
+                return;
 
-        try
-        {
             await entry.Plugin.StopAsync(ct);
-            entry.LastError = null;
-        }
-        catch (Exception ex)
-        {
-            entry.LastError = ex;
-            SetFaulted(entry);
-        }
-        finally
-        {
-            entry.NotifyStateChanged();
-        }
+        }, ct);
     }
 
     public async Task StartAsync(string pluginId, CancellationToken ct = default)
     {
-        var entry = GetRequiredEntry(pluginId);
-
-        try
-        {
-            await entry.Plugin.StartAsync(ct);
-            entry.LastError = null;
-        }
-        catch (Exception ex)
-        {
-            entry.LastError = ex;
-            SetFaulted(entry);
-        }
-        finally
-        {
-            entry.NotifyStateChanged();
-        }
+        await ExecuteSerializedAsync(pluginId, entry => entry.Plugin.StartAsync(ct).AsTask(), ct);
     }
 
     public async Task RestartAsync(string pluginId, CancellationToken ct = default)
     {
-        var entry = GetRequiredEntry(pluginId);
-        if (!entry.CanDisable)
-            return;
-
-        try
+        await ExecuteSerializedAsync(pluginId, async entry =>
         {
+            if (!entry.CanDisable)
+                return;
+
             await entry.Plugin.StopAsync(ct);
             await entry.Plugin.StartAsync(ct);
+        }, ct);
+    }
+
+    private PluginEntry GetRequiredEntry(string pluginId)
+        => _catalog.Get(pluginId) ?? throw new InvalidOperationException($"Plugin '{pluginId}' not found.");
+
+    private async Task ExecuteSerializedAsync(
+        string pluginId,
+        Func<PluginEntry, Task> operation,
+        CancellationToken ct)
+    {
+        var entry = GetRequiredEntry(pluginId);
+        var gate = _pluginGates.GetOrAdd(pluginId, static _ => new SemaphoreSlim(1, 1));
+
+        await gate.WaitAsync(ct);
+        try
+        {
+            await operation(entry);
             entry.LastError = null;
         }
         catch (Exception ex)
@@ -73,11 +66,9 @@ public sealed class PluginLifecycleService : IPluginLifecycleService
         finally
         {
             entry.NotifyStateChanged();
+            gate.Release();
         }
     }
-
-    private PluginEntry GetRequiredEntry(string pluginId)
-        => _catalog.Get(pluginId) ?? throw new InvalidOperationException($"Plugin '{pluginId}' not found.");
 
     private static void SetFaulted(PluginEntry entry)
     {

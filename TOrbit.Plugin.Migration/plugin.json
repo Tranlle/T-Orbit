@@ -1,0 +1,23 @@
+{
+  "id": "torbit.migration",
+  "name": "数据库迁移",
+  "version": "1.0.1",
+  "entryAssembly": "TOrbit.Plugin.Migration.dll",
+  "entryType": "TOrbit.Plugin.Migration.MigrationPlugin",
+  "description": "管理 EF Core 迁移文件：新增、编辑、执行、撤回，支持 SqlServer / PostgreSQL / MySQL。",
+  "author": "T-Orbit",
+  "icon": "Database",
+  "tags": "database,efcore,migration",
+  "kind": "Visual",
+  "loadMode": "Lazy",
+  "isolationMode": "AssemblyLoadContext",
+  "capabilities": [
+    "FileSystem",
+    "LocalProcess",
+    "Secrets"
+  ],
+  "dependencies": [],
+  "metadata": {
+    "displayCategory": "Database"
+  }
+}

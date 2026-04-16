@@ -21,5 +21,10 @@ public sealed class PluginHandle
 
     public PluginContext Context { get; }
 
-    public PluginState State { get; internal set; } = PluginState.Loaded;
+    public PluginState State { get; private set; } = PluginState.Loaded;
+
+    public void SetState(PluginState state)
+    {
+        State = state;
+    }
 }

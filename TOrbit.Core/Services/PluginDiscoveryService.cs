@@ -1,34 +1,29 @@
-using System.Reflection;
-using System.Runtime.Loader;
-using TOrbit.Plugin.Core.Enums;
-using TOrbit.Core.Constants;
 using TOrbit.Core.Models;
-using TOrbit.Plugin.Core.Tools;
+using TOrbit.Plugin.Core;
+using TOrbit.Plugin.Core.Abstractions;
 
 namespace TOrbit.Core.Services;
 
 public sealed class PluginDiscoveryService : IPluginDiscoveryService
 {
     private readonly IPluginCatalogService _catalog;
-    private readonly IPluginToolRegistry _toolRegistry;
+    private readonly IPluginDiscoverer _discoverer;
+    private readonly IPluginDependencyResolver _dependencyResolver;
+    private readonly IPluginLoader _loader;
     private readonly IPluginVariableService _variableService;
-    private readonly HostEnvironmentInfo _hostEnvironment;
 
     public PluginDiscoveryService(
         IPluginCatalogService catalog,
-        IPluginToolRegistry toolRegistry,
+        IPluginDiscoverer discoverer,
+        IPluginDependencyResolver dependencyResolver,
+        IPluginLoader loader,
         IPluginVariableService variableService)
     {
-        _catalog         = catalog;
-        _toolRegistry    = toolRegistry;
+        _catalog = catalog;
+        _discoverer = discoverer;
+        _dependencyResolver = dependencyResolver;
+        _loader = loader;
         _variableService = variableService;
-        _hostEnvironment = new HostEnvironmentInfo(
-            ToolHostConstants.HostName,
-            ToolHostConstants.HostVersion,
-            Environment.Version.ToString(),
-            "net10.0",
-            OperatingSystem.IsWindows() ? "Windows" : Environment.OSVersion.Platform.ToString(),
-            ToolHostConstants.PluginApiVersion);
     }
 
     public async ValueTask<PluginDiscoveryResult> LoadAsync(string pluginsDirectory, CancellationToken cancellationToken = default)
@@ -39,105 +34,70 @@ public sealed class PluginDiscoveryService : IPluginDiscoveryService
         if (!Directory.Exists(pluginsDirectory))
             return new PluginDiscoveryResult(loadedPlugins, errors);
 
-        foreach (var assemblyPath in Directory.EnumerateFiles(pluginsDirectory, ToolHostConstants.PluginAssemblySearchPattern, SearchOption.AllDirectories))
+        IReadOnlyCollection<PluginManifest> manifests;
+        try
+        {
+            manifests = await _discoverer.DiscoverAsync(
+                new PluginDiscoveryOptions(pluginsDirectory),
+                cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            errors.Add(new PluginLoadError(pluginsDirectory, ex.Message, Exception: ex));
+            return new PluginDiscoveryResult(loadedPlugins, errors);
+        }
+
+        PluginDependencyGraph dependencyGraph;
+        try
+        {
+            dependencyGraph = await _dependencyResolver.ResolveAsync(manifests, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            errors.Add(new PluginLoadError(pluginsDirectory, ex.Message, Exception: ex));
+            return new PluginDiscoveryResult(loadedPlugins, errors);
+        }
+
+        var manifestById = manifests.ToDictionary(manifest => manifest.Id, StringComparer.OrdinalIgnoreCase);
+        foreach (var pluginId in dependencyGraph.LoadOrder)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await TryLoadAssemblyAsync(assemblyPath, loadedPlugins, errors, cancellationToken);
+
+            if (!manifestById.TryGetValue(pluginId, out var manifest))
+                continue;
+
+            await TryLoadManifestAsync(manifest, loadedPlugins, errors, cancellationToken);
         }
 
         return new PluginDiscoveryResult(loadedPlugins, errors);
     }
 
-    private async ValueTask TryLoadAssemblyAsync(
-        string assemblyPath,
+    private async ValueTask TryLoadManifestAsync(
+        PluginManifest manifest,
         ICollection<LoadedPluginDescriptor> loadedPlugins,
         ICollection<PluginLoadError> errors,
         CancellationToken cancellationToken)
     {
-        Assembly assembly;
         try
         {
-            assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
-        }
-        catch (Exception ex)
-        {
-            errors.Add(new PluginLoadError(assemblyPath, ex.Message, Exception: ex));
-            return;
-        }
-
-        Type[] pluginTypes;
-        try
-        {
-            pluginTypes = assembly.GetTypes()
-                .Where(type => !type.IsAbstract && typeof(IPlugin).IsAssignableFrom(type))
-                .ToArray();
-        }
-        catch (ReflectionTypeLoadException ex)
-        {
-            pluginTypes = ex.Types
-                .Where(type => type is not null && !type.IsAbstract && typeof(IPlugin).IsAssignableFrom(type))
-                .Cast<Type>()
-                .ToArray();
-
-            if (pluginTypes.Length == 0)
-            {
-                errors.Add(new PluginLoadError(assemblyPath, ex.Message, Exception: ex));
-                return;
-            }
-        }
-
-        foreach (var pluginType in pluginTypes)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await TryLoadPluginAsync(pluginType, assemblyPath, loadedPlugins, errors, cancellationToken);
-        }
-    }
-
-    private async ValueTask TryLoadPluginAsync(
-        Type pluginType,
-        string assemblyPath,
-        ICollection<LoadedPluginDescriptor> loadedPlugins,
-        ICollection<PluginLoadError> errors,
-        CancellationToken cancellationToken)
-    {
-        IPlugin? plugin = null;
-        try
-        {
-            plugin = Activator.CreateInstance(pluginType) as IPlugin;
-            if (plugin is null)
+            if (_catalog.Get(manifest.Id) is not null)
                 return;
 
-            if (_catalog.Get(plugin.Descriptor.Id) is not null)
-            {
-                await plugin.DisposeAsync();
-                return;
-            }
+            var loadResult = await _loader.LoadAsync(new PluginLoadRequest(manifest), cancellationToken);
+            _catalog.Register(loadResult.Handle.Instance, true, _catalog.Plugins.Count);
+            _variableService.InjectOne(loadResult.Handle.Instance);
 
-            var pluginDirectory = Path.GetDirectoryName(assemblyPath) ?? AppContext.BaseDirectory;
-            var context = new PluginContext(
-                plugin.Descriptor.Id,
-                pluginDirectory,
-                _toolRegistry,
-                _hostEnvironment,
-                PluginIsolationMode.AssemblyLoadContext,
-                new Dictionary<string, object?>());
-
-            await plugin.InitializeAsync(context, cancellationToken);
-            await plugin.StartAsync(cancellationToken);
-            _catalog.Register(plugin, true, _catalog.Plugins.Count);
-
-            // 注册完成后只注入当前插件，避免随插件数量增长的 O(n²) 全量遍历
-            _variableService.InjectOne(plugin);
-
-            var entry = _catalog.Get(plugin.Descriptor.Id);
+            var entry = _catalog.Get(manifest.Id);
             if (entry is not null)
-                loadedPlugins.Add(new LoadedPluginDescriptor(entry, assemblyPath, pluginDirectory));
+            {
+                var assemblyPath = Path.GetFullPath(Path.Combine(manifest.BaseDirectory, manifest.Descriptor.EntryAssembly));
+                loadedPlugins.Add(new LoadedPluginDescriptor(entry, assemblyPath, manifest.BaseDirectory));
+            }
         }
         catch (Exception ex)
         {
-            if (plugin is not null)
-                await plugin.DisposeAsync();
-            errors.Add(new PluginLoadError(assemblyPath, ex.Message, plugin?.Descriptor.Id, ex));
+            var assemblyPath = Path.GetFullPath(Path.Combine(manifest.BaseDirectory, manifest.Descriptor.EntryAssembly));
+            errors.Add(new PluginLoadError(assemblyPath, ex.Message, manifest.Id, ex));
         }
     }
 }

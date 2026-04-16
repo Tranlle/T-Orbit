@@ -19,20 +19,17 @@
           <designer:ActionGroup>
             <designer:ActionGroup.Body>
               <StackPanel Orientation="Horizontal" Spacing="8">
-                <!-- 配置管理组 -->
                 <StackPanel Orientation="Horizontal" Spacing="8">
                   <Button Content="新增配置" Command="{Binding AddProfileCommand}" />
                   <Button Content="修改配置" Command="{Binding OpenEditProfileCommand}" />
                   <Button Classes="danger" Content="删除配置" Command="{Binding DeleteProfileCommand}" />
                 </StackPanel>
 
-                <!-- 分隔线 -->
                 <Border Width="1"
                         VerticalAlignment="Stretch"
                         Margin="4,6"
                         Background="{DynamicResource TOrbitBorderBrush}" />
 
-                <!-- 迁移操作组 -->
                 <StackPanel Orientation="Horizontal" Spacing="8">
                   <Button Content="刷新迁移" Command="{Binding RefreshCommand}" />
                   <Button Content="新增迁移" Command="{Binding ShowNewPanelCommand}" />
@@ -42,13 +39,11 @@
                           IsEnabled="{Binding CanRollback}" />
                 </StackPanel>
 
-                <!-- 分隔线 -->
                 <Border Width="1"
                         VerticalAlignment="Stretch"
                         Margin="4,6"
                         Background="{DynamicResource TOrbitBorderBrush}" />
 
-                <!-- 执行组 -->
                 <Button Classes="accent"
                         Content="执行更新"
                         Command="{Binding ExecuteUpdateCommand}"
@@ -123,8 +118,8 @@
           <Border Classes="card">
             <Grid RowDefinitions="Auto,Auto,*" RowSpacing="16">
               <StackPanel Spacing="12">
-                <designer:SectionHeader Title="活动配置"
-                                        Description="查看当前配置对应的数据库、项目路径与迁移文件。" />
+                <designer:SectionHeader Title="当前配置"
+                                        Description="查看当前配置关联的数据库、项目路径和迁移文件。" />
                 <designer:PropertyGrid ItemsSource="{Binding ActiveProfileProperties}"
                                        LabelColumnWidth="140" />
               </StackPanel>

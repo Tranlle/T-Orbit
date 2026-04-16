@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="TOrbit.Core/TOrbit.Core.csproj" />
+  <Project Path="TOrbit.Core.Tests/TOrbit.Core.Tests.csproj" />
   <Project Path="TOrbit.App/TOrbit.App.csproj" />
   <Project Path="TOrbit.Designer/TOrbit.Designer.csproj" />
   <Project Path="TOrbit.Plugin.Migration/TOrbit.Plugin.Migration.csproj" Id="480c1a3b-1df4-4e0c-921a-0eca262e190f" />
