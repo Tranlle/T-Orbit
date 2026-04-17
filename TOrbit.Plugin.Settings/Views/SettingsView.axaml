@@ -30,24 +30,12 @@
                           VerticalScrollBarVisibility="Auto">
               <StackPanel Margin="20"
                           Spacing="20">
-                <StackPanel Spacing="4">
-                  <TextBlock Text="PREFERENCES"
-                             Classes="eyebrow" />
-                  <TextBlock Text="宿主设置"
-                             FontSize="18"
-                             FontWeight="SemiBold" />
-                  <TextBlock Text="管理宿主外观、托盘行为、工作区路径以及迁移默认模式。"
-                             Classes="caption-muted"
-                             MinHeight="0"
-                             TextWrapping="Wrap" />
-                </StackPanel>
-
                 <Border Classes="settings-section">
                   <StackPanel Spacing="14">
                     <StackPanel Spacing="2">
-                      <TextBlock Text="基础"
+                      <TextBlock Text="基础设置"
                                  Classes="section-title" />
-                      <TextBlock Text="影响整个宿主的外观和关闭行为。"
+                      <TextBlock Text="控制宿主外观和关闭行为。"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                     </StackPanel>
@@ -98,15 +86,15 @@
                       <StackPanel Spacing="2">
                         <TextBlock Text="关闭按钮行为"
                                    Classes="subsection-title" />
-                        <TextBlock Text="关闭主窗口时最小化到托盘，或直接退出应用。"
+                        <TextBlock Text="选择关闭主窗口时最小化到托盘，还是直接退出应用。"
                                    Classes="caption-muted"
                                    MinHeight="0"
                                    TextWrapping="Wrap" />
                       </StackPanel>
                       <ToggleSwitch Grid.Column="1"
                                     IsChecked="{Binding MinimizeToTrayOnClose, Mode=TwoWay}"
-                                    OnContent="最小化到托盘"
-                                    OffContent="直接退出" />
+                                    OnContent="托盘"
+                                    OffContent="退出" />
                     </Grid>
                   </StackPanel>
                 </Border>
@@ -116,7 +104,7 @@
                     <StackPanel Spacing="2">
                       <TextBlock Text="扩展主题"
                                  Classes="section-title" />
-                      <TextBlock Text="控制扩展配色与自定义主题目录。"
+                      <TextBlock Text="控制高级配色选择和自定义主题目录。"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                     </StackPanel>
@@ -126,7 +114,7 @@
 
                     <StackPanel Spacing="14"
                                 IsVisible="{Binding ShowAdvancedThemeSettings}">
-                      <designer:FormField Label="扩展配色"
+                      <designer:FormField Label="高级配色"
                                           Description="{Binding SelectedAdvancedPaletteOption.Description, TargetNullValue=''}">
                         <designer:FormField.Body>
                           <ComboBox Classes="form-control"
@@ -150,7 +138,7 @@
                   <StackPanel Spacing="2">
                     <TextBlock Text="工作区与迁移"
                                Classes="section-title" />
-                    <TextBlock Text="配置当前宿主工作区，以及 Migration 插件的默认工作方式。"
+                    <TextBlock Text="配置当前宿主工作区，以及 Migration 插件的默认工作模式。"
                                Classes="caption-muted"
                                MinHeight="0" />
                   </StackPanel>
@@ -162,7 +150,7 @@
                     </designer:FormField.Body>
                   </designer:FormField>
 
-                  <CheckBox Content="迁移默认启用 Workspace 模式"
+                  <CheckBox Content="默认启用工作区模式用于迁移"
                             IsChecked="{Binding UseWorkspaceForMigrations, Mode=TwoWay}" />
                 </StackPanel>
               </StackPanel>
@@ -178,17 +166,11 @@
                           Spacing="18">
                 <Grid ColumnDefinitions="*,Auto"
                       ColumnSpacing="16">
-                  <StackPanel Spacing="4">
-                    <TextBlock Text="VARIABLES"
-                               Classes="eyebrow" />
-                    <TextBlock Text="插件变量"
-                               FontSize="18"
-                               FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding PluginVariableSummary}"
-                               Classes="caption-muted"
-                               MinHeight="0"
-                               TextWrapping="Wrap" />
-                  </StackPanel>
+                  <TextBlock Text="{Binding PluginVariableSummary}"
+                             Classes="caption-muted"
+                             MinHeight="0"
+                             VerticalAlignment="Center"
+                             TextWrapping="Wrap" />
                   <Button Grid.Column="1"
                           Command="{Binding ShowAddVariableFormCommand}"
                           IsVisible="{Binding !ShowAddVariableForm}"
@@ -209,7 +191,7 @@
                                  Text="新增插件变量" />
                       <TextBlock Classes="caption-muted"
                                  MinHeight="0"
-                                 Text="设置页只负责保存，校验提醒会展示在对应插件页面头部。" />
+                                 Text="设置页只负责保存值，校验提醒会显示在对应插件的页头。" />
                     </StackPanel>
 
                     <Grid ColumnDefinitions="*,16,*">
@@ -235,7 +217,7 @@
                                 IsVisible="{Binding HasAddFormKeyHints}">
                       <TextBlock Classes="caption-muted"
                                  MinHeight="0"
-                                 Text="已声明变量键，点击可快速填充：" />
+                                 Text="已声明的变量键可直接点选填入：" />
                       <ItemsControl ItemsSource="{Binding AddFormKeyHints}">
                         <ItemsControl.ItemsPanel>
                           <ItemsPanelTemplate>
@@ -388,7 +370,7 @@
                                             Padding="0"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
-                                            ToolTip.Tip="删除此变量"
+                                            ToolTip.Tip="删除变量"
                                             Content="×"
                                             FontSize="14" />
                                   </Grid>

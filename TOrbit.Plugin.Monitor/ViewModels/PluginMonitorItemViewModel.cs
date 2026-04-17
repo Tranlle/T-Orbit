@@ -16,9 +16,12 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     private static readonly IBrush WarningForeground = Brush.Parse("#E8BE64");
     private static readonly IBrush DangerBackground = Brush.Parse("#2E1820");
     private static readonly IBrush DangerForeground = Brush.Parse("#ED6E7D");
+    private static readonly IBrush NeutralBackground = Brush.Parse("#1F242C");
+    private static readonly IBrush NeutralForeground = Brush.Parse("#9CA8B8");
 
     private readonly PluginEntry _entry;
     private readonly IPluginLifecycleService _pluginLifecycleService;
+    private bool _isBusy;
 
     public string Id => _entry.Id;
     public string Name => _entry.Name;
@@ -26,18 +29,23 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     public string Version => _entry.Version;
     public string Icon => _entry.Icon;
     public PluginKind Kind => _entry.Kind;
-    public string KindLabel => _entry.Kind == PluginKind.Service ? "后台服务" : "前台插件";
+    public string KindLabel => _entry.Kind == PluginKind.Service ? "Service" : "Visual";
     public string KindTagLabel => _entry.Kind == PluginKind.Service ? "backend" : "frontend";
     public bool IsBuiltIn => _entry.IsBuiltIn;
     public string SourceLabel => _entry.IsBuiltIn ? "内置" : "外部";
     public string EnabledLabel => _entry.IsEnabled ? "已启用" : "已禁用";
+    public string EnableSummary => _entry.IsEnabled ? "启用" : "禁用";
     public bool CanDisable => _entry.CanDisable;
-    public bool CanToggleEnabled => _entry.CanDisable || _entry.IsEnabled;
+    public bool CanToggleEnabled => !_isBusy && (_entry.CanDisable || _entry.IsEnabled);
     public IReadOnlyList<string> CapabilityTags => _entry.Capabilities.Select(FormatCapability).ToArray();
     public bool HasCapabilities => CapabilityTags.Count > 0;
-    public string CapabilitySummary => HasCapabilities
-        ? string.Join(" / ", CapabilityTags)
-        : "未声明";
+    public string CapabilitySummary => HasCapabilities ? string.Join(" / ", CapabilityTags) : "未声明";
+    public IReadOnlyList<string> DisplayTags => _entry.DisplayTags;
+    public bool HasDisplayTags => DisplayTags.Count > 0;
+    public bool IsBusy => _isBusy;
+
+    public IReadOnlyList<PluginMonitorTagViewModel> CardTags
+        => BuildCardTags();
 
     public bool IsEnabled
     {
@@ -51,15 +59,37 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
         }
     }
 
+    public bool IsRunning
+    {
+        get => _entry.State is PluginState.Running or PluginState.Starting;
+        set
+        {
+            if (IsRunning == value)
+                return;
+
+            _ = SetRunningAsync(value);
+        }
+    }
+
     public PluginState State => _entry.State;
     public string StateLabel => _entry.State switch
     {
-        PluginState.Running => "运行中",
-        PluginState.Loaded => "已停止",
-        PluginState.Faulted => "故障",
-        PluginState.Stopping => "停止中",
-        PluginState.Starting => "启动中",
+        PluginState.Running => "Running",
+        PluginState.Loaded => "Stopped",
+        PluginState.Faulted => "Faulted",
+        PluginState.Stopping => "Stopping",
+        PluginState.Starting => "Starting",
         _ => _entry.State.ToString()
+    };
+
+    public string StateTagLabel => _entry.State switch
+    {
+        PluginState.Running => "Running",
+        PluginState.Faulted => "Faulted",
+        PluginState.Starting => "Starting",
+        PluginState.Stopping => "Stopping",
+        PluginState.Loaded => "Stopped",
+        _ => "Unknown"
     };
 
     public IBrush StateBadgeBackground => _entry.State switch
@@ -77,13 +107,16 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     };
 
     public string StateStatusLabel => _entry.State == PluginState.Running ? "在线" : "离线";
-    public IBrush StateDotBrush => _entry.State == PluginState.Running ? SuccessForeground : DangerForeground;
+    public IBrush StateDotBrush => _entry.State == PluginState.Running ? SuccessForeground : WarningForeground;
     public string? LastErrorMessage => _entry.LastError?.Message;
     public string StateChangedAtText => _entry.StateChangedAt.ToString("yyyy-MM-dd HH:mm:ss");
     public bool HasError => _entry.LastError is not null;
-    public bool CanRestart => _entry.IsEnabled && _entry.CanDisable && _entry.State != PluginState.Stopping;
+    public bool CanRestart => !_isBusy && _entry.IsEnabled && _entry.CanDisable && _entry.State != PluginState.Stopping;
+    public bool CanStop => !_isBusy && _entry.IsEnabled && _entry.State is PluginState.Running or PluginState.Starting;
+    public bool CanToggleRunning => !_isBusy && _entry.IsEnabled && _entry.State is not PluginState.Stopping;
 
     public IAsyncRelayCommand RestartCommand { get; }
+    public IAsyncRelayCommand StopCommand { get; }
 
     public PluginMonitorItemViewModel(PluginEntry entry, IPluginLifecycleService pluginLifecycleService)
     {
@@ -92,28 +125,95 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
         _entry.PropertyChanged += EntryPropertyChanged;
 
         RestartCommand = new AsyncRelayCommand(
-            () => _pluginLifecycleService.RestartAsync(Id),
+            () => ExecuteBusyActionAsync(() => _pluginLifecycleService.RestartAsync(Id)),
             () => CanRestart);
+
+        StopCommand = new AsyncRelayCommand(
+            () => ExecuteBusyActionAsync(() => _pluginLifecycleService.StopAsync(Id)),
+            () => CanStop);
+    }
+
+    private IReadOnlyList<PluginMonitorTagViewModel> BuildCardTags()
+    {
+        var tags = new List<PluginMonitorTagViewModel>
+        {
+            new()
+            {
+                Text = StateLabel,
+                Background = StateBadgeBackground,
+                Foreground = StateBadgeForeground
+            },
+            new()
+            {
+                Text = KindLabel,
+                Background = NeutralBackground,
+                Foreground = NeutralForeground
+            }
+        };
+
+        tags.AddRange(DisplayTags.Select(tag => new PluginMonitorTagViewModel
+        {
+            Text = tag,
+            Background = NeutralBackground,
+            Foreground = NeutralForeground
+        }));
+
+        return tags;
     }
 
     private async Task SetEnabledAsync(bool value)
     {
-        _entry.IsEnabled = value;
-        OnPropertyChanged(nameof(IsEnabled));
-        OnPropertyChanged(nameof(EnabledLabel));
-        OnPropertyChanged(nameof(CanRestart));
-        RestartCommand.NotifyCanExecuteChanged();
-
-        if (value)
+        await ExecuteBusyActionAsync(async () =>
         {
-            if (_entry.State is PluginState.Loaded or PluginState.Faulted)
-                await _pluginLifecycleService.StartAsync(Id);
+            _entry.IsEnabled = value;
+            RaiseStateProperties();
 
+            if (value)
+            {
+                if (_entry.State is PluginState.Loaded or PluginState.Faulted)
+                    await _pluginLifecycleService.StartAsync(Id);
+
+                return;
+            }
+
+            if (_entry.State is PluginState.Running or PluginState.Starting)
+                await _pluginLifecycleService.StopAsync(Id);
+        });
+    }
+
+    private async Task SetRunningAsync(bool value)
+    {
+        await ExecuteBusyActionAsync(async () =>
+        {
+            if (value)
+            {
+                if (_entry.IsEnabled && _entry.State is PluginState.Loaded or PluginState.Faulted)
+                    await _pluginLifecycleService.StartAsync(Id);
+
+                return;
+            }
+
+            if (_entry.State is PluginState.Running or PluginState.Starting)
+                await _pluginLifecycleService.StopAsync(Id);
+        });
+    }
+
+    private async Task ExecuteBusyActionAsync(Func<Task> action)
+    {
+        if (_isBusy)
             return;
-        }
 
-        if (_entry.State == PluginState.Running)
-            await _pluginLifecycleService.StopAsync(Id);
+        try
+        {
+            _isBusy = true;
+            RaiseBusyProperties();
+            await action();
+        }
+        finally
+        {
+            _isBusy = false;
+            RaiseBusyProperties();
+        }
     }
 
     private void EntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -124,21 +224,44 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
             or nameof(PluginEntry.IsEnabled)
             or nameof(PluginEntry.Sort))
         {
-            OnPropertyChanged(nameof(State));
-            OnPropertyChanged(nameof(StateLabel));
-            OnPropertyChanged(nameof(StateBadgeBackground));
-            OnPropertyChanged(nameof(StateBadgeForeground));
-            OnPropertyChanged(nameof(StateStatusLabel));
-            OnPropertyChanged(nameof(StateDotBrush));
-            OnPropertyChanged(nameof(LastErrorMessage));
-            OnPropertyChanged(nameof(StateChangedAtText));
-            OnPropertyChanged(nameof(HasError));
-            OnPropertyChanged(nameof(IsEnabled));
-            OnPropertyChanged(nameof(EnabledLabel));
-            OnPropertyChanged(nameof(CanToggleEnabled));
-            OnPropertyChanged(nameof(CanRestart));
-            RestartCommand.NotifyCanExecuteChanged();
+            RaiseStateProperties();
         }
+    }
+
+    private void RaiseBusyProperties()
+    {
+        OnPropertyChanged(nameof(IsBusy));
+        OnPropertyChanged(nameof(CanToggleEnabled));
+        OnPropertyChanged(nameof(CanToggleRunning));
+        OnPropertyChanged(nameof(CanRestart));
+        OnPropertyChanged(nameof(CanStop));
+        RestartCommand.NotifyCanExecuteChanged();
+        StopCommand.NotifyCanExecuteChanged();
+    }
+
+    private void RaiseStateProperties()
+    {
+        OnPropertyChanged(nameof(State));
+        OnPropertyChanged(nameof(StateLabel));
+        OnPropertyChanged(nameof(StateTagLabel));
+        OnPropertyChanged(nameof(StateBadgeBackground));
+        OnPropertyChanged(nameof(StateBadgeForeground));
+        OnPropertyChanged(nameof(StateStatusLabel));
+        OnPropertyChanged(nameof(StateDotBrush));
+        OnPropertyChanged(nameof(LastErrorMessage));
+        OnPropertyChanged(nameof(StateChangedAtText));
+        OnPropertyChanged(nameof(HasError));
+        OnPropertyChanged(nameof(IsEnabled));
+        OnPropertyChanged(nameof(IsRunning));
+        OnPropertyChanged(nameof(EnabledLabel));
+        OnPropertyChanged(nameof(EnableSummary));
+        OnPropertyChanged(nameof(CanToggleEnabled));
+        OnPropertyChanged(nameof(CanToggleRunning));
+        OnPropertyChanged(nameof(CanRestart));
+        OnPropertyChanged(nameof(CanStop));
+        OnPropertyChanged(nameof(CardTags));
+        RestartCommand.NotifyCanExecuteChanged();
+        StopCommand.NotifyCanExecuteChanged();
     }
 
     public void Dispose()

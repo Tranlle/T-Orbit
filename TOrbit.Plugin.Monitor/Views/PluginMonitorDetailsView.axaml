@@ -1,0 +1,213 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TOrbit.Plugin.Monitor.ViewModels"
+             xmlns:models="using:TOrbit.Core.Models"
+             xmlns:converters="using:TOrbit.Plugin.Monitor.Converters"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="TOrbit.Plugin.Monitor.Views.PluginMonitorDetailsView"
+             x:DataType="vm:PluginMonitorDetailsViewModel">
+
+  <UserControl.Resources>
+    <converters:IconNameToMaterialIconKindConverter x:Key="IconNameConverter" />
+  </UserControl.Resources>
+
+  <Grid RowDefinitions="Auto,Auto,Auto,*"
+        RowSpacing="18">
+    <Grid ColumnDefinitions="Auto,*,Auto"
+          ColumnSpacing="14">
+      <Border Width="52"
+              Height="52"
+              Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+              CornerRadius="14">
+        <materialIcons:MaterialIcon Kind="{Binding Plugin.Icon, Converter={StaticResource IconNameConverter}}"
+                                    Width="26"
+                                    Height="26"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
+      </Border>
+
+      <StackPanel Grid.Column="1"
+                  Spacing="2">
+        <TextBlock Text="{Binding Plugin.Name}"
+                   FontSize="18"
+                   FontWeight="SemiBold" />
+        <TextBlock Text="{Binding Plugin.Description}"
+                   Classes="caption-muted"
+                   TextWrapping="Wrap" />
+      </StackPanel>
+
+      <Border Grid.Column="2"
+              Background="{Binding Plugin.StateBadgeBackground}"
+              CornerRadius="999"
+              Padding="10,5"
+              VerticalAlignment="Top">
+        <TextBlock Text="{Binding Plugin.StateLabel}"
+                   Foreground="{Binding Plugin.StateBadgeForeground}"
+                   FontSize="11"
+                   FontWeight="Medium" />
+      </Border>
+    </Grid>
+
+    <Grid Grid.Row="1"
+          ColumnDefinitions="*,*"
+          ColumnSpacing="14">
+      <Border Classes="card"
+              Padding="16,14">
+        <Grid ColumnDefinitions="110,*"
+              RowDefinitions="Auto,Auto,Auto,Auto"
+              RowSpacing="12"
+              ColumnSpacing="14">
+          <TextBlock Text="版本"
+                     Classes="field-label" />
+          <TextBlock Grid.Column="1"
+                     Text="{Binding Plugin.Version}"
+                     Classes="field-value" />
+
+          <TextBlock Grid.Row="1"
+                     Text="来源"
+                     Classes="field-label" />
+          <TextBlock Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding Plugin.SourceLabel}"
+                     Classes="field-value" />
+
+          <TextBlock Grid.Row="2"
+                     Text="启用状态"
+                     Classes="field-label" />
+          <TextBlock Grid.Row="2"
+                     Grid.Column="1"
+                     Text="{Binding Plugin.EnabledLabel}"
+                     Classes="field-value" />
+
+          <TextBlock Grid.Row="3"
+                     Text="最近错误"
+                     Classes="field-label" />
+          <TextBlock Grid.Row="3"
+                     Grid.Column="1"
+                     Text="{Binding Plugin.LastErrorMessage, FallbackValue=当前无错误}"
+                     Classes="field-value"
+                     TextWrapping="Wrap" />
+        </Grid>
+      </Border>
+
+      <Border Grid.Column="1"
+              Classes="card"
+              Padding="16,14">
+        <StackPanel Spacing="16">
+          <Grid ColumnDefinitions="*,Auto"
+                ColumnSpacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="运行开关"
+                         Classes="section-title" />
+              <TextBlock Text="停止仅关闭当前运行实例，不改变插件启用状态。"
+                         Classes="caption-muted"
+                         MinHeight="0"
+                         TextWrapping="Wrap" />
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1"
+                          IsChecked="{Binding Plugin.IsRunning, Mode=TwoWay}"
+                          IsEnabled="{Binding Plugin.CanToggleRunning}"
+                          OffContent=""
+                          OnContent="" />
+          </Grid>
+
+          <Grid ColumnDefinitions="Auto,Auto"
+                ColumnSpacing="8">
+            <Button Content="重启插件"
+                    Classes="accent"
+                    Command="{Binding Plugin.RestartCommand}"
+                    IsEnabled="{Binding Plugin.CanRestart}" />
+            <Button Grid.Column="1"
+                    Content="关闭插件"
+                    Command="{Binding Plugin.StopCommand}"
+                    IsEnabled="{Binding Plugin.CanStop}" />
+          </Grid>
+
+          <ItemsControl ItemsSource="{Binding Plugin.CapabilityTags}"
+                        IsVisible="{Binding Plugin.HasCapabilities}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                        CornerRadius="999"
+                        Padding="10,4"
+                        Margin="0,0,8,8">
+                  <TextBlock Text="{Binding .}"
+                             FontSize="11"
+                             Foreground="{DynamicResource TOrbitTextMutedBrush}" />
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Grid.Row="2"
+            BorderBrush="{DynamicResource TOrbitBorderBrush}"
+            BorderThickness="0,1,0,0" />
+
+    <Grid Grid.Row="3"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
+      <StackPanel Spacing="2">
+        <TextBlock Text="插件诊断"
+                   Classes="section-title" />
+        <TextBlock Text="基于全局诊断记录匹配当前插件名称和 Id 的最近异常。"
+                   Classes="caption-muted"
+                   MinHeight="0"
+                   TextWrapping="Wrap" />
+      </StackPanel>
+
+      <StackPanel Grid.Row="1"
+                  Spacing="8"
+                  IsVisible="{Binding !HasDiagnostics}">
+        <TextBlock Text="当前没有匹配到该插件的诊断记录。"
+                   Classes="caption-muted" />
+      </StackPanel>
+
+      <ItemsControl Grid.Row="1"
+                    ItemsSource="{Binding Diagnostics}"
+                    IsVisible="{Binding HasDiagnostics}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="models:AppDiagnosticEntry">
+            <Border Background="{DynamicResource TOrbitSurfaceBrush}"
+                    BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource TOrbitRadiusMedium}"
+                    Padding="14,12"
+                    Margin="0,0,0,12">
+              <StackPanel Spacing="4">
+                <Grid ColumnDefinitions="Auto,8,*,Auto"
+                      VerticalAlignment="Center">
+                  <Border Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                          CornerRadius="999"
+                          Padding="8,3">
+                    <TextBlock Text="{Binding Severity}"
+                               FontSize="11" />
+                  </Border>
+                  <TextBlock Grid.Column="2"
+                             Text="{Binding Source}"
+                             FontWeight="SemiBold" />
+                  <TextBlock Grid.Column="3"
+                             Text="{Binding Timestamp, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"
+                             Classes="caption-muted" />
+                </Grid>
+                <TextBlock Text="{Binding Message}"
+                           TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Exception.Message}"
+                           TextWrapping="Wrap"
+                           Classes="caption-muted"
+                           IsVisible="{Binding Exception}" />
+              </StackPanel>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </Grid>
+  </Grid>
+</UserControl>

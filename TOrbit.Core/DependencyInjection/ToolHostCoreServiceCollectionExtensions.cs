@@ -20,6 +20,8 @@ public static class ToolHostCoreServiceCollectionExtensions
         services.AddSingleton<IAppStartupCoordinator, AppStartupCoordinator>();
         services.AddSingleton<IAppShutdownCoordinator, AppShutdownCoordinator>();
         services.AddSingleton<IPluginCatalogService, PluginCatalogService>();
+        services.AddSingleton<IHomeReportRegistry, HomeReportRegistry>();
+        services.AddSingleton<IHomeReportRegistrationService, HomeReportRegistrationService>();
         services.AddSingleton<IPluginDiscoveryService, PluginDiscoveryService>();
         services.AddSingleton<IPluginVariableService, PluginVariableService>();
         services.AddSingleton<IKeyMapService, KeyMapService>();

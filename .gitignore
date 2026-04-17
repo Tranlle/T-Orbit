@@ -48,3 +48,14 @@ TestResults.xml
 /TOrbit.Plugin.Monitor/bin/
 /TOrbit.Core.Tests/bin/
 /TOrbit.Core.Tests/obj/
+/TOrbit.Plugin.Core/artifacts/
+/TOrbit.Plugin.Home/artifacts/
+/TOrbit.Plugin.Home/bin/
+/TOrbit.Plugin.Home/obj/
+/TOrbit.Core/artifacts/
+/TOrbit.Designer/artifacts/
+/TOrbit.Plugin.KeyMap/artifacts/
+/TOrbit.Plugin.Migration/artifacts/
+/TOrbit.Plugin.Monitor/artifacts/
+/TOrbit.Plugin.Promptor/artifacts/
+/TOrbit.Plugin.Settings/artifacts/

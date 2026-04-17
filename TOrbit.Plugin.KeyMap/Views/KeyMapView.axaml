@@ -37,18 +37,6 @@
             <Grid RowDefinitions="Auto,*,Auto">
               <StackPanel Margin="20,20,20,16"
                           Spacing="12">
-                <StackPanel Spacing="4">
-                  <TextBlock Text="KEYMAP"
-                             Classes="eyebrow" />
-                  <TextBlock Text="快捷键目录"
-                             FontSize="18"
-                             FontWeight="SemiBold" />
-                  <TextBlock Text="按插件分组查看所有注册绑定，左侧负责检索和定位。"
-                             Classes="caption-muted"
-                             MinHeight="0"
-                             TextWrapping="Wrap" />
-                </StackPanel>
-
                 <TextBox Classes="form-control"
                          Text="{Binding SearchText, Mode=TwoWay}"
                          PlaceholderText="搜索快捷键..."
@@ -92,20 +80,15 @@
                                         BorderBrush="{DynamicResource TOrbitBorderBrush}"
                                         BorderThickness="1"
                                         CornerRadius="{DynamicResource TOrbitRadiusMedium}"
-                                        Padding="12,10">
+                                        Padding="12,11"
+                                        MinHeight="48">
                                   <Grid ColumnDefinitions="*,Auto"
                                         ColumnSpacing="10">
-                                    <StackPanel Spacing="3">
-                                      <TextBlock Text="{Binding Name}"
-                                                 FontSize="13"
-                                                 FontWeight="SemiBold"
-                                                 VerticalAlignment="Center" />
-                                      <TextBlock Text="{Binding Description}"
-                                                 Classes="caption-muted"
-                                                 MinHeight="0"
-                                                 MaxLines="2"
-                                                 TextWrapping="Wrap" />
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis" />
                                     <designer:StatusBadge Grid.Column="1"
                                                           Text="{Binding CurrentKeyDisplay}"
                                                           BadgeBackground="{DynamicResource TOrbitSurfaceElevatedBrush}"
@@ -130,7 +113,7 @@
                       BorderThickness="1"
                       CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                       Padding="12,10">
-                <TextBlock Text="修改后的绑定会立即刷新列表，并覆盖默认配置。"
+                <TextBlock Text="修改后的绑定会立即反映到列表中，并覆盖默认配置。"
                            Classes="caption-muted"
                            MinHeight="0"
                            TextWrapping="Wrap" />
@@ -145,8 +128,8 @@
                           VerticalScrollBarVisibility="Auto">
               <Panel Margin="20">
                 <designer:EmptyState IsVisible="{Binding SelectedBinding, Converter={x:Static ObjectConverters.IsNull}}"
-                                     Title="选择一条快捷键"
-                                     Description="从左侧目录中选择一条快捷键，右侧会显示绑定详情与编辑器。" />
+                                     Title="选择一个快捷键"
+                                     Description="从左侧列表选择一条绑定后，可在这里查看并编辑详情。" />
 
                 <ContentControl Content="{Binding SelectedBinding}"
                                 IsVisible="{Binding SelectedBinding, Converter={x:Static ObjectConverters.IsNotNull}}">
@@ -154,8 +137,6 @@
                     <DataTemplate x:DataType="vm:KeyMapBindingViewModel">
                       <StackPanel Spacing="18">
                         <StackPanel Spacing="4">
-                          <TextBlock Text="BINDING EDITOR"
-                                     Classes="eyebrow" />
                           <TextBlock Text="{Binding Name}"
                                      FontSize="18"
                                      FontWeight="SemiBold"
@@ -201,7 +182,7 @@
                             <StackPanel Spacing="2">
                               <TextBlock Text="当前绑定"
                                          Classes="section-title" />
-                              <TextBlock Text="聚焦输入框后直接按下新的组合键，按 Esc 取消本次录入。"
+                              <TextBlock Text="聚焦输入框后直接按下新的组合键，按 Esc 可取消本次录入。"
                                          Classes="caption-muted"
                                          MinHeight="0"
                                          TextWrapping="Wrap" />
@@ -215,7 +196,7 @@
                                     BorderThickness="1"
                                     CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                                     Padding="12,10">
-                              <TextBlock Text="当前绑定已偏离默认配置。"
+                              <TextBlock Text="当前绑定已覆盖默认值。"
                                          Foreground="{DynamicResource TOrbitBadgeInfoForegroundBrush}"
                                          FontSize="12"
                                          TextWrapping="Wrap" />
@@ -227,7 +208,7 @@
                               <StackPanel Spacing="3">
                                 <TextBlock Text="启用状态"
                                            Classes="subsection-title" />
-                                <TextBlock Text="关闭后该绑定不会参与当前运行时快捷键处理。"
+                                <TextBlock Text="关闭后该绑定不会参与当前运行时的快捷键处理。"
                                            Classes="caption-muted"
                                            MinHeight="0"
                                            TextWrapping="Wrap" />
@@ -237,7 +218,7 @@
                                             VerticalAlignment="Center" />
                               <Button Grid.Column="2"
                                       Command="{Binding ResetCommand}"
-                                      Content="重置默认"
+                                      Content="恢复默认"
                                       VerticalAlignment="Center" />
                             </Grid>
                           </StackPanel>
@@ -253,5 +234,4 @@
       </designer:SplitWorkspace>
     </designer:ToolPageLayout.BodyContent>
   </designer:ToolPageLayout>
-
 </UserControl>

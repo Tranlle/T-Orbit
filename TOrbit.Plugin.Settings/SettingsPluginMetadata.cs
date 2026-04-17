@@ -12,5 +12,5 @@ public sealed class SettingsPluginMetadata : PluginBaseMetadata
     public override string Description => "管理主题、配色方案和工作区相关设置。";
     public override string Author => "T-Orbit";
     public override string Icon => "Cog";
-    public override string Tags => "system,theme,builtin";
+    public override string Tags => "System,Theme,Builtin";
 }

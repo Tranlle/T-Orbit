@@ -27,6 +27,8 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     private CancellationTokenSource? _cts;
     private bool _isInitializing = true;
 
+    public event EventHandler? HeaderSummaryChanged;
+
     public ObservableCollection<MigrationEntry> Migrations { get; } = [];
     public ObservableCollection<DbConnectionProfile> DbProfiles { get; } = [];
 
@@ -74,6 +76,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     public bool IsIdle => !IsBusy;
     public bool HasMigrations => Migrations.Count > 0;
     public int MigrationCount => Migrations.Count;
+    public int ProfileCount => DbProfiles.Count;
     public bool HasSelectedMigration => SelectedMigration is not null;
     public bool CanRollback => SelectedMigration is not null && IsLastMigration(SelectedMigration);
 
@@ -244,6 +247,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         OnPropertyChanged(nameof(IsIdle));
         OnPropertyChanged(nameof(HasMigrations));
         OnPropertyChanged(nameof(MigrationCount));
+        OnPropertyChanged(nameof(ProfileCount));
         OnPropertyChanged(nameof(HasSelectedMigration));
         OnPropertyChanged(nameof(CanRollback));
         OnPropertyChanged(nameof(StartupProjectPath));
@@ -253,6 +257,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         OnPropertyChanged(nameof(ActiveProfileProperties));
         OnPropertyChanged(nameof(RollbackTooltip));
         OnPropertyChanged(nameof(OrderedProfiles));
+        HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void InitializeProfilesFromExistingConfig(string? preferredProfileId = null)

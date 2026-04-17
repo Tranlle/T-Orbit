@@ -46,46 +46,6 @@
   </UserControl.Styles>
 
   <designer:ToolPageLayout FooterHeight="196">
-    <designer:ToolPageLayout.HeaderContent>
-      <Border Classes="workspace-panel"
-              Padding="20,18">
-        <Grid ColumnDefinitions="2.2*,20,Auto"
-              ColumnSpacing="0">
-          <StackPanel Spacing="4">
-            <TextBlock Text="MIGRATIONS"
-                       Classes="eyebrow" />
-            <TextBlock Text="EF Core 迁移工作台"
-                       FontSize="18"
-                       FontWeight="SemiBold" />
-            <TextBlock Text="{Binding StatusMessage}"
-                       Classes="caption-muted"
-                       MinHeight="0"
-                       TextWrapping="Wrap" />
-          </StackPanel>
-
-          <Border Grid.Column="2"
-                  Padding="18,0,0,0"
-                  BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                  BorderThickness="1,0,0,0">
-            <StackPanel Orientation="Horizontal"
-                        Spacing="8"
-                        VerticalAlignment="Center">
-              <designer:StatusBadge Text="{Binding CurrentDatabaseTypeDisplay, TargetNullValue='未选择数据库'}"
-                                    BadgeBackground="{DynamicResource TOrbitSurfaceHoverBrush}"
-                                    BadgeForeground="{DynamicResource TOrbitTextSecondaryBrush}" />
-              <designer:StatusBadge Text="{Binding MigrationCount, StringFormat='迁移 {0}'}"
-                                    BadgeBackground="{DynamicResource TOrbitBadgeInfoBackgroundBrush}"
-                                    BadgeForeground="{DynamicResource TOrbitBadgeInfoForegroundBrush}" />
-              <designer:StatusBadge Text="{Binding IsBusy, StringFormat='忙碌: {0}'}"
-                                    BadgeBackground="{DynamicResource TOrbitBadgeNeutralBackgroundBrush}"
-                                    BadgeForeground="{DynamicResource TOrbitBadgeNeutralForegroundBrush}"
-                                    IsVisible="{Binding IsBusy}" />
-            </StackPanel>
-          </Border>
-        </Grid>
-      </Border>
-    </designer:ToolPageLayout.HeaderContent>
-
     <designer:ToolPageLayout.BodyContent>
       <designer:SplitWorkspace LeftWidth="360"
                                LeftMinWidth="300"
@@ -115,30 +75,22 @@
                   <Button Classes="icon-action"
                           ToolTip.Tip="新增配置"
                           Command="{Binding AddProfileCommand}">
-                    <materialIcons:MaterialIcon Kind="Plus"
-                                                Width="16"
-                                                Height="16" />
+                    <materialIcons:MaterialIcon Kind="Plus" Width="16" Height="16" />
                   </Button>
                   <Button Classes="icon-action"
                           ToolTip.Tip="修改配置"
                           Command="{Binding OpenEditProfileCommand}">
-                    <materialIcons:MaterialIcon Kind="PencilOutline"
-                                                Width="16"
-                                                Height="16" />
+                    <materialIcons:MaterialIcon Kind="PencilOutline" Width="16" Height="16" />
                   </Button>
                   <Button Classes="icon-action danger"
                           ToolTip.Tip="删除配置"
                           Command="{Binding DeleteProfileCommand}">
-                    <materialIcons:MaterialIcon Kind="TrashCanOutline"
-                                                Width="16"
-                                                Height="16" />
+                    <materialIcons:MaterialIcon Kind="TrashCanOutline" Width="16" Height="16" />
                   </Button>
                   <Button Classes="icon-action"
                           ToolTip.Tip="重新读取配置列表"
                           Command="{Binding RefreshCommand}">
-                    <materialIcons:MaterialIcon Kind="Refresh"
-                                                Width="16"
-                                                Height="16" />
+                    <materialIcons:MaterialIcon Kind="Refresh" Width="16" Height="16" />
                   </Button>
                 </StackPanel>
               </Grid>
@@ -158,36 +110,30 @@
                                 BorderBrush="{DynamicResource TOrbitBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="{DynamicResource TOrbitRadiusMedium}"
-                                Padding="14,12">
-                          <StackPanel Spacing="6"
-                                      VerticalAlignment="Center">
-                            <Grid ColumnDefinitions="*,Auto"
-                                  ColumnSpacing="10"
-                                  VerticalAlignment="Center">
-                              <TextBlock Text="{Binding EffectiveProfileName}"
-                                         FontSize="13"
-                                         FontWeight="SemiBold"
-                                         VerticalAlignment="Center"
-                                         TextTrimming="CharacterEllipsis" />
-                              <StackPanel Grid.Column="1"
-                                          Orientation="Horizontal"
-                                          Spacing="6"
-                                          VerticalAlignment="Center">
-                                <designer:StatusBadge Text="{Binding DbTypeTag}"
-                                                      BadgeBackground="{DynamicResource TOrbitAccentSubtleBrush}"
-                                                      BadgeForeground="{DynamicResource TOrbitAccentSubtleForegroundBrush}" />
-                                <designer:StatusBadge Text="{Binding ReadyStatusText}"
-                                                      BadgeBackground="{Binding ReadyBadgeBackground}"
-                                                      BadgeForeground="{Binding ReadyBadgeForeground}" />
-                              </StackPanel>
-                            </Grid>
-
-                            <TextBlock Text="{Binding ContextName, StringFormat='DbContext: {0}'}"
-                                       Classes="caption-muted"
-                                       MinHeight="0"
+                                Padding="14,12"
+                                MinHeight="72">
+                          <Grid ColumnDefinitions="*,Auto"
+                                ColumnSpacing="10"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="{Binding EffectiveProfileName}"
+                                       FontSize="13"
+                                       FontWeight="SemiBold"
                                        VerticalAlignment="Center"
-                                       TextWrapping="Wrap" />
-                          </StackPanel>
+                                       TextTrimming="CharacterEllipsis" />
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        Spacing="6"
+                                        VerticalAlignment="Center">
+                              <designer:StatusBadge Text="{Binding DbTypeTag}"
+                                                    BadgeBackground="{DynamicResource TOrbitAccentSubtleBrush}"
+                                                    BadgeForeground="{DynamicResource TOrbitAccentSubtleForegroundBrush}"
+                                                    VerticalAlignment="Center" />
+                              <designer:StatusBadge Text="{Binding ReadyStatusText}"
+                                                    BadgeBackground="{Binding ReadyBadgeBackground}"
+                                                    BadgeForeground="{Binding ReadyBadgeForeground}"
+                                                    VerticalAlignment="Center" />
+                            </StackPanel>
+                          </Grid>
                         </Border>
                       </Button>
                     </DataTemplate>
@@ -287,7 +233,7 @@
                     RowSpacing="12">
                 <Grid ColumnDefinitions="*,Auto"
                       ColumnSpacing="12">
-                  <designer:EditorHeader Title="迁移操作">
+                  <designer:EditorHeader Title="迁移动作">
                     <designer:EditorHeader.ActionContent>
                       <Button Content="查看迁移文件"
                               Command="{Binding OpenMigrationFileCommand}"
@@ -306,11 +252,11 @@
                         <Button Classes="compact-action"
                                 Content="新增迁移"
                                 Command="{Binding ShowNewPanelCommand}" />
-                    <Button Classes="compact-action danger"
-                            Content="删除迁移"
-                            Command="{Binding RollbackSelectedCommand}"
-                            ToolTip.Tip="{Binding RollbackTooltip}"
-                            IsEnabled="{Binding CanRollback}" />
+                        <Button Classes="compact-action danger"
+                                Content="删除迁移"
+                                Command="{Binding RollbackSelectedCommand}"
+                                ToolTip.Tip="{Binding RollbackTooltip}"
+                                IsEnabled="{Binding CanRollback}" />
                       </StackPanel>
                     </Border>
                     <Button Classes="compact-action accent"

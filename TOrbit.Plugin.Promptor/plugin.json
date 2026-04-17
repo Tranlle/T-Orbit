@@ -7,7 +7,7 @@
   "description": "基于 AI 大模型的提示词优化工具，支持结构化、少样本、思维链等多种优化策略。",
   "author": "T-Orbit",
   "icon": "AutoFixHigh",
-  "tags": "ai,prompt,llm",
+  "tags": "AI,Prompt,Llm",
   "kind": "Visual",
   "loadMode": "Lazy",
   "isolationMode": "AssemblyLoadContext",

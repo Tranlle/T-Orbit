@@ -7,7 +7,7 @@
   "description": "管理 EF Core 迁移文件：新增、编辑、执行、撤回，支持 SqlServer / PostgreSQL / MySQL。",
   "author": "T-Orbit",
   "icon": "Database",
-  "tags": "database,efcore,migration",
+  "tags": "Database,Efcore,Migration",
   "kind": "Visual",
   "loadMode": "Lazy",
   "isolationMode": "AssemblyLoadContext",

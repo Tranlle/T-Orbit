@@ -14,7 +14,7 @@ public sealed class MigrationPluginMetadata : PluginBaseMetadata
     public override string Description => "管理 EF Core 迁移文件：新增、编辑、执行、回滚，支持 SqlServer / PostgreSQL / MySQL。";
     public override string Author => "T-Orbit";
     public override string Icon => "Database";
-    public override string Tags => "database,efcore,migration";
+    public override string Tags => "Database,Efcore,Migration";
     public override IReadOnlyList<PluginCapability> Capabilities =>
     [
         PluginCapability.FileSystem,

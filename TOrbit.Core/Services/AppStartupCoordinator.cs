@@ -8,6 +8,7 @@ public sealed class AppStartupCoordinator : IAppStartupCoordinator
     private readonly IPluginVariableService _pluginVariableService;
     private readonly IKeyMapService _keyMapService;
     private readonly IAppDiagnosticsService _diagnosticsService;
+    private readonly IHomeReportRegistrationService _homeReportRegistrationService;
     private readonly SemaphoreSlim _startupGate = new(1, 1);
     private bool _hasStarted;
 
@@ -15,12 +16,14 @@ public sealed class AppStartupCoordinator : IAppStartupCoordinator
         IPluginDiscoveryService pluginDiscoveryService,
         IPluginVariableService pluginVariableService,
         IKeyMapService keyMapService,
-        IAppDiagnosticsService diagnosticsService)
+        IAppDiagnosticsService diagnosticsService,
+        IHomeReportRegistrationService homeReportRegistrationService)
     {
         _pluginDiscoveryService = pluginDiscoveryService;
         _pluginVariableService = pluginVariableService;
         _keyMapService = keyMapService;
         _diagnosticsService = diagnosticsService;
+        _homeReportRegistrationService = homeReportRegistrationService;
     }
 
     public async Task WarmupAsync(Func<CancellationToken, Task>? registerBuiltIns = null, CancellationToken cancellationToken = default)
@@ -43,6 +46,11 @@ public sealed class AppStartupCoordinator : IAppStartupCoordinator
             await RunStepAsync("KeyMap", () =>
             {
                 _keyMapService.Load();
+                return Task.CompletedTask;
+            });
+            await RunStepAsync("HomeReports", () =>
+            {
+                _homeReportRegistrationService.Initialize();
                 return Task.CompletedTask;
             });
 

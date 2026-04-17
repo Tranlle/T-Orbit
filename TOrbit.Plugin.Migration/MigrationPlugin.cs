@@ -12,7 +12,7 @@ using TOrbit.Plugin.Migration.Views;
 
 namespace TOrbit.Plugin.Migration;
 
-public sealed class MigrationPlugin : BasePlugin, IVisualPlugin, IPluginVariableReceiver
+public sealed class MigrationPlugin : BasePlugin, IVisualPlugin, IPluginVariableReceiver, IPluginPageHeaderProvider
 {
     private MigrationView? _view;
     private MigrationViewModel? _viewModel;
@@ -21,6 +21,8 @@ public sealed class MigrationPlugin : BasePlugin, IVisualPlugin, IPluginVariable
     private MigrationVariables _variables = new();
 
     public override PluginDescriptor Descriptor { get; } = CreateDescriptor<MigrationPlugin>(MigrationPluginMetadata.Instance);
+
+    public event EventHandler? HeaderChanged;
 
     protected override ValueTask OnStartAsync(CancellationToken cancellationToken = default)
     {
@@ -32,6 +34,26 @@ public sealed class MigrationPlugin : BasePlugin, IVisualPlugin, IPluginVariable
     {
         EnsureView();
         return _view!;
+    }
+
+    public PluginPageHeaderModel? GetPageHeader()
+    {
+        EnsureView();
+        if (_viewModel is null)
+            return null;
+
+        var context = _viewModel.StatusMessage;
+        if (string.IsNullOrWhiteSpace(context)
+            || string.Equals(context, "Ready", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(context, "就绪", StringComparison.OrdinalIgnoreCase))
+        {
+            context = _viewModel.HasSelectedProfile ? string.Empty : "请先选择或创建一个数据库配置。";
+        }
+
+        return new PluginPageHeaderModel
+        {
+            Context = context
+        };
     }
 
     public void OnVariablesInjected(IReadOnlyDictionary<string, string> rawValues)
@@ -46,6 +68,7 @@ public sealed class MigrationPlugin : BasePlugin, IVisualPlugin, IPluginVariable
         {
             var dialogService = Context.GetTool<IDesignerDialogService>();
             _viewModel = new MigrationViewModel(_service, _configurationStore, _variables, dialogService);
+            _viewModel.HeaderSummaryChanged += ViewModelOnHeaderSummaryChanged;
         }
 
         _view ??= new MigrationView { DataContext = _viewModel };
@@ -53,8 +76,14 @@ public sealed class MigrationPlugin : BasePlugin, IVisualPlugin, IPluginVariable
 
     protected override ValueTask OnDisposeAsync()
     {
+        if (_viewModel is not null)
+            _viewModel.HeaderSummaryChanged -= ViewModelOnHeaderSummaryChanged;
+
         _view = null;
         _viewModel = null;
         return ValueTask.CompletedTask;
     }
+
+    private void ViewModelOnHeaderSummaryChanged(object? sender, EventArgs e)
+        => HeaderChanged?.Invoke(this, EventArgs.Empty);
 }

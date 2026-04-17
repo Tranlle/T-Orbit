@@ -22,6 +22,8 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly ObservableCollection<PluginVariableItemViewModel> _pluginVariableItems = [];
     private readonly ObservableCollection<PluginVariableGroupViewModel> _pluginVariableGroups = [];
 
+    public event EventHandler? HeaderSummaryChanged;
+
     [ObservableProperty]
     private string appName = "T-Orbit";
 
@@ -73,6 +75,11 @@ public sealed partial class SettingsViewModel : ObservableObject
     public ObservableCollection<DesignerOptionItem> AdvancedPaletteOptions { get; } = [];
     public ObservableCollection<DesignerOptionItem> PluginOptions { get; } = [];
     public IReadOnlyList<PluginVariableGroupViewModel> PluginVariableGroups => _pluginVariableGroups;
+    public int PluginCount => _pluginCatalog.Plugins.Count;
+    public int VariableCount => _pluginVariableItems.Count;
+    public int VariablePluginCount => _pluginVariableGroups.Count;
+    public int ValidationIssuePluginCount => _pluginCatalog.Plugins.Count(plugin =>
+        _validationStatusService.Get(plugin.Id, plugin.Name).HasIssues);
 
     public bool IsInterFontWarningVisible => SelectedFontOption?.Key == "inter";
     public string FontWarningMessage => "Inter 在当前 Avalonia 版本下可能出现 TextBox 光标与末尾字符重叠的问题，如遇到输入异常，建议切回“系统推荐”。";
@@ -253,7 +260,23 @@ public sealed partial class SettingsViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(IsInterFontWarningVisible));
         OnPropertyChanged(nameof(FontWarningMessage));
+        HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
+
+    partial void OnSelectedPaletteOptionChanged(DesignerOptionItem? value)
+        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+
+    partial void OnSelectedAdvancedPaletteOptionChanged(DesignerOptionItem? value)
+        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+
+    partial void OnShowAdvancedThemeSettingsChanged(bool value)
+        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+
+    partial void OnWorkspaceRootChanged(string value)
+        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+
+    partial void OnMinimizeToTrayOnCloseChanged(bool value)
+        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
 
     partial void OnAddFormSelectedPluginChanged(DesignerOptionItem? value)
     {
@@ -431,6 +454,9 @@ public sealed partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(PluginVariableGroups));
         OnPropertyChanged(nameof(HasPluginVariables));
         OnPropertyChanged(nameof(PluginVariableSummary));
+        OnPropertyChanged(nameof(VariableCount));
+        OnPropertyChanged(nameof(VariablePluginCount));
+        HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void PublishPluginValidationStates()
@@ -449,8 +475,11 @@ public sealed partial class SettingsViewModel : ObservableObject
                 .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
 
             var messages = PluginVariableValidator.Validate(plugin.Name, definitions, values).ToArray();
-            _validationStatusService.Set(plugin.Id, plugin.Name, messages);
+                _validationStatusService.Set(plugin.Id, plugin.Name, messages);
         }
+
+        OnPropertyChanged(nameof(ValidationIssuePluginCount));
+        HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void SavePluginVariables()

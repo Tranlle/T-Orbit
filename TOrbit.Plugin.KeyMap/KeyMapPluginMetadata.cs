@@ -12,5 +12,5 @@ public sealed class KeyMapPluginMetadata : PluginBaseMetadata
     public override string Description => "管理和自定义全局快捷键绑定。";
     public override string Author => "T-Orbit";
     public override string Icon => "Keyboard";
-    public override string Tags => "system,keyboard,builtin";
+    public override string Tags => "System,Keyboard,Builtin";
 }

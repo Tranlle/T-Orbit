@@ -14,7 +14,7 @@ public sealed class PromptorPluginMetadata : PluginBaseMetadata
     public override string Description => "基于大模型的提示词优化工具，支持结构化、少样本、思维链等多种优化策略。";
     public override string Author => "T-Orbit";
     public override string Icon => "AutoFixHigh";
-    public override string Tags => "ai,prompt,llm";
+    public override string Tags => "AI,Prompt,Llm";
     public override IReadOnlyList<PluginCapability> Capabilities =>
     [
         PluginCapability.Network,

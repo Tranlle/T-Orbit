@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:TOrbit.Designer.Controls"
+             x:Class="TOrbit.Designer.Controls.BadgeFlow"
+             x:DataType="controls:BadgeFlow"
+             x:Name="Root">
+  <ItemsControl ItemsSource="{Binding ItemsSource, ElementName=Root}"
+                ItemTemplate="{Binding ItemTemplate, ElementName=Root}">
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <WrapPanel Orientation="Horizontal"
+                   ItemSpacing="{Binding ItemSpacing, ElementName=Root}"
+                   LineSpacing="{Binding LineSpacing, ElementName=Root}" />
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+  </ItemsControl>
+</UserControl>

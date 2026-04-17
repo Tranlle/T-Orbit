@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TOrbit.Core\TOrbit.Core.csproj" />
+    <ProjectReference Include="..\TOrbit.Designer\TOrbit.Designer.csproj" />
+    <ProjectReference Include="..\TOrbit.Plugin.Core\TOrbit.Plugin.Core.csproj" />
+  </ItemGroup>
+
+</Project>

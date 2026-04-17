@@ -22,7 +22,7 @@
 T-Orbit 不是单一业务应用，而是一个可扩展的桌面工具宿主：
 
 - 宿主管理插件发现、加载、生命周期、导航、设置、诊断和持久化。
-- 插件提供功能页面、工具能力和业务逻辑。
+- 插件提供功能页面、首页报表、工具能力和业务逻辑。
 - 所有插件共享统一设计系统、主题系统、变量管理和宿主工具接口。
 
 ## 目录
@@ -61,14 +61,17 @@ T-Orbit 不是单一业务应用，而是一个可扩展的桌面工具宿主：
 
 - 插件目录扫描与 Manifest 加载
 - 插件目录注册与导航构建
+- 首页报表注册与聚合
 - 统一设置页、监控页、快捷键页
 - 应用级诊断收集与展示
 
 ### 插件层
 
 - `Visual` 类型插件页面承载
+- `HomeReport` 类型首页报表注入
 - 插件变量声明、注入、校验状态发布
 - 页面头部动作区扩展
+- 插件页头上下文、指标与徽标扩展
 - 插件能力标签与元数据展示
 
 ### 工程能力
@@ -82,6 +85,7 @@ T-Orbit 不是单一业务应用，而是一个可扩展的桌面工具宿主：
 
 | 插件 | 说明 |
 | --- | --- |
+| `torbit.home` | 首页聚合页，承载内置报表与插件注入报表 |
 | `torbit.keymap` | 快捷键查看、编辑与覆盖管理 |
 | `torbit.settings` | 主题、字体、窗口行为与插件变量管理 |
 | `torbit.monitor` | 插件运行状态、能力声明与应用诊断查看 |
@@ -121,6 +125,7 @@ T-Orbit/
 ├─ TOrbit.Core/                # 核心服务：插件、存储、变量、快捷键、诊断
 ├─ TOrbit.Designer/            # 统一设计系统、主题与复用控件
 ├─ TOrbit.Plugin.Core/         # 插件契约、基础模型、基类
+├─ TOrbit.Plugin.Home/         # 内置插件：首页与报表聚合
 ├─ TOrbit.Plugin.KeyMap/       # 内置插件：快捷键管理
 ├─ TOrbit.Plugin.Settings/     # 内置插件：设置与变量管理
 ├─ TOrbit.Plugin.Monitor/      # 内置插件：插件监控与应用诊断
@@ -140,6 +145,7 @@ T-Orbit/
   - 外部插件发现与加载
   - 插件变量注入
   - 快捷键覆盖加载
+  - 首页报表注册
 
 ### 生命周期
 
@@ -153,6 +159,12 @@ T-Orbit/
 - 设置页保存不会被变量校验阻塞。
 - 校验问题会以“插件级提醒”的方式展示在对应插件页头部。
 - 启动、迁移、发现、关闭阶段的异常会汇总到应用诊断。
+
+### 首页与页头扩展
+
+- `IHomeReportPlugin` 可向首页注册一个或多个报表卡片。
+- `IHomeReportRegistrationService` 会在启动后收集已启用插件的报表定义。
+- `IPluginPageHeaderProvider` 可为插件页面提供上下文、指标和状态徽标。
 
 ### 存储
 
@@ -388,6 +400,8 @@ dotnet test TOrbit.Core.Tests/TOrbit.Core.Tests.csproj
 - 架构说明：[Architecture](https://github.com/Tranlle/T-Orbit/wiki/Architecture)
 - 插件系统：[Plugin System](https://github.com/Tranlle/T-Orbit/wiki/Plugin-System)
 - 变量管理：[Plugin Variable Management](https://github.com/Tranlle/T-Orbit/wiki/Plugin-Variable-Management)
+- 主题定制：[Theme Customization](https://github.com/Tranlle/T-Orbit/wiki/Theme-Customization)
+- 迁移插件：[Migration Plugin](https://github.com/Tranlle/T-Orbit/wiki/Migration-Plugin)
 - 插件开发：[Creating a Plugin](https://github.com/Tranlle/T-Orbit/wiki/Creating-a-Plugin)
 
 ## 许可证

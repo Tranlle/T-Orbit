@@ -12,7 +12,7 @@ using TOrbit.Plugin.Promptor.Views;
 
 namespace TOrbit.Plugin.Promptor;
 
-public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableReceiver
+public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableReceiver, IPluginPageHeaderProvider
 {
     private PromptorView? _view;
     private PromptorViewModel? _viewModel;
@@ -20,6 +20,8 @@ public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableR
 
     public override PluginDescriptor Descriptor { get; } =
         CreateDescriptor<PromptorPlugin>(PromptorPluginMetadata.Instance);
+
+    public event EventHandler? HeaderChanged;
 
     public void OnVariablesInjected(IReadOnlyDictionary<string, string> rawValues)
     {
@@ -48,12 +50,15 @@ public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableR
         return _view!;
     }
 
+    public PluginPageHeaderModel? GetPageHeader() => null;
+
     private void EnsureView()
     {
         if (_viewModel is null)
         {
             var dialogService = Context.GetTool<IDesignerDialogService>();
             _viewModel = new PromptorViewModel(dialogService, _variables);
+            _viewModel.HeaderSummaryChanged += ViewModelOnHeaderSummaryChanged;
         }
 
         _view ??= new PromptorView { DataContext = _viewModel };
@@ -61,9 +66,17 @@ public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableR
 
     protected override ValueTask OnDisposeAsync()
     {
+        if (_viewModel is not null)
+        {
+            _viewModel.HeaderSummaryChanged -= ViewModelOnHeaderSummaryChanged;
+            _viewModel.Dispose();
+        }
+
         _view = null;
-        _viewModel?.Dispose();
         _viewModel = null;
         return ValueTask.CompletedTask;
     }
+
+    private void ViewModelOnHeaderSummaryChanged(object? sender, EventArgs e)
+        => HeaderChanged?.Invoke(this, EventArgs.Empty);
 }

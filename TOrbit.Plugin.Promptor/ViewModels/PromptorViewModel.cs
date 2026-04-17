@@ -26,6 +26,8 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     private CancellationTokenSource? _cts;
     private CancellationTokenSource? _copyCts;
 
+    public event EventHandler? HeaderSummaryChanged;
+
     [ObservableProperty]
     private string rawInput = string.Empty;
 
@@ -47,7 +49,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     public ObservableCollection<PromptorLogEntry> LogEntries { get; } = [];
 
     public string FormattedLogText => LogEntries.Count == 0
-        ? "（暂无操作日志）\n\n提示：完成一次提示词优化后，这里会显示结构化调用记录。"
+        ? "（暂时没有操作日志）\n\n完成一次提示词优化后，这里会显示结构化调用记录。"
         : string.Join(Environment.NewLine + Environment.NewLine, LogEntries.Select(entry => entry.FormatAsText()));
 
     public IReadOnlyList<DesignerOptionItem> StrategyOptions { get; } =
@@ -57,35 +59,35 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
             Key = "Structured",
             Label = "结构化",
             Value = OptimizationStrategy.Structured,
-            Description = "角色定义 + 任务描述 + 约束条件"
+            Description = "角色定义 + 任务描述 + 约束条件。"
         },
         new DesignerOptionItem
         {
             Key = "FewShot",
             Label = "少样本",
             Value = OptimizationStrategy.FewShot,
-            Description = "自动补充典型输入输出示例"
+            Description = "自动补充典型输入与输出示例。"
         },
         new DesignerOptionItem
         {
             Key = "ChainOfThought",
             Label = "思维链",
             Value = OptimizationStrategy.ChainOfThought,
-            Description = "引导模型逐步分析和推理"
+            Description = "引导模型先分析，再输出最终结果。"
         },
         new DesignerOptionItem
         {
             Key = "Concise",
             Label = "精简版",
             Value = OptimizationStrategy.Concise,
-            Description = "去除冗余，保留核心表达"
+            Description = "压缩冗余表达，保留核心意图。"
         },
         new DesignerOptionItem
         {
             Key = "Technical",
             Label = "技术向",
             Value = OptimizationStrategy.Technical,
-            Description = "强化代码规范和输出格式"
+            Description = "强化技术约束、实现细节和输出格式要求。"
         }
     ];
 
@@ -95,6 +97,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     public bool CanOptimize => HasRawInput && !IsBusy;
     public string StrategyDescription => SelectedStrategyOption?.Description ?? string.Empty;
     public string CopyButtonText => IsCopied ? "已复制" : "复制结果";
+    public int LogCount => LogEntries.Count;
 
     public IRelayCommand OptimizeCommand { get; }
     public IRelayCommand CopyCommand { get; }
@@ -119,18 +122,30 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         ShowLogCommand = new AsyncRelayCommand(ShowLogDialogAsync);
         ClearLogCommand = new RelayCommand(ClearLog);
 
-        LogEntries.CollectionChanged += (_, _) => OnPropertyChanged(nameof(FormattedLogText));
+        LogEntries.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(FormattedLogText));
+            OnPropertyChanged(nameof(LogCount));
+            HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+        };
     }
 
     partial void OnRawInputChanged(string value) => RaiseDerivedProperties();
     partial void OnOptimizedOutputChanged(string value) => RaiseDerivedProperties();
     partial void OnIsBusyChanged(bool value) => RaiseDerivedProperties();
-    partial void OnIsCopiedChanged(bool value) => OnPropertyChanged(nameof(CopyButtonText));
+
+    partial void OnIsCopiedChanged(bool value)
+    {
+        OnPropertyChanged(nameof(CopyButtonText));
+        HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     partial void OnSelectedStrategyOptionChanged(DesignerOptionItem? value) => RaiseDerivedProperties();
 
     public void UpdateVariables(PromptorVariables variables)
     {
         _variables = variables;
+        HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void RaiseDerivedProperties()
@@ -140,13 +155,14 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         OnPropertyChanged(nameof(IsIdle));
         OnPropertyChanged(nameof(CanOptimize));
         OnPropertyChanged(nameof(StrategyDescription));
+        HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private async Task OptimizeAsync()
     {
         if (string.IsNullOrWhiteSpace(RawInput))
         {
-            await ShowAlertAsync("输入为空", "请先在左侧输入需要优化的提示词内容。");
+            await ShowAlertAsync("输入为空", "请先输入需要优化的提示词内容。");
             return;
         }
 
@@ -239,7 +255,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         if (!isOllama && !hasEndpoint && string.IsNullOrWhiteSpace(apiKey))
         {
             throw new InvalidOperationException(
-                "尚未配置 API Key。\n请先在“设置 -> 插件变量管理”中补充 PROMPTOR_API_KEY。");
+                "尚未配置 API Key。\n请先在“设置 -> 插件变量”中补充 PROMPTOR_API_KEY。");
         }
 
         return new PromptorConfig(provider, endpoint, apiKey, model, maxTokens, temperature);

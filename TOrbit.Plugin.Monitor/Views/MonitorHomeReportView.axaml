@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TOrbit.Plugin.Monitor.ViewModels"
+             x:Class="TOrbit.Plugin.Monitor.Views.MonitorHomeReportView"
+             x:DataType="vm:MonitorHomeReportViewModel">
+
+  <StackPanel Spacing="14">
+    <Grid ColumnDefinitions="*,*"
+          RowDefinitions="Auto,Auto"
+          ColumnSpacing="12"
+          RowSpacing="12">
+      <Border Classes="panel"
+              Padding="14,12">
+        <StackPanel Spacing="4">
+          <TextBlock Text="插件总数"
+                     Classes="caption-muted"
+                     MinHeight="0" />
+          <TextBlock Text="{Binding TotalCount}"
+                     FontSize="22"
+                     FontWeight="SemiBold" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Column="1"
+              Classes="panel"
+              Padding="14,12">
+        <StackPanel Spacing="4">
+          <TextBlock Text="运行中"
+                     Classes="caption-muted"
+                     MinHeight="0" />
+          <TextBlock Text="{Binding RunningCount}"
+                     FontSize="22"
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource TOrbitBadgeSuccessForegroundBrush}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="1"
+              Classes="panel"
+              Padding="14,12">
+        <StackPanel Spacing="4">
+          <TextBlock Text="故障插件"
+                     Classes="caption-muted"
+                     MinHeight="0" />
+          <TextBlock Text="{Binding FaultedCount}"
+                     FontSize="22"
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource TOrbitBadgeDangerForegroundBrush}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="1"
+              Grid.Column="1"
+              Classes="panel"
+              Padding="14,12">
+        <StackPanel Spacing="4">
+          <TextBlock Text="错误诊断"
+                     Classes="caption-muted"
+                     MinHeight="0" />
+          <TextBlock Text="{Binding ErrorDiagnosticCount}"
+                     FontSize="22"
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource TOrbitAccentBrush}" />
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <StackPanel Spacing="8">
+      <TextBlock Text="最近故障插件"
+                 Classes="subsection-title" />
+
+      <StackPanel Spacing="8"
+                  IsVisible="{Binding HasFaultedPlugins}">
+        <ItemsControl ItemsSource="{Binding FaultedPlugins}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="panel"
+                      Padding="12,10"
+                      Margin="0,0,0,8">
+                <TextBlock Text="{Binding .}"
+                           TextTrimming="CharacterEllipsis" />
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+
+      <TextBlock Text="当前没有故障插件。"
+                 Classes="caption-muted"
+                 IsVisible="{Binding !HasFaultedPlugins}" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>
