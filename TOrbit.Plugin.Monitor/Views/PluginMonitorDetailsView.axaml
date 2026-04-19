@@ -4,6 +4,7 @@
              xmlns:models="using:TOrbit.Core.Models"
              xmlns:converters="using:TOrbit.Plugin.Monitor.Converters"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:Class="TOrbit.Plugin.Monitor.Views.PluginMonitorDetailsView"
              x:DataType="vm:PluginMonitorDetailsViewModel">
 
@@ -57,14 +58,14 @@
               RowDefinitions="Auto,Auto,Auto,Auto"
               RowSpacing="12"
               ColumnSpacing="14">
-          <TextBlock Text="Version"
+          <TextBlock Text="{loc:Loc monitor.details.version}"
                      Classes="field-label" />
           <TextBlock Grid.Column="1"
                      Text="{Binding Plugin.Version}"
                      Classes="field-value" />
 
           <TextBlock Grid.Row="1"
-                     Text="Source"
+                     Text="{loc:Loc monitor.details.source}"
                      Classes="field-label" />
           <TextBlock Grid.Row="1"
                      Grid.Column="1"
@@ -72,7 +73,7 @@
                      Classes="field-value" />
 
           <TextBlock Grid.Row="2"
-                     Text="Enabled"
+                     Text="{loc:Loc monitor.details.enabled}"
                      Classes="field-label" />
           <TextBlock Grid.Row="2"
                      Grid.Column="1"
@@ -80,11 +81,11 @@
                      Classes="field-value" />
 
           <TextBlock Grid.Row="3"
-                     Text="Last error"
+                     Text="{loc:Loc monitor.details.lastError}"
                      Classes="field-label" />
           <TextBlock Grid.Row="3"
                      Grid.Column="1"
-                     Text="{Binding Plugin.LastErrorMessage, FallbackValue=No current error}"
+                     Text="{Binding Plugin.DisplayLastErrorMessage}"
                      Classes="field-value"
                      TextWrapping="Wrap" />
         </Grid>
@@ -97,9 +98,9 @@
           <Grid ColumnDefinitions="*,Auto"
                 ColumnSpacing="12">
             <StackPanel Spacing="2">
-              <TextBlock Text="Runtime switch"
+              <TextBlock Text="{loc:Loc monitor.details.runtimeSwitch}"
                          Classes="section-title" />
-              <TextBlock Text="Stopping only affects the current runtime instance and does not change whether the plugin is enabled."
+              <TextBlock Text="{loc:Loc monitor.details.runtimeSwitchDescription}"
                          Classes="caption-muted"
                          MinHeight="0"
                          TextWrapping="Wrap" />
@@ -113,12 +114,12 @@
 
           <Grid ColumnDefinitions="Auto,Auto"
                 ColumnSpacing="8">
-            <Button Content="Restart plugin"
+            <Button Content="{loc:Loc monitor.restartPlugin}"
                     Classes="accent"
                     Command="{Binding Plugin.RestartCommand}"
                     IsEnabled="{Binding Plugin.CanRestart}" />
             <Button Grid.Column="1"
-                    Content="Stop plugin"
+                    Content="{loc:Loc monitor.stopPlugin}"
                     Command="{Binding Plugin.StopCommand}"
                     IsEnabled="{Binding Plugin.CanStop}" />
           </Grid>
@@ -155,9 +156,9 @@
           RowDefinitions="Auto,*"
           RowSpacing="12">
       <StackPanel Spacing="2">
-        <TextBlock Text="Plugin diagnostics"
+        <TextBlock Text="{loc:Loc monitor.details.diagnostics}"
                    Classes="section-title" />
-        <TextBlock Text="Shows recent exceptions whose diagnostic records match the current plugin name or id."
+        <TextBlock Text="{loc:Loc monitor.details.diagnosticsDescription}"
                    Classes="caption-muted"
                    MinHeight="0"
                    TextWrapping="Wrap" />
@@ -166,7 +167,7 @@
       <StackPanel Grid.Row="1"
                   Spacing="8"
                   IsVisible="{Binding !HasDiagnostics}">
-        <TextBlock Text="There are no diagnostics matched to this plugin."
+        <TextBlock Text="{loc:Loc monitor.details.noDiagnostics}"
                    Classes="caption-muted" />
       </StackPanel>
 

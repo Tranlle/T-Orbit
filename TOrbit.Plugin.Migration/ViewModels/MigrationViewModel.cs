@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -18,10 +19,11 @@ using TOrbit.Plugin.Migration.Views;
 
 namespace TOrbit.Plugin.Migration.ViewModels;
 
-public sealed partial class MigrationViewModel : PluginBaseViewModel
+public sealed partial class MigrationViewModel : PluginBaseViewModel, IDisposable
 {
     private readonly MigrationService _service;
     private readonly MigrationConfigurationStore _configurationStore;
+    private readonly ILocalizationService _localizationService;
     private readonly IDesignerDialogService? _dialogService;
     private MigrationVariables _variables;
     private CancellationTokenSource? _cts;
@@ -54,7 +56,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     private bool isBusy;
 
     [ObservableProperty]
-    private string statusMessage = "Ready";
+    private string statusMessage = string.Empty;
 
     [ObservableProperty]
     private string outputLog = string.Empty;
@@ -79,22 +81,26 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     public int ProfileCount => DbProfiles.Count;
     public bool HasSelectedMigration => SelectedMigration is not null;
     public bool CanRollback => SelectedMigration is not null && IsLastMigration(SelectedMigration);
-
     public string StartupProjectPath => ProjectPath;
     public string CurrentDatabaseTypeDisplay => HasSelectedProfile ? ActiveProfile!.DisplayName : string.Empty;
     public string OutputDirectory => HasProjectPath && HasSelectedProfile
         ? MigrationService.GetOutputDirectory(ProjectPath, ActiveProfile!)
         : string.Empty;
+
     public string SelectedMigrationFileName => HasSelectedMigration
         ? $"{SelectedMigration!.FullName}.cs"
-        : "— 请从左侧选择迁移 —";
+        : L("migration.messages.noMigrationSelected");
 
     public IReadOnlyList<PropertyGridItem> ActiveProfileProperties =>
     [
-        new PropertyGridItem { Label = "数据库类型", Value = CurrentDatabaseTypeDisplay },
         new PropertyGridItem
         {
-            Label = "迁移文件",
+            Label = L("migration.databaseType"),
+            Value = CurrentDatabaseTypeDisplay
+        },
+        new PropertyGridItem
+        {
+            Label = L("migration.migrationFile"),
             Value = HasMigrations
                 ? new ComboBox
                 {
@@ -103,19 +109,23 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
                     ItemTemplate = new FuncDataTemplate<MigrationEntry>((item, _) => new TextBlock
                     {
                         Text = item?.FullName,
-                        TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis
+                        TextTrimming = TextTrimming.CharacterEllipsis
                     })
                 }
-                : new TextBlock { Text = "暂无迁移文件", Classes = { "caption-muted" } }
+                : new TextBlock
+                {
+                    Text = L("migration.messages.noMigrationFiles"),
+                    Classes = { "caption-muted" }
+                }
         }
     ];
 
     public string RollbackTooltip => SelectedMigration switch
     {
-        null => "请先选择一条迁移。",
-        _ when !IsLastMigration(SelectedMigration) => "EF Core 只能撤回最后一条迁移（dotnet ef migrations remove）。",
-        _ when SelectedMigration.Status == MigrationStatus.Applied => "将先执行 database update 回滚数据库，再运行 migrations remove。",
-        _ => "运行 dotnet ef migrations remove，删除迁移文件并更新 ModelSnapshot。"
+        null => L("migration.messages.rollbackSelectFirst"),
+        _ when !IsLastMigration(SelectedMigration) => L("migration.messages.rollbackOnlyLatest"),
+        _ when SelectedMigration.Status == MigrationStatus.Applied => L("migration.messages.rollbackApplied"),
+        _ => L("migration.messages.rollbackPending")
     };
 
     public IReadOnlyList<DbConnectionProfile> OrderedProfiles => DbProfiles
@@ -124,12 +134,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         .ThenBy(profile => profile.EffectiveProfileName, StringComparer.CurrentCultureIgnoreCase)
         .ToList();
 
-    public IReadOnlyList<DesignerOptionItem> DbTypeOptions { get; } =
-    [
-        new DesignerOptionItem { Label = "SQL Server", Value = DbType.SqlServer, Description = "适用于 SQL Server / LocalDB" },
-        new DesignerOptionItem { Label = "PostgreSQL", Value = DbType.PostgreSQL, Description = "适用于 PostgreSQL" },
-        new DesignerOptionItem { Label = "MySQL", Value = DbType.MySQL, Description = "适用于 MySQL / MariaDB" }
-    ];
+    public IReadOnlyList<DesignerOptionItem> DbTypeOptions => BuildDbTypeOptions();
 
     public DesignerOptionItem? SelectedEditingDbTypeOption
     {
@@ -162,12 +167,17 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         MigrationService service,
         MigrationConfigurationStore configurationStore,
         MigrationVariables variables,
+        ILocalizationService localizationService,
         IDesignerDialogService? dialogService = null)
     {
         _service = service;
         _configurationStore = configurationStore;
         _variables = variables;
+        _localizationService = localizationService;
         _dialogService = dialogService;
+
+        _localizationService.LanguageChanged += LocalizationServiceOnLanguageChanged;
+        StatusMessage = L("migration.messages.ready");
 
         InitializeProfilesFromExistingConfig();
 
@@ -237,6 +247,13 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
             EditingProfile.ConnectionString = _variables.DefaultConnectionString;
     }
 
+    public void Dispose()
+    {
+        _localizationService.LanguageChanged -= LocalizationServiceOnLanguageChanged;
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
+
     private void RaiseDerivedProperties()
     {
         OnPropertyChanged(nameof(HasProjectPath));
@@ -257,6 +274,8 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         OnPropertyChanged(nameof(ActiveProfileProperties));
         OnPropertyChanged(nameof(RollbackTooltip));
         OnPropertyChanged(nameof(OrderedProfiles));
+        OnPropertyChanged(nameof(DbTypeOptions));
+        OnPropertyChanged(nameof(SelectedEditingDbTypeOption));
         HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -325,7 +344,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         foreach (var item in DbProfiles)
             item.IsSelected = ReferenceEquals(item, profile);
 
-        AppendLog($"✓ Added profile: {profile.EffectiveProfileName}");
+        AppendLog(Format("migration.messages.profileAdded", profile.EffectiveProfileName));
         RaiseDerivedProperties();
     }
 
@@ -336,11 +355,14 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
 
         var profile = ActiveProfile;
         var confirmed = await ShowConfirmAsync(
-            "确认删除配置",
-            $"即将删除配置：{profile.EffectiveProfileName}\n数据库类型：{profile.DisplayName}\n\n此操作不会删除数据库，但会移除当前保存的连接信息。",
-            "删除配置",
+            L("migration.messages.deleteProfileTitle"),
+            string.Format(
+                L("migration.messages.deleteProfileMessage"),
+                profile.EffectiveProfileName,
+                profile.DisplayName),
+            L("migration.deleteProfile"),
             isDanger: true,
-            note: "建议先确认当前没有未保存的配置修改。");
+            note: L("migration.messages.deleteProfileNote"));
 
         if (!confirmed)
             return;
@@ -353,7 +375,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
             item.IsSelected = ReferenceEquals(item, ActiveProfile);
 
         SaveConfig();
-        AppendLog($"✓ Deleted profile: {profile.EffectiveProfileName}");
+        AppendLog(Format("migration.messages.profileDeleted", profile.EffectiveProfileName));
         RaiseDerivedProperties();
     }
 
@@ -375,7 +397,11 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
             UseWorkspace = ActiveProfile.UseWorkspace
         };
 
-        var confirmed = await ShowProfileEditorSheetAsync("编辑配置", "修改项目路径、数据库类型和连接信息。", "保存配置");
+        var confirmed = await ShowProfileEditorSheetAsync(
+            L("migration.messages.editProfileTitle"),
+            L("migration.messages.editProfileDescription"),
+            L("migration.messages.saveProfile"));
+
         if (confirmed)
         {
             ConfirmEditProfile();
@@ -410,11 +436,12 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         if (!HasProjectPath || ActiveProfile is null)
             return;
 
+        var profiles = DbProfiles.Select(ToSettingsProfile).ToList();
         var settings = new MigrationSettings
         {
             ProjectPath = ProjectPath,
             ActiveProfileId = ActiveProfile.Id,
-            Profiles = DbProfiles.Select(ToSettingsProfile).ToList()
+            Profiles = profiles
         };
 
         _configurationStore.SaveSettings(settings);
@@ -422,11 +449,11 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         {
             ProjectPath = ProjectPath,
             ActiveProfileId = ActiveProfile.Id,
-            Profiles = DbProfiles.Select(ToSettingsProfile).ToList()
+            Profiles = profiles
         });
 
-        AppendLog("✓ Configuration saved to .torbit-tools.json and Migration/setting.json");
-        StatusMessage = "配置已保存";
+        AppendLog(L("migration.messages.configSavedLog"));
+        StatusMessage = L("migration.messages.configSaved");
     }
 
     private void ClearMigrationSelection()
@@ -443,8 +470,8 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         var currentProfileId = ActiveProfile?.Id;
         InitializeProfilesFromExistingConfig(currentProfileId);
 
-        AppendLog("✓ Reloaded profile list from configuration store");
-        StatusMessage = "配置列表已重新读取";
+        AppendLog(L("migration.messages.profilesReloadedLog"));
+        StatusMessage = L("migration.messages.profilesReloaded");
 
         if (HasProjectPath && HasSelectedProfile)
             await RefreshMigrationsAsync();
@@ -485,8 +512,8 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
             AppendLog(raw.Error.TrimEnd());
         }
 
-        StatusMessage = $"{Migrations.Count} migration(s) · {ActiveProfile.EffectiveProfileName}";
-        AppendLog($"Loaded {Migrations.Count} migration(s) via 'dotnet ef migrations list'");
+        StatusMessage = string.Format(L("migration.messages.migrationCountStatus"), Migrations.Count, ActiveProfile.EffectiveProfileName);
+        AppendLog(Format("migration.messages.migrationsLoadedLog", Migrations.Count));
         RaiseDerivedProperties();
         LoadSelectedFileContent();
     }
@@ -496,16 +523,16 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         var error = ValidateMigrationPrerequisites(includeName: false);
         if (!string.IsNullOrWhiteSpace(error))
         {
-            await ShowAlertAsync("无法新增迁移", error);
+            await ShowAlertAsync(L("migration.messages.newMigrationUnavailableTitle"), error);
             return;
         }
 
         var result = await ShowPromptAsync(
-            "新增迁移",
-            "请输入迁移名称，建议使用业务语义明确的 PascalCase 命名。",
-            "创建迁移",
-            placeholder: "例如：AddUserAuditLog",
-            note: "迁移名称至少需要 3 个字符。");
+            L("migration.messages.newMigrationTitle"),
+            L("migration.messages.newMigrationPrompt"),
+            L("migration.messages.createMigration"),
+            placeholder: L("migration.messages.newMigrationPlaceholder"),
+            note: L("migration.messages.newMigrationNote"));
 
         if (!result.IsConfirmed)
             return;
@@ -519,7 +546,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         var error = ValidateMigrationPrerequisites(includeName: true);
         if (!string.IsNullOrWhiteSpace(error))
         {
-            await ShowAlertAsync("无法生成迁移", error);
+            await ShowAlertAsync(L("migration.messages.createMigrationUnavailableTitle"), error);
             return;
         }
 
@@ -535,24 +562,28 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     private string? ValidateMigrationPrerequisites(bool includeName)
     {
         if (ActiveProfile is null)
-            return "请先选择一个配置项。";
+            return L("migration.messages.validation.selectProfile");
+
         if (string.IsNullOrWhiteSpace(ProjectPath))
-            return "请先为当前配置选择 Domain 项目。";
+            return L("migration.messages.validation.selectDomainProject");
+
         if (!File.Exists(ProjectPath))
-            return $"未找到 Domain 项目文件：{ProjectPath}";
+            return string.Format(L("migration.messages.validation.domainProjectMissing"), ProjectPath);
+
         if (string.IsNullOrWhiteSpace(ActiveProfile.ContextName))
-            return "请先填写 DbContext。";
+            return L("migration.messages.validation.contextRequired");
 
         var designSettingsPath = Path.Combine(Path.GetDirectoryName(ProjectPath)!, "DesignSettings.json");
         if (!File.Exists(designSettingsPath))
-            return $"未找到 DesignSettings.json：{designSettingsPath}";
+            return string.Format(L("migration.messages.validation.designSettingsMissing"), designSettingsPath);
 
         if (includeName)
         {
             if (string.IsNullOrWhiteSpace(NewMigrationName))
-                return "请先填写迁移名称。";
+                return L("migration.messages.validation.migrationNameRequired");
+
             if (NewMigrationName.Trim().Length < 3)
-                return "迁移名称至少需要 3 个字符。";
+                return L("migration.messages.validation.migrationNameTooShort");
         }
 
         return null;
@@ -564,10 +595,14 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
             return;
 
         var confirmed = await ShowConfirmAsync(
-            "确认执行更新",
-            $"目标配置：{ActiveProfile.EffectiveProfileName}\n目标数据库：{ActiveProfile.DisplayName}\nDbContext：{ActiveProfile.ContextName}\n\n即将执行 database update，应用所有待执行迁移。",
-            "执行更新",
-            note: "请确认连接字符串和项目路径均正确。");
+            L("migration.messages.executeUpdateTitle"),
+            string.Format(
+                L("migration.messages.executeUpdateMessage"),
+                ActiveProfile.EffectiveProfileName,
+                ActiveProfile.DisplayName,
+                ActiveProfile.ContextName),
+            L("migration.messages.executeUpdateConfirm"),
+            note: L("migration.messages.executeUpdateNote"));
 
         if (!confirmed)
             return;
@@ -586,15 +621,20 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
 
         var migration = SelectedMigration;
         var steps = migration.Status == MigrationStatus.Applied
-            ? "1. dotnet ef database update <prev>（执行 Down 方法）\n2. dotnet ef migrations remove（删除文件并更新 ModelSnapshot）"
-            : "1. dotnet ef migrations remove（删除文件并更新 ModelSnapshot）";
+            ? L("migration.messages.rollbackStepsApplied")
+            : L("migration.messages.rollbackStepsPending");
 
         var confirmed = await ShowConfirmAsync(
-            "确认删除迁移",
-            $"迁移：{migration.FullName}\n目标数据库：{ActiveProfile.DisplayName}\nDbContext：{ActiveProfile.ContextName}\n\n操作步骤：\n{steps}\n\n该操作不可撤销。",
-            "删除迁移",
+            L("migration.messages.rollbackTitle"),
+            string.Format(
+                L("migration.messages.rollbackMessage"),
+                migration.FullName,
+                ActiveProfile.DisplayName,
+                ActiveProfile.ContextName,
+                steps),
+            L("migration.messages.rollbackConfirm"),
             isDanger: true,
-            note: "仅支持撤回最后一条迁移。");
+            note: L("migration.messages.rollbackNote"));
 
         if (!confirmed)
             return;
@@ -617,7 +657,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
 
         if (string.IsNullOrWhiteSpace(SelectedMigration.FilePath))
         {
-            EditorContent = "// 未找到迁移文件路径。请确认输出目录中存在对应迁移文件。";
+            EditorContent = L("migration.messages.migrationFileMissingContent");
             IsEditorDirty = false;
             return;
         }
@@ -632,7 +672,9 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     {
         if (SelectedMigration is null)
         {
-            await ShowAlertAsync("无法查看迁移文件", "请先选择一个迁移项。");
+            await ShowAlertAsync(
+                L("migration.messages.openMigrationUnavailableTitle"),
+                L("migration.messages.openMigrationUnavailableMessage"));
             return;
         }
 
@@ -663,8 +705,8 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         SelectedMigration.Content = content;
         EditorContent = content;
         IsEditorDirty = false;
-        AppendLog($"✓ Saved {Path.GetFileName(SelectedMigration.FilePath)}");
-        StatusMessage = "文件已保存";
+        AppendLog(Format("migration.messages.fileSavedLog", Path.GetFileName(SelectedMigration.FilePath)));
+        StatusMessage = L("migration.messages.fileSaved");
     }
 
     private bool IsLastMigration(MigrationEntry migration)
@@ -679,31 +721,37 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     private async Task RunOperationAsync(string description, Func<CancellationToken, Task<ProcessResult>> operation)
     {
         _cts?.Cancel();
+        _cts?.Dispose();
         _cts = new CancellationTokenSource();
         IsBusy = true;
-        StatusMessage = $"{description}…";
-        AppendLog($"\n▶ {description}");
-        AppendLog(new string('─', 60));
+        StatusMessage = string.Format(L("migration.messages.operationRunning"), description);
+        AppendLog(string.Empty);
+        AppendLog($"> {description}");
+        AppendLog(new string('-', 60));
 
         try
         {
             var result = await operation(_cts.Token);
             if (!string.IsNullOrWhiteSpace(result.Output))
                 AppendLog(result.Output.TrimEnd());
-            if (!string.IsNullOrWhiteSpace(result.Error))
-                AppendLog(result.Error.TrimEnd().StartsWith("[", StringComparison.Ordinal)
-                    ? result.Error.TrimEnd()
-                    : $"[StandardError] {result.Error.TrimEnd()}");
 
-            AppendLog(result.Success ? "✓ Completed" : "✗ Failed");
+            if (!string.IsNullOrWhiteSpace(result.Error))
+            {
+                var error = result.Error.TrimEnd();
+                AppendLog(error.StartsWith("[", StringComparison.Ordinal)
+                    ? error
+                    : $"[StandardError] {error}");
+            }
+
+            AppendLog(result.Success ? L("migration.messages.operationCompletedLog") : L("migration.messages.operationFailedLog"));
             StatusMessage = result.Success && ActiveProfile is not null
-                ? $"✓ Done · {ActiveProfile.EffectiveProfileName}"
-                : "✗ Failed · see output log";
+                ? string.Format(L("migration.messages.operationSucceeded"), ActiveProfile.EffectiveProfileName)
+                : L("migration.messages.operationFailed");
         }
         catch (Exception ex)
         {
             AppendLog($"[UnhandledException] {ex}");
-            StatusMessage = "操作失败";
+            StatusMessage = L("migration.messages.operationFailed");
         }
         finally
         {
@@ -715,6 +763,31 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
     private void AppendLog(string message)
     {
         OutputLog += message + Environment.NewLine;
+    }
+
+    private IReadOnlyList<DesignerOptionItem> BuildDbTypeOptions()
+    {
+        return
+        [
+            new DesignerOptionItem
+            {
+                Label = "SQL Server",
+                Value = DbType.SqlServer,
+                Description = L("migration.dbType.sqlServerDescription")
+            },
+            new DesignerOptionItem
+            {
+                Label = "PostgreSQL",
+                Value = DbType.PostgreSQL,
+                Description = L("migration.dbType.postgreSqlDescription")
+            },
+            new DesignerOptionItem
+            {
+                Label = "MySQL",
+                Value = DbType.MySQL,
+                Description = L("migration.dbType.mySqlDescription")
+            }
+        ];
     }
 
     private static MigrationProfileSettings ToSettingsProfile(DbConnectionProfile profile)
@@ -740,6 +813,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
             Title = title,
             Message = message,
             ConfirmText = confirmText,
+            CancelText = _localizationService.GetString("dialog.cancel"),
             IsDanger = isDanger,
             Icon = isDanger ? DesignerDialogIcon.Warning : DesignerDialogIcon.Question,
             Note = note
@@ -773,7 +847,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         {
             Title = title,
             Message = message,
-            ConfirmText = "知道了",
+            ConfirmText = L("migration.messages.gotIt"),
             CancelText = string.Empty,
             Icon = DesignerDialogIcon.Info
         });
@@ -789,9 +863,9 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
             Title = title,
             Description = description,
             ConfirmText = confirmText,
-            CancelText = "取消",
+            CancelText = _localizationService.GetString("dialog.cancel"),
             Icon = DesignerDialogIcon.Info,
-            Content = new Views.EditProfileSheetView { DataContext = this },
+            Content = new EditProfileSheetView { DataContext = this },
             BaseFontSize = 13,
             DialogWidth = 860,
             DialogHeight = 0,
@@ -807,7 +881,7 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         if (_dialogService is null || TryGetOwnerWindow() is not { } owner)
             return;
 
-        var file = await _dialogService.PickFileAsync(owner, "选择 Domain 项目文件", [new FilePickerFileType("C# Project")
+        var file = await _dialogService.PickFileAsync(owner, L("migration.messages.selectDomainProjectFile"), [new FilePickerFileType("C# Project")
         {
             Patterns = ["*.csproj"],
             AppleUniformTypeIdentifiers = ["public.xml"],
@@ -817,6 +891,27 @@ public sealed partial class MigrationViewModel : PluginBaseViewModel
         if (!string.IsNullOrWhiteSpace(file))
             EditingProjectPath = file;
     }
+
+    private void LocalizationServiceOnLanguageChanged(object? sender, EventArgs e)
+    {
+        foreach (var profile in DbProfiles)
+            profile.NotifyLocalizationChanged();
+
+        foreach (var migration in Migrations)
+            migration.NotifyLocalizationChanged();
+
+        if (string.IsNullOrWhiteSpace(StatusMessage)
+            || string.Equals(StatusMessage, L("migration.messages.ready"), StringComparison.OrdinalIgnoreCase))
+        {
+            StatusMessage = L("migration.messages.ready");
+        }
+
+        RaiseDerivedProperties();
+    }
+
+    private string L(string key) => _localizationService.GetString(key);
+
+    private string Format(string key, params object[] args) => string.Format(L(key), args);
 
     private static Window? TryGetOwnerWindow()
     {

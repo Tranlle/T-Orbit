@@ -5,6 +5,8 @@ namespace TOrbit.Core.Models;
 
 public sealed partial class PluginEntry : ObservableObject
 {
+    private readonly IPluginDisplayInfoProvider? _displayInfoProvider;
+
     [ObservableProperty]
     private bool isEnabled = true;
 
@@ -27,8 +29,8 @@ public sealed partial class PluginEntry : ObservableObject
     public string BuiltInHint { get; }
 
     public string Id => Plugin.Descriptor.Id;
-    public string Name => Plugin.Descriptor.Name;
-    public string Description => Plugin.Descriptor.Description ?? string.Empty;
+    public string Name => _displayInfoProvider?.DisplayName ?? Plugin.Descriptor.Name;
+    public string Description => _displayInfoProvider?.DisplayDescription ?? Plugin.Descriptor.Description ?? string.Empty;
     public string Icon => Plugin.Descriptor.Icon ?? string.Empty;
     public string Version => Plugin.Descriptor.Version;
     public string Tags => Plugin.Descriptor.Tags ?? string.Empty;
@@ -52,11 +54,15 @@ public sealed partial class PluginEntry : ObservableObject
         string? builtInHint = null)
     {
         Plugin = plugin;
+        _displayInfoProvider = plugin as IPluginDisplayInfoProvider;
         this.isEnabled = isEnabled;
         IsBuiltIn = isBuiltIn;
         CanDisable = canDisable;
         BuiltInHint = builtInHint ?? string.Empty;
         sort = 0;
+
+        if (_displayInfoProvider is not null)
+            _displayInfoProvider.DisplayInfoChanged += DisplayInfoProviderOnDisplayInfoChanged;
     }
 
     partial void OnIsEnabledChanged(bool value)
@@ -73,5 +79,12 @@ public sealed partial class PluginEntry : ObservableObject
         StateChangedAt = DateTimeOffset.Now;
         OnPropertyChanged(nameof(State));
         OnPropertyChanged(nameof(LastError));
+    }
+
+    private void DisplayInfoProviderOnDisplayInfoChanged(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(Name));
+        OnPropertyChanged(nameof(Description));
+        OnPropertyChanged(nameof(DisplayTags));
     }
 }

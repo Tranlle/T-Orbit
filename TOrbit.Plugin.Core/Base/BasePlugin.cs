@@ -43,6 +43,39 @@ public abstract class BasePlugin : IPlugin, IPluginViewProvider
             metadata.Capabilities.Count > 0 ? metadata.Capabilities : null);
     }
 
+    protected static PluginDescriptor CreateDescriptor<TPlugin>(
+        string id,
+        string name,
+        string version,
+        string? description = null,
+        string? author = null,
+        string? icon = null,
+        string? tags = null,
+        PluginLoadMode loadMode = PluginLoadMode.Lazy,
+        PluginIsolationMode isolationMode = PluginIsolationMode.AssemblyLoadContext,
+        IReadOnlyList<PluginVariableDefinition>? variableDefinitions = null,
+        PluginKind kind = PluginKind.Visual,
+        IReadOnlyList<PluginCapability>? capabilities = null)
+        where TPlugin : IPlugin
+    {
+        var pluginType = typeof(TPlugin);
+        return new PluginDescriptor(
+            id,
+            name,
+            version,
+            pluginType.Assembly.GetName().Name ?? pluginType.Assembly.FullName ?? pluginType.Name,
+            pluginType.FullName ?? pluginType.Name,
+            description,
+            author,
+            icon,
+            tags,
+            loadMode,
+            isolationMode,
+            variableDefinitions,
+            kind,
+            capabilities);
+    }
+
     public virtual async ValueTask InitializeAsync(PluginContext context, CancellationToken cancellationToken = default)
     {
         _context = context;

@@ -4,6 +4,7 @@
              xmlns:designer="using:TOrbit.Designer.Controls"
              xmlns:converters="using:TOrbit.Plugin.Monitor.Converters"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:Class="TOrbit.Plugin.Monitor.Views.MonitorView"
              x:DataType="vm:MonitorViewModel">
 
@@ -13,7 +14,7 @@
 
   <UserControl.Styles>
     <Style Selector="Border.monitor-hero">
-      <Setter Property="Background" Value="#101B24" />
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceElevatedBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusXLarge}" />
@@ -21,7 +22,7 @@
     </Style>
 
     <Style Selector="Border.monitor-focus">
-      <Setter Property="Background" Value="#0F1B25" />
+      <Setter Property="Background" Value="{DynamicResource TOrbitAccentSubtleBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TOrbitAccentBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
@@ -29,7 +30,7 @@
     </Style>
 
     <Style Selector="Border.monitor-row">
-      <Setter Property="Background" Value="#101923" />
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceElevatedBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
@@ -131,7 +132,7 @@
 
                   <StackPanel Grid.Column="2"
                               Spacing="10">
-                    <TextBlock Text="Capabilities"
+                    <TextBlock Text="{loc:Loc monitor.capabilities}"
                                Classes="caption-muted"
                                MinHeight="0" />
                     <designer:BadgeFlow ItemsSource="{Binding CardTags}">
@@ -158,7 +159,7 @@
                     <Grid ColumnDefinitions="*,Auto"
                           ColumnSpacing="12">
                       <StackPanel Spacing="2">
-                        <TextBlock Text="Last change"
+                        <TextBlock Text="{loc:Loc monitor.lastChange}"
                                    Classes="caption-muted"
                                    MinHeight="0" />
                         <TextBlock Text="{Binding StateChangedAtText}"
@@ -168,7 +169,7 @@
                       <StackPanel Grid.Column="1"
                                   Spacing="6"
                                   HorizontalAlignment="Right">
-                        <TextBlock Text="Enabled"
+                        <TextBlock Text="{loc:Loc monitor.enabled}"
                                    Classes="caption-muted"
                                    MinHeight="0"
                                    HorizontalAlignment="Right" />
@@ -187,7 +188,7 @@
                     <Button Classes="monitor-icon"
                             Command="{Binding RestartCommand}"
                             IsEnabled="{Binding CanRestart}"
-                            ToolTip.Tip="Restart plugin">
+                            ToolTip.Tip="{loc:Loc monitor.restartPlugin}">
                       <materialIcons:MaterialIcon Kind="Refresh"
                                                   Width="16"
                                                   Height="16" />
@@ -195,7 +196,7 @@
                     <Button Classes="monitor-icon"
                             Command="{Binding StopCommand}"
                             IsEnabled="{Binding CanStop}"
-                            ToolTip.Tip="Stop plugin">
+                            ToolTip.Tip="{loc:Loc monitor.stopPlugin}">
                       <materialIcons:MaterialIcon Kind="Power"
                                                   Width="16"
                                                   Height="16" />

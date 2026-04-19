@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Localization\*.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="artifacts\**\*.cs" />
     <EmbeddedResource Remove="artifacts\**\*" />
     <None Remove="artifacts\**\*" />

@@ -1,21 +1,25 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using TOrbit.Core.Services;
+using TOrbit.Designer.Services;
 
 namespace TOrbit.Plugin.Home.ViewModels;
 
 public sealed partial class HomeViewModel : ObservableObject, IDisposable
 {
     private readonly IHomeReportRegistry _registry;
+    private readonly ILocalizationService _localizationService;
     private CancellationTokenSource? _deferredLoadCts;
 
     public ObservableCollection<HomeReportGroupViewModel> ReportGroups { get; } = [];
     public bool HasReports => ReportGroups.Count > 0;
 
-    public HomeViewModel(IHomeReportRegistry registry)
+    public HomeViewModel(IHomeReportRegistry registry, ILocalizationService localizationService)
     {
         _registry = registry;
+        _localizationService = localizationService;
         _registry.ReportsChanged += ReportsChanged;
+        _localizationService.LanguageChanged += LocalizationServiceOnLanguageChanged;
         SyncReports();
     }
 
@@ -35,7 +39,7 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
         ReportGroups.Clear();
 
         foreach (var group in next
-                     .GroupBy(x => string.IsNullOrWhiteSpace(x.Category) ? "通用" : x.Category)
+                     .GroupBy(x => string.IsNullOrWhiteSpace(x.Category) ? _localizationService.GetString("home.category.general") : x.Category)
                      .OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase))
         {
             var groupViewModel = new HomeReportGroupViewModel
@@ -89,7 +93,11 @@ public sealed partial class HomeViewModel : ObservableObject, IDisposable
     public void Dispose()
     {
         _registry.ReportsChanged -= ReportsChanged;
+        _localizationService.LanguageChanged -= LocalizationServiceOnLanguageChanged;
         _deferredLoadCts?.Cancel();
         _deferredLoadCts?.Dispose();
     }
+
+    private void LocalizationServiceOnLanguageChanged(object? sender, EventArgs e)
+        => SyncReports();
 }

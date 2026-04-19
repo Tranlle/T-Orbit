@@ -3,6 +3,7 @@
              xmlns:vm="using:TOrbit.Plugin.KeyMap.ViewModels"
              xmlns:views="using:TOrbit.Plugin.KeyMap.Views"
              xmlns:designer="using:TOrbit.Designer.Controls"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:Class="TOrbit.Plugin.KeyMap.Views.KeyMapView"
              x:DataType="vm:KeyMapViewModel">
 
@@ -50,10 +51,10 @@
                 <StackPanel Spacing="4">
                   <TextBlock Text="KEYMAP"
                              Classes="eyebrow" />
-                  <TextBlock Text="Bindings"
+                  <TextBlock Text="{loc:Loc keymap.bindings}"
                              FontSize="18"
                              FontWeight="SemiBold" />
-                  <TextBlock Text="Search commands and choose one binding to inspect or override."
+                  <TextBlock Text="{loc:Loc keymap.description}"
                              Classes="caption-muted"
                              MinHeight="0"
                              TextWrapping="Wrap" />
@@ -61,7 +62,7 @@
 
                 <TextBox Classes="form-control"
                          Text="{Binding SearchText, Mode=TwoWay}"
-                         PlaceholderText="Search shortcuts..."
+                         PlaceholderText="{loc:Loc keymap.searchPlaceholder}"
                          FontSize="13" />
               </StackPanel>
 
@@ -131,7 +132,7 @@
               <Border Grid.Row="2"
                       Margin="20,16,20,20"
                       Classes="keymap-info">
-                <TextBlock Text="Overrides take effect immediately and replace the default binding until you reset it."
+                <TextBlock Text="{loc:Loc keymap.overrideHint}"
                            Classes="caption-muted"
                            MinHeight="0"
                            TextWrapping="Wrap" />
@@ -145,10 +146,10 @@
             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
               <Panel Margin="20">
-                <designer:EmptyState Eyebrow="Keymap"
+                <designer:EmptyState Eyebrow="{loc:Loc keymap.eyebrow}"
                                      IsVisible="{Binding SelectedBinding, Converter={x:Static ObjectConverters.IsNull}}"
-                                     Title="Select a shortcut"
-                                     Description="Choose a binding from the left to inspect the current value and make changes." />
+                                     Title="{loc:Loc keymap.empty.title}"
+                                     Description="{loc:Loc keymap.empty.description}" />
 
                 <ContentControl Content="{Binding SelectedBinding}"
                                 IsVisible="{Binding SelectedBinding, Converter={x:Static ObjectConverters.IsNotNull}}">
@@ -171,7 +172,7 @@
                               ColumnSpacing="12">
                           <Border Classes="keymap-info">
                             <StackPanel Spacing="4">
-                              <TextBlock Text="Plugin"
+                              <TextBlock Text="{loc:Loc keymap.plugin}"
                                          Classes="caption-muted"
                                          MinHeight="0" />
                               <TextBlock Text="{Binding PluginName}"
@@ -183,7 +184,7 @@
                           <Border Grid.Column="1"
                                   Classes="keymap-info">
                             <StackPanel Spacing="4">
-                              <TextBlock Text="Default binding"
+                              <TextBlock Text="{loc:Loc keymap.defaultBinding}"
                                          Classes="caption-muted"
                                          MinHeight="0" />
                               <TextBlock Text="{Binding DefaultKey}"
@@ -198,9 +199,9 @@
                                 Padding="18">
                           <StackPanel Spacing="16">
                             <StackPanel Spacing="2">
-                              <TextBlock Text="Current binding"
+                              <TextBlock Text="{loc:Loc keymap.currentBinding}"
                                          Classes="section-title" />
-                              <TextBlock Text="Focus the capture box and press the new shortcut. Press Escape to cancel recording."
+                              <TextBlock Text="{loc:Loc keymap.currentBindingDescription}"
                                          Classes="caption-muted"
                                          MinHeight="0"
                                          TextWrapping="Wrap" />
@@ -214,7 +215,7 @@
                                     BorderThickness="1"
                                     CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                                     Padding="12,10">
-                              <TextBlock Text="This binding currently overrides the default value."
+                              <TextBlock Text="{loc:Loc keymap.modifiedHint}"
                                          Foreground="{DynamicResource TOrbitBadgeInfoForegroundBrush}"
                                          FontSize="12"
                                          TextWrapping="Wrap" />
@@ -224,9 +225,9 @@
                                   ColumnSpacing="12"
                                   VerticalAlignment="Center">
                               <StackPanel Spacing="3">
-                                <TextBlock Text="Enabled"
+                                <TextBlock Text="{loc:Loc keymap.enabled}"
                                            Classes="subsection-title" />
-                                <TextBlock Text="Disabled bindings are skipped by the runtime shortcut handler."
+                                <TextBlock Text="{loc:Loc keymap.enabledDescription}"
                                            Classes="caption-muted"
                                            MinHeight="0"
                                            TextWrapping="Wrap" />
@@ -236,7 +237,7 @@
                                             VerticalAlignment="Center" />
                               <Button Grid.Column="2"
                                       Command="{Binding ResetCommand}"
-                                      Content="Reset"
+                                      Content="{loc:Loc keymap.reset}"
                                       VerticalAlignment="Center" />
                             </Grid>
                           </StackPanel>

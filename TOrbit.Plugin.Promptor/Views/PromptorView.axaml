@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TOrbit.Plugin.Promptor.ViewModels"
              xmlns:designer="using:TOrbit.Designer.Controls"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:DataType="vm:PromptorViewModel"
              x:Class="TOrbit.Plugin.Promptor.Views.PromptorView">
 
@@ -50,7 +51,7 @@
                          FontSize="11"
                          FontWeight="Medium" />
             </Border>
-            <Button Content="Cancel"
+            <Button Content="{loc:Loc promptor.cancel}"
                     Command="{Binding CancelCommand}"
                     IsVisible="{Binding IsBusy}" />
           </StackPanel>
@@ -61,25 +62,25 @@
                                  LeftMinWidth="320"
                                  RightMinWidth="320">
           <designer:SplitWorkspace.LeftContent>
-            <designer:CardTextEditor Eyebrow="Input"
-                                     Title="Source prompt"
-                                     Description="Enter the original prompt text."
+            <designer:CardTextEditor Eyebrow="{loc:Loc promptor.inputEyebrow}"
+                                     Title="{loc:Loc promptor.inputTitle}"
+                                     Description="{loc:Loc promptor.inputDescription}"
                                      Text="{Binding RawInput, Mode=TwoWay}"
-                                     PlaceholderText="Type your prompt here"
+                                     PlaceholderText="{loc:Loc promptor.inputPlaceholder}"
                                      AcceptsReturn="True"
                                      AcceptsTab="True"
                                      SubmitCommand="{Binding OptimizeCommand}" />
           </designer:SplitWorkspace.LeftContent>
 
           <designer:SplitWorkspace.RightContent>
-            <designer:CardTextEditor Eyebrow="Output"
-                                     Title="Optimized result"
-                                     Description="Review the generated prompt."
+            <designer:CardTextEditor Eyebrow="{loc:Loc promptor.outputEyebrow}"
+                                     Title="{loc:Loc promptor.outputTitle}"
+                                     Description="{loc:Loc promptor.outputDescription}"
                                      Text="{Binding OptimizedOutput, Mode=TwoWay}"
-                                     PlaceholderText="The optimized prompt will appear here"
+                                     PlaceholderText="{loc:Loc promptor.outputPlaceholder}"
                                      IsReadOnly="True">
               <designer:CardTextEditor.ActionContent>
-                <Button Content="Clear"
+                <Button Content="{loc:Loc promptor.clear}"
                         Command="{Binding ClearOutputCommand}"
                         IsEnabled="{Binding HasOptimizedOutput}" />
               </designer:CardTextEditor.ActionContent>

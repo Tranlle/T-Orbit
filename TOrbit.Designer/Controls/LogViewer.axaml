@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:TOrbit.Designer.Controls"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:Class="TOrbit.Designer.Controls.LogViewer"
              x:DataType="controls:LogViewer"
              x:Name="Root">
@@ -12,7 +13,7 @@
             Margin="18,14,16,12">
         <StackPanel Spacing="3" VerticalAlignment="Center">
           <TextBlock Classes="eyebrow"
-                     Text="Log" />
+                     Text="{loc:Loc log.eyebrow}" />
           <TextBlock Classes="section-title"
                      Text="{Binding Title, ElementName=Root}" />
           <TextBlock Classes="caption-muted"

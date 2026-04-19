@@ -15,6 +15,7 @@ namespace TOrbit.Plugin.Settings.ViewModels;
 public sealed partial class SettingsViewModel : ObservableObject
 {
     private readonly IThemeService _themeService;
+    private readonly ILocalizationService _localizationService;
     private readonly IAppPreferencesService _preferencesService;
     private readonly IPluginCatalogService _pluginCatalog;
     private readonly IPluginVariableService _variableService;
@@ -26,6 +27,9 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     private string appName = "T-Orbit";
+
+    [ObservableProperty]
+    private DesignerOptionItem? selectedLanguageOption;
 
     [ObservableProperty]
     private DesignerOptionItem? selectedPaletteOption;
@@ -52,7 +56,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     private bool minimizeToTrayOnClose = true;
 
     [ObservableProperty]
-    private string statusMessage = "设置已同步";
+    private string statusMessage = string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAddFormKeyHints))]
@@ -70,6 +74,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string addFormValue = string.Empty;
 
+    public ObservableCollection<DesignerOptionItem> LanguageOptions { get; } = [];
     public ObservableCollection<DesignerOptionItem> FontOptions { get; } = [];
     public ObservableCollection<DesignerOptionItem> PaletteOptions { get; } = [];
     public ObservableCollection<DesignerOptionItem> AdvancedPaletteOptions { get; } = [];
@@ -82,12 +87,12 @@ public sealed partial class SettingsViewModel : ObservableObject
         _validationStatusService.Get(plugin.Id, plugin.Name).HasIssues);
 
     public bool IsInterFontWarningVisible => SelectedFontOption?.Key == "inter";
-    public string FontWarningMessage => "Inter 光标异常";
+    public string FontWarningMessage => _localizationService.GetString("settings.messages.interWarning");
     public bool HasPluginVariables => _pluginVariableItems.Count > 0;
     public bool HasAddFormKeyHints => AddFormKeyHints.Count > 0;
     public string PluginVariableSummary => _pluginVariableItems.Count == 0
-        ? "暂无变量"
-        : $"{_pluginVariableItems.Count}项/{_pluginVariableItems.Select(x => x.PluginId).Distinct().Count()}插件";
+        ? _localizationService.GetString("settings.sections.variables.empty")
+        : $"{_pluginVariableItems.Count} / {_pluginVariableItems.Select(x => x.PluginId).Distinct().Count()}";
 
     public IRelayCommand SaveCommand { get; }
     public IRelayCommand ResetCommand { get; }
@@ -99,19 +104,23 @@ public sealed partial class SettingsViewModel : ObservableObject
     public SettingsViewModel(
         IAppShellService shellService,
         IThemeService themeService,
+        ILocalizationService localizationService,
         IAppPreferencesService preferencesService,
         IPluginCatalogService pluginCatalog,
         IPluginVariableService variableService,
         IPluginValidationStatusService validationStatusService)
     {
         _themeService = themeService;
+        _localizationService = localizationService;
         _preferencesService = preferencesService;
         _pluginCatalog = pluginCatalog;
         _variableService = variableService;
         _validationStatusService = validationStatusService;
+        _localizationService.LanguageChanged += LocalizationServiceOnLanguageChanged;
 
         var preferences = _preferencesService.Load();
 
+        InitializeLanguageOptions();
         InitializeFontOptions();
         InitializePaletteOptions(themeService);
         InitializePluginOptions();
@@ -119,6 +128,9 @@ public sealed partial class SettingsViewModel : ObservableObject
 
         AppName = shellService.AppName;
         WorkspaceRoot = shellService.WorkspaceRoot;
+        SelectedLanguageOption = LanguageOptions.FirstOrDefault(option => option.Key == preferences.LanguageCode)
+            ?? LanguageOptions.FirstOrDefault(option => option.Key == _localizationService.CurrentLanguageCode)
+            ?? LanguageOptions.FirstOrDefault();
         SelectedFontOption = FontOptions.FirstOrDefault(option => option.Key == preferences.FontOptionKey)
             ?? FontOptions.FirstOrDefault(option => option.Key == themeService.CurrentFontOptionKey)
             ?? FontOptions.FirstOrDefault();
@@ -126,6 +138,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             ?? PaletteOptions.FirstOrDefault();
         SelectedAdvancedPaletteOption = AdvancedPaletteOptions.FirstOrDefault(option => option.Key == themeService.CurrentPaletteKey);
         MinimizeToTrayOnClose = preferences.CloseButtonBehavior == CloseButtonBehavior.MinimizeToTray;
+        StatusMessage = _localizationService.GetString("settings.messages.saved");
 
         PublishPluginValidationStates();
 
@@ -135,9 +148,11 @@ public sealed partial class SettingsViewModel : ObservableObject
                 ? SelectedAdvancedPaletteOption?.Key ?? SelectedPaletteOption?.Key ?? _themeService.CurrentPaletteKey
                 : SelectedPaletteOption?.Key ?? _themeService.CurrentPaletteKey;
             var fontOptionKey = SelectedFontOption?.Key ?? "system";
+            var languageCode = SelectedLanguageOption?.Key ?? _localizationService.CurrentLanguageCode;
 
             _themeService.SetPalette(paletteKey);
             _themeService.SetFontOption(fontOptionKey);
+            _localizationService.SetLanguage(languageCode);
 
             var appliedPaletteKey = _themeService.CurrentPaletteKey;
             SelectedPaletteOption = PaletteOptions.FirstOrDefault(option => option.Key == appliedPaletteKey) ?? SelectedPaletteOption;
@@ -145,6 +160,7 @@ public sealed partial class SettingsViewModel : ObservableObject
 
             _preferencesService.Save(new AppPreferences
             {
+                LanguageCode = languageCode,
                 FontOptionKey = fontOptionKey,
                 PaletteKey = appliedPaletteKey,
                 CloseButtonBehavior = MinimizeToTrayOnClose ? CloseButtonBehavior.MinimizeToTray : CloseButtonBehavior.Exit
@@ -153,17 +169,17 @@ public sealed partial class SettingsViewModel : ObservableObject
             SavePluginVariables();
             PublishPluginValidationStates();
 
-            StatusMessage = "已保存";
+            StatusMessage = _localizationService.GetString("settings.messages.saved");
+            HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
         });
 
         ResetCommand = new RelayCommand(() =>
         {
             AppName = shellService.AppName;
-            SelectedPaletteOption = PaletteOptions.FirstOrDefault(option => option.Key == "torbit-dark")
-                ?? PaletteOptions.FirstOrDefault();
+            SelectedLanguageOption = LanguageOptions.FirstOrDefault(option => option.Key == "zh-CN") ?? LanguageOptions.FirstOrDefault();
+            SelectedPaletteOption = PaletteOptions.FirstOrDefault(option => option.Key == "torbit-dark") ?? PaletteOptions.FirstOrDefault();
             SelectedAdvancedPaletteOption = null;
-            SelectedFontOption = FontOptions.FirstOrDefault(option => option.Key == "system")
-                ?? FontOptions.FirstOrDefault();
+            SelectedFontOption = FontOptions.FirstOrDefault(option => option.Key == "system") ?? FontOptions.FirstOrDefault();
             MinimizeToTrayOnClose = true;
             ShowAdvancedThemeSettings = false;
             WorkspaceRoot = shellService.WorkspaceRoot;
@@ -171,15 +187,18 @@ public sealed partial class SettingsViewModel : ObservableObject
 
             _themeService.SetPalette(SelectedPaletteOption?.Key ?? "torbit-dark");
             _themeService.SetFontOption("system");
+            _localizationService.SetLanguage("zh-CN");
             _preferencesService.Save(new AppPreferences
             {
+                LanguageCode = "zh-CN",
                 FontOptionKey = "system",
                 PaletteKey = SelectedPaletteOption?.Key ?? "torbit-dark",
                 CloseButtonBehavior = CloseButtonBehavior.MinimizeToTray
             });
 
             PublishPluginValidationStates();
-            StatusMessage = "已重置";
+            StatusMessage = _localizationService.GetString("settings.messages.reset");
+            HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
         });
 
         ShowAddVariableFormCommand = new RelayCommand(() =>
@@ -252,6 +271,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         });
     }
 
+    partial void OnSelectedLanguageOptionChanged(DesignerOptionItem? value) => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     partial void OnSelectedFontOptionChanged(DesignerOptionItem? value)
     {
         OnPropertyChanged(nameof(IsInterFontWarningVisible));
@@ -259,20 +279,11 @@ public sealed partial class SettingsViewModel : ObservableObject
         HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    partial void OnSelectedPaletteOptionChanged(DesignerOptionItem? value)
-        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
-
-    partial void OnSelectedAdvancedPaletteOptionChanged(DesignerOptionItem? value)
-        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
-
-    partial void OnShowAdvancedThemeSettingsChanged(bool value)
-        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
-
-    partial void OnWorkspaceRootChanged(string value)
-        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
-
-    partial void OnMinimizeToTrayOnCloseChanged(bool value)
-        => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+    partial void OnSelectedPaletteOptionChanged(DesignerOptionItem? value) => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+    partial void OnSelectedAdvancedPaletteOptionChanged(DesignerOptionItem? value) => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+    partial void OnShowAdvancedThemeSettingsChanged(bool value) => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+    partial void OnWorkspaceRootChanged(string value) => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
+    partial void OnMinimizeToTrayOnCloseChanged(bool value) => HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
 
     partial void OnAddFormSelectedPluginChanged(DesignerOptionItem? value)
     {
@@ -297,6 +308,30 @@ public sealed partial class SettingsViewModel : ObservableObject
         }
 
         OnPropertyChanged(nameof(HasAddFormKeyHints));
+    }
+
+    private void LocalizationServiceOnLanguageChanged(object? sender, EventArgs e)
+    {
+        var selectedLanguage = SelectedLanguageOption?.Key;
+        var selectedPalette = SelectedPaletteOption?.Key;
+        var selectedAdvancedPalette = SelectedAdvancedPaletteOption?.Key;
+        var selectedFont = SelectedFontOption?.Key;
+
+        InitializeLanguageOptions();
+        InitializeFontOptions();
+        InitializePaletteOptions(_themeService);
+        InitializePluginOptions();
+
+        SelectedLanguageOption = LanguageOptions.FirstOrDefault(option => option.Key == selectedLanguage)
+            ?? LanguageOptions.FirstOrDefault(option => option.Key == _localizationService.CurrentLanguageCode)
+            ?? LanguageOptions.FirstOrDefault();
+        SelectedPaletteOption = PaletteOptions.FirstOrDefault(option => option.Key == selectedPalette) ?? PaletteOptions.FirstOrDefault();
+        SelectedAdvancedPaletteOption = AdvancedPaletteOptions.FirstOrDefault(option => option.Key == selectedAdvancedPalette);
+        SelectedFontOption = FontOptions.FirstOrDefault(option => option.Key == selectedFont) ?? FontOptions.FirstOrDefault();
+        StatusMessage = _localizationService.GetString("settings.messages.saved");
+        OnPropertyChanged(nameof(FontWarningMessage));
+        OnPropertyChanged(nameof(PluginVariableSummary));
+        HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void AddPluginVariableItem(PluginVariableItemViewModel item)
@@ -333,8 +368,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         {
             var plugin = _pluginCatalog.Plugins.FirstOrDefault(item => item.Id == entry.PluginId);
             var pluginName = plugin?.Name ?? entry.PluginId;
-            var definition = plugin?.Plugin.Descriptor.VariableDefinitions?
-                .FirstOrDefault(item => item.Key == entry.Key);
+            var definition = plugin?.Plugin.Descriptor.VariableDefinitions?.FirstOrDefault(item => item.Key == entry.Key);
 
             var displayValue = entry.IsEncrypted
                 ? _variableService.GetValue(entry.PluginId, entry.Key) ?? entry.Value
@@ -421,12 +455,8 @@ public sealed partial class SettingsViewModel : ObservableObject
                     _pluginVariableGroups.Move(currentGroupIndex, groupIndex);
             }
 
-            var desiredVariables = groupedItem
-                .OrderBy(item => item.Key, StringComparer.CurrentCultureIgnoreCase)
-                .ToList();
-            var desiredKeys = desiredVariables
-                .Select(item => item.Key)
-                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var desiredVariables = groupedItem.OrderBy(item => item.Key, StringComparer.CurrentCultureIgnoreCase).ToList();
+            var desiredKeys = desiredVariables.Select(item => item.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             foreach (var staleVariable in group.Variables.Where(item => !desiredKeys.Contains(item.Key)).ToList())
                 group.Variables.Remove(staleVariable);
@@ -470,7 +500,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                 .Where(item => string.Equals(item.PluginId, plugin.Id, StringComparison.OrdinalIgnoreCase))
                 .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
 
-            var messages = PluginVariableValidator.Validate(plugin.Name, definitions, values).ToArray();
+            var messages = ValidatePluginVariables(plugin.Name, definitions, values).ToArray();
             _validationStatusService.Set(plugin.Id, plugin.Name, messages);
         }
 
@@ -495,6 +525,13 @@ public sealed partial class SettingsViewModel : ObservableObject
 
         _variableService.Save(store);
         _variableService.InjectAll();
+    }
+
+    private void InitializeLanguageOptions()
+    {
+        LanguageOptions.Clear();
+        foreach (var option in _localizationService.GetSupportedLanguages())
+            LanguageOptions.Add(new DesignerOptionItem { Key = option.Key, Label = option.Label, Description = option.Description });
     }
 
     private void InitializePluginOptions()
@@ -536,26 +573,73 @@ public sealed partial class SettingsViewModel : ObservableObject
     private void InitializeFontOptions()
     {
         FontOptions.Clear();
-        FontOptions.Add(new DesignerOptionItem
-        {
-            Key = "system",
-            Label = "系统推荐",
-            Description = "系统默认字体"
-        });
-        FontOptions.Add(new DesignerOptionItem
-        {
-            Key = "inter",
-            Label = "Inter",
-            Description = "跨平台一致"
-        });
+        FontOptions.Add(CreateFontOption("system"));
+        FontOptions.Add(CreateFontOption("inter"));
 
         if (OperatingSystem.IsWindows())
         {
-            FontOptions.Add(new DesignerOptionItem { Key = "segoe-ui", Label = "Segoe UI", Description = "Windows 默认" });
-            FontOptions.Add(new DesignerOptionItem { Key = "microsoft-yahei-ui", Label = "Microsoft YaHei UI", Description = "中文界面字体" });
-            FontOptions.Add(new DesignerOptionItem { Key = "arial", Label = "Arial", Description = "经典备用" });
-            FontOptions.Add(new DesignerOptionItem { Key = "bahnschrift", Label = "Bahnschrift", Description = "几何无衬线" });
+            FontOptions.Add(CreateFontOption("segoe-ui"));
+            FontOptions.Add(CreateFontOption("microsoft-yahei-ui"));
+            FontOptions.Add(CreateFontOption("arial"));
+            FontOptions.Add(CreateFontOption("bahnschrift"));
         }
+    }
+
+    private DesignerOptionItem CreateFontOption(string key)
+        => new()
+        {
+            Key = key,
+            Label = _localizationService.GetString($"settings.fonts.{key}.label"),
+            Description = _localizationService.GetString($"settings.fonts.{key}.description")
+        };
+
+    private IReadOnlyList<string> ValidatePluginVariables(
+        string pluginName,
+        IReadOnlyList<PluginVariableDefinition> definitions,
+        IReadOnlyDictionary<string, string> values)
+    {
+        var messages = new List<string>();
+
+        foreach (var definition in definitions)
+        {
+            values.TryGetValue(definition.Key, out var value);
+            var normalizedValue = value?.Trim() ?? string.Empty;
+            var displayName = string.IsNullOrWhiteSpace(definition.DisplayName) ? definition.Key : definition.DisplayName;
+
+            if (definition.IsRequired && string.IsNullOrWhiteSpace(normalizedValue))
+            {
+                messages.Add(string.Format(_localizationService.GetString("settings.validation.required"), pluginName, displayName));
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(normalizedValue))
+                continue;
+
+            if (definition.AllowedValues is { Count: > 0 }
+                && !definition.AllowedValues.Contains(normalizedValue, StringComparer.OrdinalIgnoreCase))
+            {
+                messages.Add(string.Format(
+                    _localizationService.GetString("settings.validation.allowedValues"),
+                    pluginName,
+                    displayName,
+                    string.Join(" / ", definition.AllowedValues)));
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(definition.ValidationPattern)
+                && !System.Text.RegularExpressions.Regex.IsMatch(normalizedValue, definition.ValidationPattern, System.Text.RegularExpressions.RegexOptions.CultureInvariant))
+            {
+                messages.Add(string.Format(
+                    _localizationService.GetString("settings.validation.invalid"),
+                    pluginName,
+                    displayName,
+                    string.IsNullOrWhiteSpace(definition.ValidationMessage)
+                        ? _localizationService.GetString("settings.validation.invalidDefault")
+                        : definition.ValidationMessage));
+            }
+        }
+
+        return messages;
     }
 
     private sealed record KeyHintData(string DefaultValue, string Description, bool IsEncrypted);

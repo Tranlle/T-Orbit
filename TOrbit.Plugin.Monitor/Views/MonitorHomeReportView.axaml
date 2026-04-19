@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TOrbit.Plugin.Monitor.ViewModels"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:Class="TOrbit.Plugin.Monitor.Views.MonitorHomeReportView"
              x:DataType="vm:MonitorHomeReportViewModel">
 
@@ -12,7 +13,7 @@
       <Border Classes="panel"
               Padding="14,12">
         <StackPanel Spacing="4">
-          <TextBlock Text="Total plugins"
+          <TextBlock Text="{loc:Loc monitor.home.totalPlugins}"
                      Classes="caption-muted"
                      MinHeight="0" />
           <TextBlock Text="{Binding TotalCount}"
@@ -25,7 +26,7 @@
               Classes="panel"
               Padding="14,12">
         <StackPanel Spacing="4">
-          <TextBlock Text="Running"
+          <TextBlock Text="{loc:Loc monitor.header.running}"
                      Classes="caption-muted"
                      MinHeight="0" />
           <TextBlock Text="{Binding RunningCount}"
@@ -39,7 +40,7 @@
               Classes="panel"
               Padding="14,12">
         <StackPanel Spacing="4">
-          <TextBlock Text="Faulted plugins"
+          <TextBlock Text="{loc:Loc monitor.home.faultedPlugins}"
                      Classes="caption-muted"
                      MinHeight="0" />
           <TextBlock Text="{Binding FaultedCount}"
@@ -54,7 +55,7 @@
               Classes="panel"
               Padding="14,12">
         <StackPanel Spacing="4">
-          <TextBlock Text="Diagnostics"
+          <TextBlock Text="{loc:Loc monitor.header.diagnostics}"
                      Classes="caption-muted"
                      MinHeight="0" />
           <TextBlock Text="{Binding ErrorDiagnosticCount}"
@@ -66,7 +67,7 @@
     </Grid>
 
     <StackPanel Spacing="8">
-      <TextBlock Text="Recent faulted plugins"
+      <TextBlock Text="{loc:Loc monitor.home.recentFaultedPlugins}"
                  Classes="subsection-title" />
 
       <StackPanel Spacing="8"
@@ -85,7 +86,7 @@
         </ItemsControl>
       </StackPanel>
 
-      <TextBlock Text="There are no faulted plugins right now."
+      <TextBlock Text="{loc:Loc monitor.home.noFaultedPlugins}"
                  Classes="caption-muted"
                  IsVisible="{Binding !HasFaultedPlugins}" />
     </StackPanel>

@@ -21,6 +21,7 @@ namespace TOrbit.Plugin.Promptor.ViewModels;
 public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 {
     private readonly IDesignerDialogService? _dialogService;
+    private readonly ILocalizationService _localizationService;
     private readonly PromptOptimizationService _service = new();
     private PromptorVariables _variables;
     private CancellationTokenSource? _cts;
@@ -44,60 +45,24 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     private bool isCopied;
 
     [ObservableProperty]
-    private string statusMessage = "就绪";
+    private string statusMessage;
 
     public ObservableCollection<PromptorLogEntry> LogEntries { get; } = [];
 
     public string FormattedLogText => LogEntries.Count == 0
-        ? "暂无日志\n\n运行后显示"
+        ? $"{L("promptor.logEmpty")}{Environment.NewLine}{Environment.NewLine}{L("promptor.logEmptyDescription")}"
         : string.Join(Environment.NewLine + Environment.NewLine, LogEntries.Select(entry => entry.FormatAsText()));
 
-    public IReadOnlyList<DesignerOptionItem> StrategyOptions { get; } =
-    [
-        new DesignerOptionItem
-        {
-            Key = "Structured",
-            Label = "结构化",
-            Value = OptimizationStrategy.Structured,
-            Description = "结构化改写"
-        },
-        new DesignerOptionItem
-        {
-            Key = "FewShot",
-            Label = "少样本",
-            Value = OptimizationStrategy.FewShot,
-            Description = "补充示例"
-        },
-        new DesignerOptionItem
-        {
-            Key = "ChainOfThought",
-            Label = "推理链",
-            Value = OptimizationStrategy.ChainOfThought,
-            Description = "引导推理"
-        },
-        new DesignerOptionItem
-        {
-            Key = "Concise",
-            Label = "精简",
-            Value = OptimizationStrategy.Concise,
-            Description = "压缩冗词"
-        },
-        new DesignerOptionItem
-        {
-            Key = "Technical",
-            Label = "技术向",
-            Value = OptimizationStrategy.Technical,
-            Description = "强化约束"
-        }
-    ];
+    public IReadOnlyList<DesignerOptionItem> StrategyOptions => BuildStrategyOptions();
 
     public bool HasRawInput => !string.IsNullOrWhiteSpace(RawInput);
     public bool HasOptimizedOutput => !string.IsNullOrWhiteSpace(OptimizedOutput);
     public bool IsIdle => !IsBusy;
     public bool CanOptimize => HasRawInput && !IsBusy;
     public string StrategyDescription => SelectedStrategyOption?.Description ?? string.Empty;
-    public string CopyButtonText => IsCopied ? "已复制" : "复制";
+    public string CopyButtonText => IsCopied ? L("promptor.copied") : L("promptor.copy");
     public int LogCount => LogEntries.Count;
+    public string LogEntriesSummary => string.Format(L("promptor.logEntriesFormat"), LogEntries.Count);
 
     public IRelayCommand OptimizeCommand { get; }
     public IRelayCommand CopyCommand { get; }
@@ -107,10 +72,12 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     public IRelayCommand ShowLogCommand { get; }
     public IRelayCommand ClearLogCommand { get; }
 
-    public PromptorViewModel(IDesignerDialogService? dialogService, PromptorVariables variables)
+    public PromptorViewModel(IDesignerDialogService? dialogService, PromptorVariables variables, ILocalizationService localizationService)
     {
         _dialogService = dialogService;
         _variables = variables;
+        _localizationService = localizationService;
+        statusMessage = L("runtime.ready");
 
         SelectedStrategyOption = StrategyOptions[0];
 
@@ -126,6 +93,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         {
             OnPropertyChanged(nameof(FormattedLogText));
             OnPropertyChanged(nameof(LogCount));
+            OnPropertyChanged(nameof(LogEntriesSummary));
             HeaderSummaryChanged?.Invoke(this, EventArgs.Empty);
         };
     }
@@ -162,7 +130,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     {
         if (string.IsNullOrWhiteSpace(RawInput))
         {
-            await ShowAlertAsync("需输入", "先输入提示词");
+            await ShowAlertAsync(L("promptor.messages.inputRequiredTitle"), L("promptor.messages.inputRequired"));
             return;
         }
 
@@ -173,14 +141,14 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         }
         catch (Exception ex)
         {
-            await ShowAlertAsync("配置错误", ex.Message);
+            await ShowAlertAsync(L("promptor.messages.configError"), ex.Message);
             return;
         }
 
         var strategy = SelectedStrategyOption?.Value is OptimizationStrategy selected
             ? selected
             : OptimizationStrategy.Structured;
-        var strategyLabel = SelectedStrategyOption?.Label ?? "结构化";
+        var strategyLabel = SelectedStrategyOption?.Label ?? L("promptor.strategy.structured.label");
         var inputPreview = RawInput.Length > 80
             ? RawInput[..80].Replace('\n', ' ').Replace('\r', ' ') + "..."
             : RawInput.Replace('\n', ' ').Replace('\r', ' ');
@@ -190,7 +158,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 
         IsBusy = true;
         OptimizedOutput = string.Empty;
-        StatusMessage = "优化中";
+        StatusMessage = L("promptor.messages.optimizing");
 
         var sw = Stopwatch.StartNew();
         var success = false;
@@ -206,20 +174,20 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 
             sw.Stop();
             success = true;
-            StatusMessage = "已完成";
+            StatusMessage = L("promptor.messages.completed");
         }
         catch (OperationCanceledException)
         {
             sw.Stop();
-            StatusMessage = "已取消";
-            errorMessage = "用户取消";
+            StatusMessage = L("promptor.messages.cancelled");
+            errorMessage = L("promptor.messages.cancelledByUser");
         }
         catch (Exception ex)
         {
             sw.Stop();
-            StatusMessage = "已失败";
+            StatusMessage = L("promptor.messages.failed");
             errorMessage = ex.Message;
-            await ShowAlertAsync("优化失败", ex.Message);
+            await ShowAlertAsync(L("promptor.messages.optimizeFailed"), ex.Message);
         }
         finally
         {
@@ -253,10 +221,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         var hasEndpoint = !string.IsNullOrWhiteSpace(endpoint);
 
         if (!isOllama && !hasEndpoint && string.IsNullOrWhiteSpace(apiKey))
-        {
-            throw new InvalidOperationException(
-                "请配置 API Key");
-        }
+            throw new InvalidOperationException(L("promptor.messages.apiKeyRequired"));
 
         return new PromptorConfig(provider, endpoint, apiKey, model, maxTokens, temperature);
     }
@@ -270,10 +235,12 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 
         await _dialogService.ShowSheetAsync(owner, new DesignerSheetViewModel
         {
-            Title = "运行日志",
-            Description = LogEntries.Count > 0 ? $"{LogEntries.Count} 条日志" : "暂无日志",
+            Title = L("promptor.log"),
+            Description = LogEntries.Count > 0
+                ? string.Format(L("promptor.logEntriesFormat"), LogEntries.Count)
+                : L("promptor.logEmpty"),
             Content = content,
-            ConfirmText = "关闭",
+            ConfirmText = L("dialog.close"),
             CancelText = string.Empty,
             Icon = DesignerDialogIcon.Info,
             BaseFontSize = 13,
@@ -294,7 +261,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
             if (TryGetOwnerWindow()?.Clipboard is { } clipboard)
             {
                 await clipboard.SetTextAsync(OptimizedOutput);
-                StatusMessage = "已复制";
+                StatusMessage = L("promptor.messages.copied");
 
                 _copyCts?.Cancel();
                 _copyCts = new CancellationTokenSource();
@@ -311,9 +278,9 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
                 }
             }
         }
-        catch (Exception ex)
+        catch
         {
-            StatusMessage = "复制失败";
+            StatusMessage = L("promptor.messages.copyFailed");
         }
     }
 
@@ -321,7 +288,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     {
         RawInput = string.Empty;
         OptimizedOutput = string.Empty;
-        StatusMessage = "就绪";
+        StatusMessage = L("runtime.ready");
         RaiseDerivedProperties();
     }
 
@@ -344,6 +311,47 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
             Icon = DesignerDialogIcon.Info
         });
     }
+
+    private IReadOnlyList<DesignerOptionItem> BuildStrategyOptions() =>
+    [
+        new DesignerOptionItem
+        {
+            Key = "Structured",
+            Label = L("promptor.strategy.structured.label"),
+            Value = OptimizationStrategy.Structured,
+            Description = L("promptor.strategy.structured.description")
+        },
+        new DesignerOptionItem
+        {
+            Key = "FewShot",
+            Label = L("promptor.strategy.fewShot.label"),
+            Value = OptimizationStrategy.FewShot,
+            Description = L("promptor.strategy.fewShot.description")
+        },
+        new DesignerOptionItem
+        {
+            Key = "ChainOfThought",
+            Label = L("promptor.strategy.chainOfThought.label"),
+            Value = OptimizationStrategy.ChainOfThought,
+            Description = L("promptor.strategy.chainOfThought.description")
+        },
+        new DesignerOptionItem
+        {
+            Key = "Concise",
+            Label = L("promptor.strategy.concise.label"),
+            Value = OptimizationStrategy.Concise,
+            Description = L("promptor.strategy.concise.description")
+        },
+        new DesignerOptionItem
+        {
+            Key = "Technical",
+            Label = L("promptor.strategy.technical.label"),
+            Value = OptimizationStrategy.Technical,
+            Description = L("promptor.strategy.technical.description")
+        }
+    ];
+
+    private string L(string key) => _localizationService.GetString(key);
 
     private static Window? TryGetOwnerWindow()
     {

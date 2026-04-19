@@ -1,6 +1,7 @@
 using TOrbit.Plugin.Migration.Models;
 using TOrbit.Plugin.Migration.Services;
 using TOrbit.Plugin.Migration.ViewModels;
+using TOrbit.Designer.Services;
 using Xunit;
 
 namespace TOrbit.Core.Tests.Services;
@@ -45,7 +46,8 @@ public sealed class MigrationViewModelTests
         return new MigrationViewModel(
             new MigrationService(),
             new MigrationConfigurationStore(pluginRoot, legacyRoot),
-            new MigrationVariables { DefaultConnectionString = defaultConnectionString });
+            new MigrationVariables { DefaultConnectionString = defaultConnectionString },
+            new LocalizationService());
     }
 
     private static string CreateTempDirectory()

@@ -1,13 +1,14 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using TOrbit.Core.Services;
+using TOrbit.Designer.Services;
 using TOrbit.Plugin.Core.Enums;
 
 namespace TOrbit.Plugin.Home;
 
 internal sealed class PluginOverviewReportView : UserControl
 {
-    public PluginOverviewReportView(IPluginCatalogService pluginCatalog)
+    public PluginOverviewReportView(IPluginCatalogService pluginCatalog, ILocalizationService localizationService)
     {
         var plugins = pluginCatalog.Plugins;
 
@@ -19,10 +20,10 @@ internal sealed class PluginOverviewReportView : UserControl
             RowSpacing = 12,
             Children =
             {
-                CreateMetric("已启用", plugins.Count(x => x.IsEnabled).ToString()),
-                CreateMetric("运行中", plugins.Count(x => x.State == PluginState.Running).ToString(), 1),
-                CreateMetric("故障", plugins.Count(x => x.State == PluginState.Faulted).ToString(), 0, 1),
-                CreateMetric("可视插件", plugins.Count(x => x.Kind == PluginKind.Visual).ToString(), 1, 1)
+                CreateMetric(localizationService.GetString("home.overview.enabled"), plugins.Count(x => x.IsEnabled).ToString()),
+                CreateMetric(localizationService.GetString("home.overview.running"), plugins.Count(x => x.State == PluginState.Running).ToString(), 1),
+                CreateMetric(localizationService.GetString("home.overview.faulted"), plugins.Count(x => x.State == PluginState.Faulted).ToString(), 0, 1),
+                CreateMetric(localizationService.GetString("home.overview.visual"), plugins.Count(x => x.Kind == PluginKind.Visual).ToString(), 1, 1)
             }
         };
     }

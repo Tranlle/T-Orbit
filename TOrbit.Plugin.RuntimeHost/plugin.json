@@ -1,0 +1,22 @@
+{
+  "id": "torbit.runtime-host",
+  "name": ".NET Runtime Host",
+  "version": "1.0.0",
+  "entryAssembly": "TOrbit.Plugin.RuntimeHost.dll",
+  "entryType": "TOrbit.Plugin.RuntimeHost.RuntimeHostPlugin",
+  "description": "Upload a release zip, deploy it locally, and manage start, monitor, restart, and stop for .NET applications.",
+  "author": "T-Orbit",
+  "icon": "RocketLaunch",
+  "tags": "DotNet,Runtime,Process,Deployment",
+  "kind": "Visual",
+  "loadMode": "Lazy",
+  "isolationMode": "AssemblyLoadContext",
+  "capabilities": [
+    "FileSystem",
+    "LocalProcess"
+  ],
+  "dependencies": [],
+  "metadata": {
+    "displayCategory": "Runtime"
+  }
+}

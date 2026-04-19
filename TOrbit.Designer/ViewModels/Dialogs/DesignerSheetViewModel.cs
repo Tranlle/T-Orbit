@@ -1,6 +1,7 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using TOrbit.Designer.Models;
+using TOrbit.Designer.Services;
 
 namespace TOrbit.Designer.ViewModels.Dialogs;
 
@@ -9,8 +10,8 @@ public partial class DesignerSheetViewModel : ObservableObject
     [ObservableProperty] private string title = string.Empty;
     [ObservableProperty] private string? description;
     [ObservableProperty] private Control? content;
-    [ObservableProperty] private string confirmText = "确定";
-    [ObservableProperty] private string cancelText = "取消";
+    [ObservableProperty] private string confirmText = LocalizationService.Current?.GetString("dialog.confirm") ?? "Confirm";
+    [ObservableProperty] private string cancelText = LocalizationService.Current?.GetString("dialog.cancel") ?? "Cancel";
     [ObservableProperty] private DesignerDialogIcon icon = DesignerDialogIcon.Info;
     [ObservableProperty] private string? note;
     [ObservableProperty] private double baseFontSize = 13;

@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AssemblyName>TOrbit.Plugin.RuntimeHost</AssemblyName>
+    <ToolHostPluginId>RuntimeHost</ToolHostPluginId>
+    <ToolHostPluginOutputDir>..\TOrbit.App\bin\$(Configuration)\net10.0\plugins\$(ToolHostPluginId)\</ToolHostPluginOutputDir>
+    <OutDir>$(ToolHostPluginOutputDir)</OutDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TOrbit.Plugin.Core\TOrbit.Plugin.Core.csproj" />
+    <ProjectReference Include="..\TOrbit.Designer\TOrbit.Designer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="plugin.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="CopyPluginManifest" AfterTargets="Build">
+    <Copy SourceFiles="plugin.json"
+          DestinationFolder="$(OutDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

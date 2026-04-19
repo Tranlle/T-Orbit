@@ -19,7 +19,7 @@ public static class PluginVariableValidator
 
             if (definition.IsRequired && string.IsNullOrWhiteSpace(normalizedValue))
             {
-                errors.Add($"{pluginName}: {displayName} 为必填项。");
+                errors.Add($"{pluginName}: {displayName} is required.");
                 continue;
             }
 
@@ -30,7 +30,7 @@ public static class PluginVariableValidator
                 && !definition.AllowedValues.Contains(normalizedValue, StringComparer.OrdinalIgnoreCase))
             {
                 errors.Add(
-                    $"{pluginName}: {displayName} 必须为 {string.Join(" / ", definition.AllowedValues)} 之一。");
+                    $"{pluginName}: {displayName} must be one of {string.Join(" / ", definition.AllowedValues)}.");
                 continue;
             }
 
@@ -38,7 +38,7 @@ public static class PluginVariableValidator
                 && !Regex.IsMatch(normalizedValue, definition.ValidationPattern, RegexOptions.CultureInvariant))
             {
                 errors.Add(
-                    $"{pluginName}: {displayName} {definition.ValidationMessage ?? "格式不正确。"}");
+                    $"{pluginName}: {displayName} {definition.ValidationMessage ?? "has an invalid format."}");
             }
         }
 

@@ -3,6 +3,7 @@
              xmlns:vm="using:TOrbit.Plugin.Settings.ViewModels"
              xmlns:models="using:TOrbit.Designer.Models"
              xmlns:designer="using:TOrbit.Designer.Controls"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:Class="TOrbit.Plugin.Settings.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
   <UserControl.Styles>
@@ -18,7 +19,7 @@
     </Style>
 
     <Style Selector="Border.settings-hero">
-      <Setter Property="Background" Value="#101B24" />
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceElevatedBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusXLarge}" />
@@ -32,7 +33,7 @@
     </Style>
 
     <Style Selector="Border.variable-surface">
-      <Setter Property="Background" Value="#101923" />
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceElevatedBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
@@ -70,10 +71,10 @@
                   <StackPanel Spacing="6">
                     <TextBlock Text="SETTINGS"
                                Classes="eyebrow" />
-                    <TextBlock Text="宿主设置"
+                    <TextBlock Text="{loc:Loc settings.title}"
                                FontSize="20"
                                FontWeight="SemiBold" />
-                    <TextBlock Text="统一调整偏好"
+                    <TextBlock Text="{loc:Loc settings.description}"
                                Classes="caption-muted"
                                MinHeight="0"
                                TextWrapping="Wrap" />
@@ -83,22 +84,32 @@
                 <Border Classes="settings-section">
                   <StackPanel Spacing="14">
                     <StackPanel Spacing="2">
-                      <TextBlock Text="基础设置"
+                      <TextBlock Text="{loc:Loc settings.sections.basic.title}"
                                  Classes="section-title" />
-                      <TextBlock Text="控制外观与关闭"
+                      <TextBlock Text="{loc:Loc settings.sections.basic.description}"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                     </StackPanel>
 
-                    <designer:FormField Label="应用名">
+                    <designer:FormField Label="{loc:Loc settings.fields.appName}">
                       <designer:FormField.Body>
                         <TextBox Classes="form-control"
                                  Text="{Binding AppName, Mode=TwoWay}"
-                                 PlaceholderText="输入应用名" />
+                                 PlaceholderText="{loc:Loc settings.fields.appNamePlaceholder}" />
                       </designer:FormField.Body>
                     </designer:FormField>
 
-                    <designer:FormField Label="内置配色"
+                    <designer:FormField Label="{loc:Loc settings.fields.language}"
+                                        Description="{Binding SelectedLanguageOption.Description, TargetNullValue=''}">
+                      <designer:FormField.Body>
+                        <ComboBox Classes="form-control"
+                                  ItemsSource="{Binding LanguageOptions}"
+                                  SelectedItem="{Binding SelectedLanguageOption, Mode=TwoWay}"
+                                  DisplayMemberBinding="{Binding Label}" />
+                      </designer:FormField.Body>
+                    </designer:FormField>
+
+                    <designer:FormField Label="{loc:Loc settings.fields.builtInPalette}"
                                         Description="{Binding SelectedPaletteOption.Description, TargetNullValue=''}">
                       <designer:FormField.Body>
                         <ComboBox Classes="form-control"
@@ -108,7 +119,7 @@
                       </designer:FormField.Body>
                     </designer:FormField>
 
-                    <designer:FormField Label="全局字体"
+                    <designer:FormField Label="{loc:Loc settings.fields.font}"
                                         Description="{Binding SelectedFontOption.Description, TargetNullValue=''}">
                       <designer:FormField.Body>
                         <ComboBox Classes="form-control"
@@ -134,17 +145,17 @@
                           ColumnSpacing="16"
                           VerticalAlignment="Center">
                       <StackPanel Spacing="2">
-                        <TextBlock Text="关闭行为"
+                        <TextBlock Text="{loc:Loc settings.fields.closeBehavior}"
                                    Classes="subsection-title" />
-                        <TextBlock Text="选择托盘或退出"
+                        <TextBlock Text="{loc:Loc settings.fields.closeBehaviorDescription}"
                                    Classes="caption-muted"
                                    MinHeight="0"
                                    TextWrapping="Wrap" />
                       </StackPanel>
                       <ToggleSwitch Grid.Column="1"
                                     IsChecked="{Binding MinimizeToTrayOnClose, Mode=TwoWay}"
-                                    OnContent="托盘"
-                                    OffContent="退出" />
+                                    OnContent="{loc:Loc settings.options.tray}"
+                                    OffContent="{loc:Loc settings.options.exit}" />
                     </Grid>
                   </StackPanel>
                 </Border>
@@ -152,19 +163,19 @@
                 <Border Classes="settings-section">
                   <StackPanel Spacing="14">
                     <StackPanel Spacing="2">
-                      <TextBlock Text="高级主题"
+                      <TextBlock Text="{loc:Loc settings.sections.advancedTheme.title}"
                                  Classes="section-title" />
-                      <TextBlock Text="扩展配色与目录"
+                      <TextBlock Text="{loc:Loc settings.sections.advancedTheme.description}"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                     </StackPanel>
 
-                    <CheckBox Content="显示高级主题"
+                    <CheckBox Content="{loc:Loc settings.fields.advancedThemeVisible}"
                               IsChecked="{Binding ShowAdvancedThemeSettings, Mode=TwoWay}" />
 
                     <StackPanel Spacing="14"
                                 IsVisible="{Binding ShowAdvancedThemeSettings}">
-                      <designer:FormField Label="高级配色"
+                      <designer:FormField Label="{loc:Loc settings.sections.advancedTheme.palette}"
                                           Description="{Binding SelectedAdvancedPaletteOption.Description, TargetNullValue=''}">
                         <designer:FormField.Body>
                           <ComboBox Classes="form-control"
@@ -174,7 +185,7 @@
                         </designer:FormField.Body>
                       </designer:FormField>
 
-                      <designer:FormField Label="主题目录">
+                      <designer:FormField Label="{loc:Loc settings.sections.advancedTheme.directory}">
                         <designer:FormField.Body>
                           <TextBox Classes="form-control"
                                    Text="{Binding CustomThemeDirectory, Mode=TwoWay}" />
@@ -187,21 +198,21 @@
                 <Border Classes="settings-section">
                   <StackPanel Spacing="14">
                     <StackPanel Spacing="2">
-                      <TextBlock Text="工作区迁移"
+                      <TextBlock Text="{loc:Loc settings.workspace.title}"
                                  Classes="section-title" />
-                      <TextBlock Text="设置根目录与迁移"
+                      <TextBlock Text="{loc:Loc settings.workspace.description}"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                     </StackPanel>
 
-                    <designer:FormField Label="工作区目录">
+                    <designer:FormField Label="{loc:Loc settings.workspace.root}">
                       <designer:FormField.Body>
                         <TextBox Classes="form-control"
                                  Text="{Binding WorkspaceRoot, Mode=TwoWay}" />
                       </designer:FormField.Body>
                     </designer:FormField>
 
-                    <CheckBox Content="迁移默认用工作区"
+                    <CheckBox Content="{loc:Loc settings.workspace.useForMigration}"
                               IsChecked="{Binding UseWorkspaceForMigrations, Mode=TwoWay}" />
                   </StackPanel>
                 </Border>
@@ -218,12 +229,12 @@
                           Spacing="18">
                 <Border Classes="settings-hero">
                   <StackPanel Spacing="6">
-                    <TextBlock Text="变量"
+                    <TextBlock Text="{loc:Loc settings.variables.eyebrow}"
                                Classes="eyebrow" />
-                    <TextBlock Text="插件变量"
+                    <TextBlock Text="{loc:Loc settings.variables.title}"
                                FontSize="20"
                                FontWeight="SemiBold" />
-                    <TextBlock Text="集中管理变量"
+                    <TextBlock Text="{loc:Loc settings.variables.description}"
                                Classes="caption-muted"
                                MinHeight="0"
                                TextWrapping="Wrap" />
@@ -241,7 +252,7 @@
                           Command="{Binding ShowAddVariableFormCommand}"
                           IsVisible="{Binding !ShowAddVariableForm}"
                           Classes="accent"
-                          Content="新增变量"
+                          Content="{loc:Loc settings.variables.add}"
                           VerticalAlignment="Center" />
                 </Grid>
 
@@ -254,14 +265,14 @@
                   <StackPanel Spacing="12">
                     <StackPanel Spacing="2">
                       <TextBlock Classes="section-title"
-                                 Text="新建变量" />
+                                 Text="{loc:Loc settings.variables.createTitle}" />
                       <TextBlock Classes="caption-muted"
                                  MinHeight="0"
-                                 Text="仅保存变量值" />
+                                 Text="{loc:Loc settings.variables.createDescription}" />
                     </StackPanel>
 
                     <Grid ColumnDefinitions="*,16,*">
-                      <designer:FormField Grid.Column="0" Label="插件">
+                      <designer:FormField Grid.Column="0" Label="{loc:Loc settings.variables.plugin}">
                         <designer:FormField.Body>
                           <ComboBox Classes="form-control"
                                     ItemsSource="{Binding PluginOptions}"
@@ -270,11 +281,11 @@
                         </designer:FormField.Body>
                       </designer:FormField>
 
-                      <designer:FormField Grid.Column="2" Label="键">
+                      <designer:FormField Grid.Column="2" Label="{loc:Loc settings.variables.key}">
                         <designer:FormField.Body>
                           <TextBox Classes="form-control"
                                    Text="{Binding AddFormKey, Mode=TwoWay}"
-                                   PlaceholderText="如：MY_API_KEY" />
+                                   PlaceholderText="{loc:Loc settings.variables.keyPlaceholder}" />
                         </designer:FormField.Body>
                       </designer:FormField>
                     </Grid>
@@ -283,7 +294,7 @@
                                 IsVisible="{Binding HasAddFormKeyHints}">
                       <TextBlock Classes="caption-muted"
                                  MinHeight="0"
-                                 Text="可直接插入键：" />
+                                 Text="{loc:Loc settings.variables.keyHints}" />
                       <ItemsControl ItemsSource="{Binding AddFormKeyHints}">
                         <ItemsControl.ItemsPanel>
                           <ItemsPanelTemplate>
@@ -307,19 +318,19 @@
                       </ItemsControl>
                     </StackPanel>
 
-                    <designer:FormField Label="值">
+                    <designer:FormField Label="{loc:Loc settings.variables.value}">
                       <designer:FormField.Body>
                         <TextBox Classes="form-control"
                                  Text="{Binding AddFormValue, Mode=TwoWay}"
-                                 PlaceholderText="输入变量值" />
+                                 PlaceholderText="{loc:Loc settings.variables.valuePlaceholder}" />
                       </designer:FormField.Body>
                     </designer:FormField>
 
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Right"
                                 Spacing="8">
-                      <Button Command="{Binding CancelAddVariableCommand}" Content="取消" />
-                      <Button Command="{Binding AddVariableCommand}" Classes="accent" Content="保存" />
+                      <Button Command="{Binding CancelAddVariableCommand}" Content="{loc:Loc dialog.cancel}" />
+                      <Button Command="{Binding AddVariableCommand}" Classes="accent" Content="{loc:Loc settings.header.actions.save}" />
                     </StackPanel>
                   </StackPanel>
                 </Border>
@@ -381,8 +392,8 @@
 
                           <Grid ColumnDefinitions="*,220,32"
                                 ColumnSpacing="10">
-                            <TextBlock Grid.Column="0" Classes="field-label" Text="键" />
-                            <TextBlock Grid.Column="1" Classes="field-label" Text="值" />
+                            <TextBlock Grid.Column="0" Classes="field-label" Text="{loc:Loc settings.variables.key}" />
+                            <TextBlock Grid.Column="1" Classes="field-label" Text="{loc:Loc settings.variables.value}" />
                           </Grid>
 
                           <ItemsControl ItemsSource="{Binding Variables}">
@@ -406,7 +417,7 @@
                                                 CornerRadius="4"
                                                 Padding="5,1"
                                                 VerticalAlignment="Center">
-                                          <TextBlock Text="加密"
+                                          <TextBlock Text="{loc:Loc settings.variables.encrypted}"
                                                      FontSize="10"
                                                      Foreground="{DynamicResource TOrbitBadgeInfoForegroundBrush}" />
                                         </Border>
@@ -436,7 +447,7 @@
                                             Padding="0"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
-                                            ToolTip.Tip="删除"
+                                            ToolTip.Tip="{loc:Loc runtime.delete}"
                                             Content="×"
                                             FontSize="14" />
                                   </Grid>
@@ -452,7 +463,7 @@
 
                 <TextBlock Classes="caption-muted"
                            IsVisible="{Binding !HasPluginVariables}"
-                           Text="暂无插件变量" />
+                           Text="{loc:Loc settings.sections.variables.empty}" />
               </StackPanel>
             </ScrollViewer>
           </Border>

@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using TOrbit.Designer.Services;
 
 namespace TOrbit.Plugin.KeyMap.Views;
 
@@ -18,7 +19,6 @@ public partial class KeyCaptureBox : UserControl
 
     private bool _isCapturing;
 
-    // Named controls resolved after XAML load
     private Border? _container;
     private TextBlock? _displayText;
     private TextBlock? _hintText;
@@ -63,14 +63,14 @@ public partial class KeyCaptureBox : UserControl
         _isCapturing = true;
 
         if (_displayText is not null)
-            _displayText.Text = "请按下快捷键...";
+            _displayText.Text = L("keymap.capture.pressShortcut");
 
         if (_hintText is not null)
             _hintText.IsVisible = false;
 
         if (_container is not null)
         {
-            _container.BorderBrush = Avalonia.Application.Current?.FindResource("TOrbitAccentBrush") as Avalonia.Media.IBrush
+            _container.BorderBrush = Application.Current?.FindResource("TOrbitAccentBrush") as Avalonia.Media.IBrush
                 ?? _container.BorderBrush;
         }
     }
@@ -81,9 +81,7 @@ public partial class KeyCaptureBox : UserControl
         UpdateDisplay();
 
         if (_container is not null)
-        {
             _container.ClearValue(Border.BorderBrushProperty);
-        }
     }
 
     private void OnCaptureKeyDown(object? sender, KeyEventArgs e)
@@ -98,7 +96,6 @@ public partial class KeyCaptureBox : UserControl
             return;
         }
 
-        // Ignore lone modifier key presses
         if (e.Key is Key.LeftCtrl or Key.RightCtrl
             or Key.LeftShift or Key.RightShift
             or Key.LeftAlt or Key.RightAlt
@@ -121,7 +118,7 @@ public partial class KeyCaptureBox : UserControl
         if (_displayText is null)
             return;
 
-        _displayText.Text = string.IsNullOrWhiteSpace(Value) ? "（未设置）" : Value;
+        _displayText.Text = string.IsNullOrWhiteSpace(Value) ? L("keymap.capture.unset") : Value;
 
         if (_hintText is not null)
             _hintText.IsVisible = true;
@@ -131,10 +128,10 @@ public partial class KeyCaptureBox : UserControl
     {
         var parts = new List<string>();
 
-        if (modifiers.HasFlag(KeyModifiers.Control)) parts.Add("Ctrl");
-        if (modifiers.HasFlag(KeyModifiers.Alt)) parts.Add("Alt");
-        if (modifiers.HasFlag(KeyModifiers.Shift)) parts.Add("Shift");
-        if (modifiers.HasFlag(KeyModifiers.Meta)) parts.Add("Meta");
+        if (modifiers.HasFlag(KeyModifiers.Control)) parts.Add(L("keymap.keys.ctrl"));
+        if (modifiers.HasFlag(KeyModifiers.Alt)) parts.Add(L("keymap.keys.alt"));
+        if (modifiers.HasFlag(KeyModifiers.Shift)) parts.Add(L("keymap.keys.shift"));
+        if (modifiers.HasFlag(KeyModifiers.Meta)) parts.Add(L("keymap.keys.meta"));
 
         var keyName = key switch
         {
@@ -147,24 +144,26 @@ public partial class KeyCaptureBox : UserControl
             Key.OemBackslash => "\\",
             Key.OemMinus => "-",
             Key.OemPlus => "=",
-            Key.Space => "Space",
-            Key.Return => "Enter",
-            Key.Back => "Backspace",
-            Key.Tab => "Tab",
-            Key.Delete => "Delete",
-            Key.Insert => "Insert",
-            Key.Home => "Home",
-            Key.End => "End",
-            Key.PageUp => "PageUp",
-            Key.PageDown => "PageDown",
-            Key.Up => "Up",
-            Key.Down => "Down",
-            Key.Left => "Left",
-            Key.Right => "Right",
+            Key.Space => L("keymap.keys.space"),
+            Key.Return => L("keymap.keys.enter"),
+            Key.Back => L("keymap.keys.backspace"),
+            Key.Tab => L("keymap.keys.tab"),
+            Key.Delete => L("keymap.keys.delete"),
+            Key.Insert => L("keymap.keys.insert"),
+            Key.Home => L("keymap.keys.home"),
+            Key.End => L("keymap.keys.end"),
+            Key.PageUp => L("keymap.keys.pageUp"),
+            Key.PageDown => L("keymap.keys.pageDown"),
+            Key.Up => L("keymap.keys.up"),
+            Key.Down => L("keymap.keys.down"),
+            Key.Left => L("keymap.keys.left"),
+            Key.Right => L("keymap.keys.right"),
             _ => key.ToString()
         };
 
         parts.Add(keyName);
         return string.Join("+", parts);
     }
+
+    private static string L(string key) => LocalizationService.Current?.GetString(key) ?? key;
 }

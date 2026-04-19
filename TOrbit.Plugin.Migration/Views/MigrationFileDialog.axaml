@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:TOrbit.Plugin.Migration.ViewModels"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:loc="using:TOrbit.Designer.Markup"
         x:Class="TOrbit.Plugin.Migration.Views.MigrationFileDialog"
         x:DataType="vm:MigrationFileDialogViewModel"
         Width="980"
@@ -11,7 +12,7 @@
         CanResize="True"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Title="Migration File">
+        Title="{loc:Loc migration.migrationFile}">
   <Window.Styles>
     <Style Selector="Button.icon-tool">
       <Setter Property="Width" Value="34" />
@@ -31,7 +32,7 @@
       <Grid ColumnDefinitions="*,Auto"
             ColumnSpacing="16">
         <StackPanel Spacing="4">
-          <TextBlock Text="MIGRATION FILE"
+          <TextBlock Text="{loc:Loc migration.migrationFileUpper}"
                      Classes="eyebrow" />
           <TextBlock Text="{Binding FileName}"
                      FontSize="18"
@@ -44,7 +45,7 @@
                     Spacing="8"
                     VerticalAlignment="Center">
           <Button Classes="icon-tool"
-                  ToolTip.Tip="Enable editing"
+                  ToolTip.Tip="{loc:Loc migration.enableEditing}"
                   Command="{Binding EnableEditCommand}"
                   IsEnabled="{Binding CanEnableEdit}">
             <materialIcons:MaterialIcon Kind="PencilOutline"
@@ -52,7 +53,7 @@
                                         Height="16" />
           </Button>
           <Button Classes="icon-tool accent"
-                  ToolTip.Tip="Save"
+                  ToolTip.Tip="{loc:Loc settings.header.actions.save}"
                   Command="{Binding SaveCommand}"
                   IsEnabled="{Binding CanSave}">
             <materialIcons:MaterialIcon Kind="ContentSaveOutline"
@@ -60,7 +61,7 @@
                                         Height="16" />
           </Button>
           <Button Classes="icon-tool"
-                  ToolTip.Tip="Exit editing"
+                  ToolTip.Tip="{loc:Loc migration.exitEditing}"
                   Command="{Binding ExitEditCommand}"
                   IsEnabled="{Binding CanExitEdit}">
             <materialIcons:MaterialIcon Kind="CloseCircleOutline"
@@ -88,7 +89,7 @@
             BorderBrush="{DynamicResource TOrbitBorderBrush}"
             BorderThickness="0,1,0,0"
             Padding="20,12">
-      <TextBlock Text="Enable editing before saving changes. Exiting edit mode discards unsaved content."
+      <TextBlock Text="{loc:Loc migration.editingHint}"
                  Classes="caption-muted"
                  MinHeight="0" />
     </Border>

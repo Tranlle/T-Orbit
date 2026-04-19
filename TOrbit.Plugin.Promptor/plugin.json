@@ -1,10 +1,10 @@
 {
   "id": "torbit.promptor",
-  "name": "提示词优化",
+  "name": "Promptor",
   "version": "1.0.0",
   "entryAssembly": "TOrbit.Plugin.Promptor.dll",
   "entryType": "TOrbit.Plugin.Promptor.PromptorPlugin",
-  "description": "基于 AI 大模型的提示词优化工具，支持结构化、少样本、思维链等多种优化策略。",
+  "description": "AI prompt optimization workspace with structured, few-shot, reasoning, concise, and technical strategies.",
   "author": "T-Orbit",
   "icon": "AutoFixHigh",
   "tags": "AI,Prompt,Llm",

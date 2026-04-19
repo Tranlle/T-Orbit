@@ -11,22 +11,24 @@ using TOrbit.Plugin.Settings.Views;
 
 namespace TOrbit.Plugin.Settings;
 
-public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderActionsProvider, IPluginPageHeaderProvider
+public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderActionsProvider, IPluginPageHeaderProvider, IPluginDisplayInfoProvider
 {
     private readonly IAppShellService _shellService;
     private readonly IThemeService _themeService;
+    private readonly ILocalizationService _localizationService;
     private readonly IAppPreferencesService _preferencesService;
     private readonly IPluginCatalogService _pluginCatalog;
     private readonly IPluginVariableService _variableService;
     private readonly IPluginValidationStatusService _validationStatusService;
+    private readonly PluginDescriptor _descriptor;
 
     private SettingsView? _view;
     private SettingsViewModel? _viewModel;
-    private IReadOnlyList<PluginHeaderAction>? _headerActions;
 
     public SettingsPlugin(
         IAppShellService shellService,
         IThemeService themeService,
+        ILocalizationService localizationService,
         IAppPreferencesService preferencesService,
         IPluginCatalogService pluginCatalog,
         IPluginVariableService variableService,
@@ -34,15 +36,29 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
     {
         _shellService = shellService;
         _themeService = themeService;
+        _localizationService = localizationService;
         _preferencesService = preferencesService;
         _pluginCatalog = pluginCatalog;
         _variableService = variableService;
         _validationStatusService = validationStatusService;
+        _descriptor = CreateDescriptor<SettingsPlugin>(
+            SettingsPluginMetadata.Instance.Id,
+            _localizationService.GetString("plugins.settings.name"),
+            SettingsPluginMetadata.Instance.Version,
+            _localizationService.GetString("plugins.settings.description"),
+            SettingsPluginMetadata.Instance.Author,
+            SettingsPluginMetadata.Instance.Icon,
+            SettingsPluginMetadata.Instance.Tags);
     }
 
-    public override PluginDescriptor Descriptor { get; } = CreateDescriptor<SettingsPlugin>(SettingsPluginMetadata.Instance);
+    public override PluginDescriptor Descriptor => _descriptor;
 
     public event EventHandler? HeaderChanged;
+    public event EventHandler? DisplayInfoChanged;
+
+    public string DisplayName => _localizationService.GetString("plugins.settings.name");
+
+    public string DisplayDescription => _localizationService.GetString("plugins.settings.description");
 
     public override Control GetMainView()
     {
@@ -53,7 +69,14 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
     public IReadOnlyList<PluginHeaderAction> GetHeaderActions()
     {
         EnsureView();
-        return _headerActions ?? [];
+        if (_viewModel is null)
+            return [];
+
+        return
+        [
+            new PluginHeaderAction(_localizationService.GetString("settings.header.actions.reset"), _viewModel.ResetCommand),
+            new PluginHeaderAction(_localizationService.GetString("settings.header.actions.save"), _viewModel.SaveCommand, IsPrimary: true)
+        ];
     }
 
     public PluginPageHeaderModel? GetPageHeader()
@@ -65,31 +88,31 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
         return new PluginPageHeaderModel
         {
             Context = _viewModel.ShowAdvancedThemeSettings
-                ? "高级主题已开"
-                : "基础主题模式",
+                ? _localizationService.GetString("settings.header.advancedTheme")
+                : _localizationService.GetString("settings.header.basicTheme"),
             Metrics =
             [
                 new PluginPageHeaderMetric
                 {
-                    Label = "Plugins",
+                    Label = _localizationService.GetString("settings.header.metrics.plugins"),
                     Value = _viewModel.PluginCount.ToString(),
                     Tone = PluginPageHeaderTone.Neutral
                 },
                 new PluginPageHeaderMetric
                 {
-                    Label = "Variables",
+                    Label = _localizationService.GetString("settings.header.metrics.variables"),
                     Value = _viewModel.VariableCount.ToString(),
                     Tone = PluginPageHeaderTone.Accent
                 },
                 new PluginPageHeaderMetric
                 {
-                    Label = "Covered",
+                    Label = _localizationService.GetString("settings.header.metrics.covered"),
                     Value = _viewModel.VariablePluginCount.ToString(),
                     Tone = PluginPageHeaderTone.Success
                 },
                 new PluginPageHeaderMetric
                 {
-                    Label = "Warnings",
+                    Label = _localizationService.GetString("settings.header.metrics.warnings"),
                     Value = _viewModel.ValidationIssuePluginCount.ToString(),
                     Tone = _viewModel.ValidationIssuePluginCount > 0 ? PluginPageHeaderTone.Warning : PluginPageHeaderTone.Success
                 }
@@ -98,22 +121,26 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
             [
                 new PluginPageHeaderBadge
                 {
-                    Text = _viewModel.SelectedPaletteOption?.Label ?? "默认配色",
+                    Text = _viewModel.SelectedPaletteOption?.Label ?? _localizationService.GetString("settings.header.badges.defaultPalette"),
                     Tone = PluginPageHeaderTone.Neutral
                 },
                 new PluginPageHeaderBadge
                 {
-                    Text = _viewModel.SelectedFontOption?.Label ?? "系统字体",
+                    Text = _viewModel.SelectedFontOption?.Label ?? _localizationService.GetString("settings.header.badges.systemFont"),
                     Tone = PluginPageHeaderTone.Neutral
                 },
                 new PluginPageHeaderBadge
                 {
-                    Text = _viewModel.MinimizeToTrayOnClose ? "托盘关闭" : "直接退出",
+                    Text = _viewModel.MinimizeToTrayOnClose
+                        ? _localizationService.GetString("settings.header.badges.trayClose")
+                        : _localizationService.GetString("settings.header.badges.exitClose"),
                     Tone = PluginPageHeaderTone.Accent
                 },
                 new PluginPageHeaderBadge
                 {
-                    Text = _viewModel.ShowAdvancedThemeSettings ? "高级主题" : "基础主题",
+                    Text = _viewModel.ShowAdvancedThemeSettings
+                        ? _localizationService.GetString("settings.header.badges.advancedTheme")
+                        : _localizationService.GetString("settings.header.badges.basicTheme"),
                     Tone = _viewModel.ShowAdvancedThemeSettings ? PluginPageHeaderTone.Warning : PluginPageHeaderTone.Success
                 }
             ]
@@ -124,19 +151,16 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
     {
         if (_viewModel is null)
         {
+            _localizationService.LanguageChanged += LocalizationServiceOnLanguageChanged;
             _viewModel = new SettingsViewModel(
                 _shellService,
                 _themeService,
+                _localizationService,
                 _preferencesService,
                 _pluginCatalog,
                 _variableService,
                 _validationStatusService);
             _viewModel.HeaderSummaryChanged += ViewModelOnHeaderSummaryChanged;
-            _headerActions =
-            [
-                new PluginHeaderAction("重置", _viewModel.ResetCommand),
-                new PluginHeaderAction("保存", _viewModel.SaveCommand, IsPrimary: true)
-            ];
         }
 
         _view ??= new SettingsView { DataContext = _viewModel };
@@ -144,15 +168,21 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
 
     protected override ValueTask OnDisposeAsync()
     {
+        _localizationService.LanguageChanged -= LocalizationServiceOnLanguageChanged;
         if (_viewModel is not null)
             _viewModel.HeaderSummaryChanged -= ViewModelOnHeaderSummaryChanged;
 
         _view = null;
         _viewModel = null;
-        _headerActions = null;
         return ValueTask.CompletedTask;
     }
 
     private void ViewModelOnHeaderSummaryChanged(object? sender, EventArgs e)
         => HeaderChanged?.Invoke(this, EventArgs.Empty);
+
+    private void LocalizationServiceOnLanguageChanged(object? sender, EventArgs e)
+    {
+        DisplayInfoChanged?.Invoke(this, EventArgs.Empty);
+        HeaderChanged?.Invoke(this, EventArgs.Empty);
+    }
 }

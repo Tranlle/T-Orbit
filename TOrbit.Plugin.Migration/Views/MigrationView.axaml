@@ -4,6 +4,7 @@
              xmlns:models="using:TOrbit.Plugin.Migration.Models"
              xmlns:designer="using:TOrbit.Designer.Controls"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:DataType="vm:MigrationViewModel"
              x:Class="TOrbit.Plugin.Migration.Views.MigrationView">
   <UserControl.Styles>
@@ -50,7 +51,7 @@
     </Style>
 
     <Style Selector="Border.migration-hero">
-      <Setter Property="Background" Value="#101B24" />
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceElevatedBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusXLarge}" />
@@ -58,7 +59,7 @@
     </Style>
 
     <Style Selector="Border.metric-surface">
-      <Setter Property="Background" Value="#101923" />
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceElevatedBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
@@ -82,7 +83,7 @@
                     <StackPanel Spacing="6">
                       <TextBlock Text="PROFILES"
                                  Classes="eyebrow" />
-                      <TextBlock Text="Connection profiles"
+                      <TextBlock Text="{loc:Loc migration.connectionProfiles}"
                                  FontSize="20"
                                  FontWeight="SemiBold" />
                     </StackPanel>
@@ -92,22 +93,22 @@
                                 Spacing="8"
                                 VerticalAlignment="Top">
                       <Button Classes="icon-action"
-                              ToolTip.Tip="Add profile"
+                              ToolTip.Tip="{loc:Loc migration.addProfile}"
                               Command="{Binding AddProfileCommand}">
                         <materialIcons:MaterialIcon Kind="Plus" Width="16" Height="16" />
                       </Button>
                       <Button Classes="icon-action"
-                              ToolTip.Tip="Edit profile"
+                              ToolTip.Tip="{loc:Loc migration.editProfile}"
                               Command="{Binding OpenEditProfileCommand}">
                         <materialIcons:MaterialIcon Kind="PencilOutline" Width="16" Height="16" />
                       </Button>
                       <Button Classes="icon-action danger"
-                              ToolTip.Tip="Delete profile"
+                              ToolTip.Tip="{loc:Loc migration.deleteProfile}"
                               Command="{Binding DeleteProfileCommand}">
                         <materialIcons:MaterialIcon Kind="TrashCanOutline" Width="16" Height="16" />
                       </Button>
                       <Button Classes="icon-action"
-                              ToolTip.Tip="Refresh profiles"
+                              ToolTip.Tip="{loc:Loc migration.refreshProfiles}"
                               Command="{Binding RefreshCommand}">
                         <materialIcons:MaterialIcon Kind="Refresh" Width="16" Height="16" />
                       </Button>
@@ -173,7 +174,7 @@
                       CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                       Padding="12,10">
                 <StackPanel Spacing="4">
-                  <TextBlock Text="Output directory"
+                  <TextBlock Text="{loc:Loc migration.outputDirectory}"
                              Classes="subsection-title" />
                   <TextBlock Text="{Binding OutputDirectory, StringFormat='{}{0}'}"
                              Classes="caption-muted"
@@ -194,10 +195,10 @@
                   <StackPanel Spacing="6">
                     <TextBlock Text="ACTIVE PROFILE"
                                Classes="eyebrow" />
-                    <TextBlock Text="Migration workspace"
+                    <TextBlock Text="{loc:Loc migration.workspace}"
                                FontSize="20"
                                FontWeight="SemiBold" />
-                    <TextBlock Text="Review profile properties, inspect migration files, and execute schema actions without leaving the current workspace."
+                    <TextBlock Text="{loc:Loc migration.workspaceDescription}"
                                Classes="caption-muted"
                                MinHeight="0"
                                TextWrapping="Wrap" />
@@ -208,7 +209,7 @@
                       ColumnSpacing="12">
                   <Border Classes="metric-surface">
                     <StackPanel Spacing="4">
-                      <TextBlock Text="Database"
+                      <TextBlock Text="{loc:Loc migration.database}"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                       <TextBlock Text="{Binding CurrentDatabaseTypeDisplay}"
@@ -220,7 +221,7 @@
                   <Border Grid.Column="1"
                           Classes="metric-surface">
                     <StackPanel Spacing="4">
-                      <TextBlock Text="Migrations"
+                      <TextBlock Text="{loc:Loc migration.migrations}"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                       <TextBlock Text="{Binding MigrationCount}"
@@ -232,7 +233,7 @@
                   <Border Grid.Column="2"
                           Classes="metric-surface">
                     <StackPanel Spacing="4">
-                      <TextBlock Text="Status"
+                      <TextBlock Text="{loc:Loc runtime.status}"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                       <TextBlock Text="{Binding StatusMessage}"
@@ -258,9 +259,9 @@
                     RowSpacing="12">
                 <Grid ColumnDefinitions="*,Auto"
                       ColumnSpacing="12">
-                  <designer:EditorHeader Title="Migration actions">
+                  <designer:EditorHeader Title="{loc:Loc migration.actions}">
                     <designer:EditorHeader.ActionContent>
-                      <Button Content="Open migration file"
+                      <Button Content="{loc:Loc migration.openMigrationFile}"
                               Command="{Binding OpenMigrationFileCommand}"
                               IsEnabled="{Binding HasSelectedMigration}" />
                     </designer:EditorHeader.ActionContent>
@@ -274,10 +275,10 @@
                       <StackPanel Orientation="Horizontal"
                                   Spacing="8">
                         <Button Classes="compact-action"
-                                Content="New migration"
+                                Content="{loc:Loc migration.newMigration}"
                                 Command="{Binding ShowNewPanelCommand}" />
                         <Button Classes="compact-action danger"
-                                Content="Remove migration"
+                                Content="{loc:Loc migration.removeMigration}"
                                 Command="{Binding RollbackSelectedCommand}"
                                 ToolTip.Tip="{Binding RollbackTooltip}"
                                 IsEnabled="{Binding CanRollback}" />
@@ -285,11 +286,11 @@
                     </Border>
 
                     <Button Classes="compact-action accent"
-                            Content="Apply update"
+                            Content="{loc:Loc migration.applyUpdate}"
                             Command="{Binding ExecuteUpdateCommand}"
                             IsEnabled="{Binding IsIdle}" />
                     <Button Classes="compact-action"
-                            Content="Cancel"
+                            Content="{loc:Loc promptor.cancel}"
                             Command="{Binding CancelOperationCommand}"
                             IsVisible="{Binding IsBusy}" />
                   </StackPanel>
@@ -302,11 +303,11 @@
     </designer:ToolPageLayout.BodyContent>
 
     <designer:ToolPageLayout.FooterContent>
-      <designer:LogViewer Title="Execution log"
-                          Description="Review the latest migration execution and file operation output."
+      <designer:LogViewer Title="{loc:Loc migration.executionLog}"
+                          Description="{loc:Loc migration.executionLogDescription}"
                           Text="{Binding OutputLog}">
         <designer:LogViewer.ActionContent>
-          <Button Content="Clear log" Command="{Binding ClearLogCommand}" />
+          <Button Content="{loc:Loc migration.clearLog}" Command="{Binding ClearLogCommand}" />
         </designer:LogViewer.ActionContent>
       </designer:LogViewer>
     </designer:ToolPageLayout.FooterContent>

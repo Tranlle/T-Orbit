@@ -1,6 +1,8 @@
+using Avalonia;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Serialization;
+using TOrbit.Designer.Services;
 using TOrbit.Designer.ViewModels;
 
 namespace TOrbit.Plugin.Migration.Models;
@@ -60,9 +62,11 @@ public sealed partial class DbConnectionProfile : PluginBaseViewModel
         _ => DbType.ToString()
     };
     public bool IsReady => !string.IsNullOrWhiteSpace(ConnectionString) && !string.IsNullOrWhiteSpace(ContextName);
-    public string ReadyStatusText => IsReady ? "Ready" : "Needs Config";
-    public IBrush ReadyBadgeBackground => new SolidColorBrush(Color.Parse(IsReady ? "#203227" : "#41242B"));
-    public IBrush ReadyBadgeForeground => new SolidColorBrush(Color.Parse("#FFFFFF"));
+    public string ReadyStatusText => IsReady
+        ? (LocalizationService.Current?.GetString("migration.profile.ready") ?? "Ready")
+        : (LocalizationService.Current?.GetString("migration.profile.needsConfig") ?? "Needs Config");
+    public IBrush ReadyBadgeBackground => ResolveBrush(IsReady ? "TOrbitBadgeSuccessBackgroundBrush" : "TOrbitBadgeDangerBackgroundBrush");
+    public IBrush ReadyBadgeForeground => ResolveBrush(IsReady ? "TOrbitBadgeSuccessForegroundBrush" : "TOrbitBadgeDangerForegroundBrush");
 
     partial void OnConnectionStringChanged(string value) => RaiseComputedProperties();
     partial void OnContextNameChanged(string value) => RaiseComputedProperties();
@@ -77,6 +81,13 @@ public sealed partial class DbConnectionProfile : PluginBaseViewModel
         OnPropertyChanged(nameof(ReadyBadgeBackground));
         OnPropertyChanged(nameof(ReadyBadgeForeground));
     }
+
+    public void NotifyLocalizationChanged() => RaiseComputedProperties();
+
+    private static IBrush ResolveBrush(string resourceKey)
+        => Application.Current?.TryGetResource(resourceKey, Application.Current.ActualThemeVariant, out var value) == true && value is IBrush brush
+            ? brush
+            : Brushes.Transparent;
 }
 
 public sealed class MigrationToolConfig

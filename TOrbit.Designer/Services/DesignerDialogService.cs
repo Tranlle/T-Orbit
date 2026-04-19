@@ -347,7 +347,7 @@ public sealed class DesignerDialogService : IDesignerDialogService
         if (!showCancel && !showConfirm)
         {
             showCancel = true;
-            cancelText = "关闭";
+            cancelText = LocalizationService.Current?.GetString("dialog.close") ?? "Close";
         }
 
         var footer = new StackPanel

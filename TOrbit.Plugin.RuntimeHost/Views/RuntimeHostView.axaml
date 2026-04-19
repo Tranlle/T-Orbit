@@ -1,0 +1,348 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TOrbit.Plugin.RuntimeHost.ViewModels"
+             xmlns:designer="using:TOrbit.Designer.Controls"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:loc="using:TOrbit.Designer.Markup"
+             x:Class="TOrbit.Plugin.RuntimeHost.Views.RuntimeHostView"
+             x:DataType="vm:RuntimeHostViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="Border.runtime-list-item">
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceElevatedBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
+      <Setter Property="Padding" Value="16" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.16" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" />
+        </Transitions>
+      </Setter>
+      <Setter Property="RenderTransform" Value="translateY(0px)" />
+    </Style>
+
+    <Style Selector="Border.runtime-list-item:pointerover">
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderHoverBrush}" />
+      <Setter Property="RenderTransform" Value="translateY(-1px)" />
+    </Style>
+
+    <Style Selector="Border.runtime-list-item.selected">
+      <Setter Property="Background" Value="{DynamicResource TOrbitAccentSubtleBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitAccentBrush}" />
+    </Style>
+
+    <Style Selector="Border.runtime-panel">
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceElevatedBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
+      <Setter Property="Padding" Value="18" />
+    </Style>
+  </UserControl.Styles>
+
+  <designer:ToolPageLayout>
+    <designer:ToolPageLayout.BodyContent>
+      <Grid RowDefinitions="*,220"
+            RowSpacing="18">
+        <designer:SplitWorkspace LeftWidth="320"
+                                 LeftMinWidth="280"
+                                 RightMinWidth="560">
+          <designer:SplitWorkspace.LeftContent>
+            <Border Classes="runtime-panel"
+                    Padding="0">
+              <Grid RowDefinitions="Auto,*">
+                <Grid ColumnDefinitions="*,Auto"
+                      Margin="18,16,18,14"
+                      ColumnSpacing="12">
+                  <StackPanel Spacing="3">
+                    <TextBlock Classes="eyebrow"
+                               Text="{loc:Loc runtime.workspace}" />
+                    <TextBlock Classes="section-title"
+                               Text="{loc:Loc runtime.managedApps}" />
+                    <TextBlock Classes="caption-muted"
+                               Text="{loc:Loc runtime.managedAppsDescription}"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
+                  <Button Grid.Column="1"
+                          Content="{loc:Loc runtime.add}"
+                          Command="{Binding AddProfileCommand}"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Top" />
+                </Grid>
+
+                <ScrollViewer Grid.Row="1"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              Margin="12,0,12,12">
+                  <StackPanel Spacing="10">
+                    <ItemsControl ItemsSource="{Binding Apps}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:HostedAppItemViewModel">
+                          <Border Classes="runtime-list-item"
+                                  Classes.selected="{Binding IsSelected}"
+                                  Margin="0,0,0,10"
+                                  Tapped="AppCard_OnTapped">
+                            <Grid ColumnDefinitions="Auto,*"
+                                  ColumnSpacing="14">
+                              <Border Width="40"
+                                      Height="40"
+                                      Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                                      CornerRadius="12"
+                                      VerticalAlignment="Top">
+                                <materialIcons:MaterialIcon Kind="RocketLaunch"
+                                                            Width="20"
+                                                            Height="20"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{Binding StatusBrush}" />
+                              </Border>
+
+                              <StackPanel Grid.Column="1"
+                                          Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto"
+                                      ColumnSpacing="12">
+                                  <StackPanel Spacing="2">
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding Id}"
+                                               Classes="caption-muted"
+                                               MinHeight="0"
+                                               TextTrimming="CharacterEllipsis" />
+                                  </StackPanel>
+
+                                  <Border Grid.Column="1"
+                                          Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                                          BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                                          BorderThickness="1"
+                                          CornerRadius="999"
+                                          Padding="10,4"
+                                          VerticalAlignment="Top">
+                                    <TextBlock Text="{Binding StatusLabel}"
+                                               FontSize="11"
+                                               Foreground="{Binding StatusBrush}" />
+                                  </Border>
+                                </Grid>
+
+                                <TextBlock Text="{Binding Description}"
+                                           Classes="caption-muted"
+                                           MaxLines="2"
+                                           TextWrapping="Wrap" />
+
+                                <Grid ColumnDefinitions="*,*"
+                                      ColumnSpacing="12">
+                                  <StackPanel Spacing="2">
+                                    <TextBlock Classes="caption-muted"
+                                               Text="{loc:Loc runtime.entry}" />
+                                    <TextBlock Text="{Binding EntryRelativePath}"
+                                               FontSize="12"
+                                               TextTrimming="CharacterEllipsis" />
+                                  </StackPanel>
+                                  <StackPanel Grid.Column="1"
+                                              Spacing="2">
+                                    <TextBlock Classes="caption-muted"
+                                               Text="{loc:Loc runtime.uptime}" />
+                                    <TextBlock Text="{Binding UptimeLabel}"
+                                               FontSize="12" />
+                                  </StackPanel>
+                                </Grid>
+                              </StackPanel>
+                            </Grid>
+                          </Border>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <designer:EmptyState IsVisible="{Binding !HasApps}"
+                                         Title="{loc:Loc runtime.emptyTitle}"
+                                         Description="{loc:Loc runtime.emptyDescription}" />
+                  </StackPanel>
+                </ScrollViewer>
+              </Grid>
+            </Border>
+          </designer:SplitWorkspace.LeftContent>
+
+          <designer:SplitWorkspace.RightContent>
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+              <StackPanel Spacing="18">
+                <Border Classes="runtime-panel"
+                        IsVisible="{Binding HasSelectedApp}">
+                  <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                        RowSpacing="18">
+                    <Grid ColumnDefinitions="*,Auto"
+                          ColumnSpacing="16">
+                      <StackPanel Spacing="3">
+                        <TextBlock Classes="eyebrow"
+                                   Text="{loc:Loc runtime.profile}" />
+                        <TextBlock Classes="section-title"
+                                   Text="{loc:Loc runtime.runtimeDefinition}" />
+                        <TextBlock Classes="caption-muted"
+                                   Text="{loc:Loc runtime.runtimeDefinitionDescription}"
+                                   TextWrapping="Wrap" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="1"
+                                  Orientation="Horizontal"
+                                  Spacing="8">
+                        <Button Content="{loc:Loc settings.header.actions.save}"
+                                Command="{Binding SaveProfileCommand}" />
+                        <Button Content="{loc:Loc runtime.delete}"
+                                Command="{Binding RemoveProfileCommand}" />
+                      </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="1"
+                          ColumnDefinitions="*,*"
+                          ColumnSpacing="18"
+                          RowDefinitions="Auto,Auto,Auto,Auto">
+                      <StackPanel Spacing="6">
+                        <TextBlock Classes="field-label"
+                                   Text="{loc:Loc runtime.name}" />
+                        <TextBox Text="{Binding EditingName, Mode=TwoWay}" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="1"
+                                  Spacing="6">
+                        <TextBlock Classes="field-label"
+                                   Text="{loc:Loc runtime.deployFolder}" />
+                        <TextBox Text="{Binding EditingDeployFolderName, Mode=TwoWay}" />
+                      </StackPanel>
+                      <StackPanel Grid.Row="1"
+                                  Grid.ColumnSpan="2"
+                                  Spacing="6">
+                        <TextBlock Classes="field-label"
+                                   Text="{loc:Loc runtime.description}" />
+                        <TextBox Text="{Binding EditingDescription, Mode=TwoWay}"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 MinHeight="72" />
+                      </StackPanel>
+                      <StackPanel Grid.Row="2"
+                                  Grid.ColumnSpan="2"
+                                  Spacing="6">
+                        <TextBlock Classes="field-label"
+                                   Text="{loc:Loc runtime.entryRelativePath}" />
+                        <TextBox Text="{Binding EditingEntryRelativePath, Mode=TwoWay}" />
+                      </StackPanel>
+                      <Grid Grid.Row="3"
+                            Grid.ColumnSpan="2"
+                            ColumnDefinitions="Auto,Auto,*"
+                            ColumnSpacing="18">
+                        <CheckBox IsChecked="{Binding EditingRunWithDotnet, Mode=TwoWay}"
+                                  Content="{loc:Loc runtime.runWithDotnetHost}"
+                                  VerticalAlignment="Center" />
+                        <CheckBox Grid.Column="1"
+                                  IsChecked="{Binding EditingAutoStart, Mode=TwoWay}"
+                                  Content="{loc:Loc runtime.autoStartOnHostLoad}"
+                                  VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="2"
+                                   Classes="caption-muted"
+                                   Text="{Binding SelectedEntryMode}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" />
+                      </Grid>
+                    </Grid>
+
+                    <Grid Grid.Row="2"
+                          ColumnDefinitions="1.25*,*"
+                          ColumnSpacing="18">
+                      <StackPanel Spacing="6">
+                        <TextBlock Classes="field-label"
+                                   Text="{loc:Loc runtime.startupEnvironmentVariables}" />
+                        <TextBox Text="{Binding EnvironmentVariablesText, Mode=TwoWay}"
+                                 AcceptsReturn="True"
+                                 TextWrapping="NoWrap"
+                                 FontFamily="{DynamicResource TOrbitMonoFontFamily}"
+                                 Height="140"
+                                 PlaceholderText="{loc:Loc runtime.environmentPlaceholder}" />
+                        <TextBlock Classes="caption-muted"
+                                   Text="{loc:Loc runtime.environmentHelp}"
+                                   TextWrapping="Wrap" />
+                      </StackPanel>
+
+                      <Border Grid.Column="1"
+                              Background="{DynamicResource TOrbitBackgroundBrush}"
+                              BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                              BorderThickness="1"
+                              CornerRadius="{DynamicResource TOrbitRadiusLarge}"
+                              Padding="14">
+                        <StackPanel Spacing="12">
+                          <TextBlock Classes="field-label"
+                                     Text="{loc:Loc runtime.runtimeSnapshot}" />
+                          <designer:PropertyGrid ItemsSource="{Binding SelectedRuntimeProperties}" />
+                        </StackPanel>
+                      </Border>
+                    </Grid>
+
+                    <Grid Grid.Row="3"
+                          ColumnDefinitions="Auto,Auto,Auto,*"
+                          ColumnSpacing="10">
+                      <Button Content="{loc:Loc runtime.deployZip}"
+                              Command="{Binding DeployPackageCommand}" />
+                      <Button Grid.Column="1"
+                              Content="{loc:Loc runtime.start}"
+                              Command="{Binding StartCommand}"
+                              IsEnabled="{Binding CanStart}" />
+                      <Button Grid.Column="2"
+                              Content="{loc:Loc runtime.stop}"
+                              Command="{Binding StopCommand}"
+                              IsEnabled="{Binding CanStop}" />
+                      <Button Grid.Column="3"
+                              Content="{loc:Loc runtime.restart}"
+                              HorizontalAlignment="Left"
+                              Command="{Binding RestartCommand}"
+                              IsEnabled="{Binding CanRestart}" />
+                    </Grid>
+                  </Grid>
+                </Border>
+
+                <Border Classes="runtime-panel"
+                        IsVisible="{Binding HasSelectedApp}">
+                  <StackPanel Spacing="10">
+                    <TextBlock Classes="eyebrow"
+                               Text="{loc:Loc runtime.storage}" />
+                    <TextBlock Classes="section-title"
+                               Text="{loc:Loc runtime.deploymentWorkspace}" />
+                    <TextBlock Classes="caption-muted"
+                               Text="{Binding StatusMessage}"
+                               TextWrapping="Wrap" />
+                    <designer:PropertyGrid ItemsSource="{Binding SelectedRuntimeProperties}" />
+                    <Grid ColumnDefinitions="Auto,*"
+                          ColumnSpacing="14">
+                      <TextBlock Classes="field-label"
+                                 Text="{loc:Loc runtime.deployPath}" />
+                      <TextBlock Grid.Column="1"
+                                 Text="{Binding SelectedDeployPath}"
+                                 TextWrapping="Wrap" />
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*"
+                          ColumnSpacing="14">
+                      <TextBlock Classes="field-label"
+                                 Text="{loc:Loc runtime.logsPath}" />
+                      <TextBlock Grid.Column="1"
+                                 Text="{Binding SelectedLogsPath}"
+                                 TextWrapping="Wrap" />
+                    </Grid>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </ScrollViewer>
+          </designer:SplitWorkspace.RightContent>
+        </designer:SplitWorkspace>
+
+        <designer:LogViewer Grid.Row="1"
+                            Title="{loc:Loc runtime.runtimeLog}"
+                            Description="{loc:Loc runtime.runtimeLogDescription}"
+                            Text="{Binding OutputLog}">
+          <designer:LogViewer.ActionContent>
+            <Button Content="{loc:Loc promptor.clear}"
+                    Command="{Binding ClearLogCommand}" />
+          </designer:LogViewer.ActionContent>
+        </designer:LogViewer>
+      </Grid>
+    </designer:ToolPageLayout.BodyContent>
+  </designer:ToolPageLayout>
+</UserControl>

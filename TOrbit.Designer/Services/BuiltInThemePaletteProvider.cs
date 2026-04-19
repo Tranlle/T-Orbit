@@ -12,7 +12,7 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
         {
             Key = "tranbok-dark",
             Label = "T-Orbit Dark",
-            Description = "默认深蓝",
+            Description = L("settings.palettes.tranbok-dark.description", "Default deep blue"),
             Source = "BuiltIn",
             IsBuiltIn = true,
             BaseVariant = ThemeVariant.Dark,
@@ -40,7 +40,7 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
         {
             Key = "tranbok-light",
             Label = "T-Orbit Light",
-            Description = "默认浅色",
+            Description = L("settings.palettes.tranbok-light.description", "Default light palette"),
             BaseVariant = ThemeVariant.Light,
             AccentBrush = "#5B72D6",
             AccentForegroundBrush = "#FFFFFF",
@@ -66,7 +66,7 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
         {
             Key = "emerald-dark",
             Label = "Emerald Dark",
-            Description = "深色偏绿",
+            Description = L("settings.palettes.emerald-dark.description", "Dark palette with emerald accent"),
             BaseVariant = ThemeVariant.Dark,
             AccentBrush = "#2EC4A6",
             AccentForegroundBrush = "#0D1A17",
@@ -92,7 +92,7 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
         {
             Key = "violet-dark",
             Label = "Violet Dark",
-            Description = "深色偏紫",
+            Description = L("settings.palettes.violet-dark.description", "Dark palette with violet accent"),
             BaseVariant = ThemeVariant.Dark,
             AccentBrush = "#8B7CFF",
             AccentForegroundBrush = "#FFFFFF",
@@ -115,4 +115,7 @@ public sealed class BuiltInThemePaletteProvider : IThemePaletteProvider
             BadgeDangerForegroundBrush = "#F47482"
         }
     ];
+
+    private static string L(string key, string fallback)
+        => LocalizationService.Current?.GetString(key) ?? fallback;
 }

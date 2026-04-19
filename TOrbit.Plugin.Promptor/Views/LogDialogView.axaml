@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TOrbit.Plugin.Promptor.ViewModels"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:DataType="vm:PromptorViewModel"
              x:Class="TOrbit.Plugin.Promptor.Views.LogDialogView">
   <Grid RowDefinitions="Auto,12,*">
@@ -9,9 +10,9 @@
       <TextBlock Grid.Column="0"
                  Classes="caption-muted"
                  VerticalAlignment="Center"
-                 Text="{Binding LogEntries.Count, StringFormat='Total {0} entries'}" />
+                 Text="{Binding LogEntriesSummary}" />
       <Button Grid.Column="1"
-              Content="Clear log"
+              Content="{loc:Loc promptor.clearLog}"
               Command="{Binding ClearLogCommand}"
               Classes="danger" />
     </Grid>

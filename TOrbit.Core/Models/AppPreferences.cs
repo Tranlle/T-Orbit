@@ -2,6 +2,8 @@ namespace TOrbit.Core.Models;
 
 public sealed class AppPreferences
 {
+    public string LanguageCode { get; set; } = "zh-CN";
+
     public string FontOptionKey { get; set; } = "system";
 
     public string ThemeKey { get; set; } = "Dark";

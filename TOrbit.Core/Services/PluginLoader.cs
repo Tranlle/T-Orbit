@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.Loader;
+using Microsoft.Extensions.DependencyInjection;
 using TOrbit.Core.Constants;
 using TOrbit.Plugin.Core;
 using TOrbit.Plugin.Core.Abstractions;
@@ -12,10 +13,12 @@ public sealed class PluginLoader : IPluginLoader
 {
     private readonly IPluginToolRegistry _toolRegistry;
     private readonly HostEnvironmentInfo _hostEnvironment;
+    private readonly IServiceProvider _serviceProvider;
 
-    public PluginLoader(IPluginToolRegistry toolRegistry)
+    public PluginLoader(IPluginToolRegistry toolRegistry, IServiceProvider serviceProvider)
     {
         _toolRegistry = toolRegistry;
+        _serviceProvider = serviceProvider;
         _hostEnvironment = new HostEnvironmentInfo(
             ToolHostConstants.HostName,
             ToolHostConstants.HostVersion,
@@ -36,7 +39,7 @@ public sealed class PluginLoader : IPluginLoader
             ?? throw new InvalidOperationException(
                 $"Plugin entry type '{manifest.Descriptor.EntryType}' not found in '{assemblyPath}'.");
 
-        if (Activator.CreateInstance(pluginType) is not IPlugin plugin)
+        if (ActivatorUtilities.CreateInstance(_serviceProvider, pluginType) is not IPlugin plugin)
         {
             throw new InvalidOperationException(
                 $"Plugin entry type '{manifest.Descriptor.EntryType}' does not implement IPlugin.");

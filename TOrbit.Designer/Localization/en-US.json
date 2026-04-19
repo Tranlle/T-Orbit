@@ -1,0 +1,688 @@
+{
+  "app": {
+    "title": "T-Orbit",
+    "workspaceOnline": "Workspace Online",
+    "tray": {
+      "tooltip": "T-Orbit",
+      "showMainWindow": "Show Main Window",
+      "exit": "Exit T-Orbit"
+    },
+    "window": {
+      "minimize": "Minimize",
+      "maximize": "Maximize",
+      "close": "Close"
+    },
+    "navigation": {
+      "modules": "Modules",
+      "currentModule": "Current Module",
+      "summary": "{0} modules available"
+    },
+    "shortcuts": {
+      "plugin": "Application",
+      "gotoHome": {
+        "name": "Go to Home",
+        "description": "Quickly switch to the Home page."
+      },
+      "toggleNav": {
+        "name": "Toggle Navigation",
+        "description": "Collapse or expand the side navigation."
+      },
+      "gotoSettings": {
+        "name": "Go to Settings",
+        "description": "Quickly switch to the Settings page."
+      },
+      "gotoMonitor": {
+        "name": "Go to Monitor",
+        "description": "Quickly switch to the Monitor page."
+      },
+      "gotoKeymap": {
+        "name": "Go to Keymap",
+        "description": "Quickly switch to the Keymap page."
+      }
+    },
+    "header": {
+      "currentModule": "Current Module",
+      "validation": "Validation"
+    },
+    "state": {
+      "unknown": "Unknown"
+    }
+  },
+  "dialog": {
+    "close": "Close",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "confirmTitle": "Confirm",
+    "promptTitle": "Input"
+  },
+  "plugins": {
+    "home": {
+      "name": "Home",
+      "description": "System home dashboard"
+    },
+    "settings": {
+      "name": "Settings",
+      "description": "Theme, language, and shared plugin variables"
+    },
+    "monitor": {
+      "name": "Monitor",
+      "description": "Plugin runtime monitoring and diagnostics"
+    },
+    "keymap": {
+      "name": "Keymap",
+      "description": "Shortcut binding management"
+    },
+    "promptor": {
+      "name": "Promptor",
+      "description": "Prompt optimization workspace",
+      "variables": {
+        "provider": {
+          "name": "Provider",
+          "description": "Model provider"
+        },
+        "endpoint": {
+          "name": "API Endpoint",
+          "description": "Custom API endpoint"
+        },
+        "apiKey": {
+          "name": "API Key",
+          "description": "Authorization credential"
+        },
+        "model": {
+          "name": "Model Name",
+          "description": "Target model"
+        },
+        "maxTokens": {
+          "name": "Max Tokens",
+          "description": "Maximum output tokens",
+          "validation": "Must be a positive integer"
+        },
+        "temperature": {
+          "name": "Temperature",
+          "description": "Sampling temperature",
+          "validation": "Must be between 0 and 2"
+        }
+      }
+    },
+    "migration": {
+      "name": "Database Migration",
+      "description": "EF Core migration management",
+      "variables": {
+        "connection": {
+          "name": "Database Connection",
+          "description": "Default connection string for migration commands"
+        }
+      }
+    },
+    "runtime": {
+      "name": ".NET Runtime Host",
+      "description": "Deploy and manage local .NET release packages"
+    }
+  },
+  "settings": {
+    "title": "Host Settings",
+    "description": "Manage shared preferences in one place",
+    "sections": {
+      "basic": {
+        "title": "Basic Settings",
+        "description": "Control appearance, language, and close behavior"
+      },
+      "advancedTheme": {
+        "title": "Advanced Theme",
+        "description": "Extended palettes and theme directory",
+        "palette": "Advanced Palette",
+        "directory": "Theme Directory"
+      },
+      "variables": {
+        "empty": "No plugin variables"
+      }
+    },
+    "fields": {
+      "appName": "App Name",
+      "appNamePlaceholder": "Enter app name",
+      "language": "Display Language",
+      "builtInPalette": "Built-in Palette",
+      "font": "Global Font",
+      "closeBehavior": "Close Behavior",
+      "closeBehaviorDescription": "Choose tray minimize or direct exit",
+      "advancedThemeVisible": "Show advanced theme settings"
+    },
+    "options": {
+      "tray": "Tray",
+      "exit": "Exit"
+    },
+    "messages": {
+      "saved": "Saved",
+      "reset": "Reset",
+      "interWarning": "Inter may show fallback or weight issues in some Chinese UI scenarios"
+    },
+    "header": {
+      "basicTheme": "Basic theme mode",
+      "advancedTheme": "Advanced theme enabled",
+      "metrics": {
+        "plugins": "Plugins",
+        "variables": "Variables",
+        "covered": "Covered",
+        "warnings": "Warnings"
+      },
+      "badges": {
+        "defaultPalette": "Default palette",
+        "systemFont": "System font",
+        "trayClose": "Tray close",
+        "exitClose": "Direct exit",
+        "advancedTheme": "Advanced theme",
+        "basicTheme": "Basic theme"
+      },
+      "actions": {
+        "reset": "Reset",
+        "save": "Save"
+      }
+    },
+    "workspace": {
+      "title": "Workspace",
+      "description": "Configure the root directory and migration defaults",
+      "root": "Workspace root",
+      "useForMigration": "Use workspace by default for migrations"
+    },
+    "variables": {
+      "eyebrow": "Variables",
+      "title": "Plugin Variables",
+      "description": "Manage plugin variables in one place",
+      "add": "Add Variable",
+      "createTitle": "Create Variable",
+      "createDescription": "Only the variable value is persisted",
+      "plugin": "Plugin",
+      "key": "Key",
+      "keyPlaceholder": "Example: MY_API_KEY",
+      "keyHints": "Suggested keys:",
+      "value": "Value",
+      "valuePlaceholder": "Enter the variable value",
+      "encrypted": "Encrypted"
+    },
+    "validation": {
+      "required": "{0}: {1} is required.",
+      "allowedValues": "{0}: {1} must be one of {2}.",
+      "invalid": "{0}: {1} {2}",
+      "invalidDefault": "has an invalid format."
+    },
+    "fonts": {
+      "system": {
+        "label": "System Recommended",
+        "description": "Follow the system default font"
+      },
+      "inter": {
+        "label": "Inter",
+        "description": "Consistent cross-platform UI typeface"
+      },
+      "segoe-ui": {
+        "label": "Segoe UI",
+        "description": "Windows default"
+      },
+      "microsoft-yahei-ui": {
+        "label": "Microsoft YaHei UI",
+        "description": "Chinese UI font"
+      },
+      "arial": {
+        "label": "Arial",
+        "description": "Classic fallback"
+      },
+      "bahnschrift": {
+        "label": "Bahnschrift",
+        "description": "Geometric sans-serif"
+      }
+    },
+    "palettes": {
+      "tranbok-dark": {
+        "description": "Default deep blue"
+      },
+      "tranbok-light": {
+        "description": "Default light palette"
+      },
+      "emerald-dark": {
+        "description": "Dark palette with emerald accent"
+      },
+      "violet-dark": {
+        "description": "Dark palette with violet accent"
+      }
+    }
+  },
+  "home": {
+    "category": {
+      "general": "General"
+    },
+    "empty": {
+      "title": "No reports available",
+      "description": "When plugins register home reports, they will appear here automatically."
+    },
+    "report": {
+      "badge": "Report",
+      "preparing": "Preparing report...",
+      "loading": "Loading report...",
+      "failed": "Failed to load report",
+      "retry": "Retry",
+      "emptyContent": "{0} has no content to display.",
+      "noRecentDiagnostics": "There have been no recent errors or warnings."
+    },
+    "builtin": {
+      "category": "Overview",
+      "pluginOverview": {
+        "title": "Plugin Overview",
+        "description": "Shows enabled, running, and faulted plugin states."
+      },
+      "recentDiagnostics": {
+        "title": "Recent Diagnostics",
+        "description": "Shows the latest host errors and warnings."
+      }
+    },
+    "overview": {
+      "enabled": "Enabled",
+      "running": "Running",
+      "faulted": "Faulted",
+      "visual": "Visual plugins"
+    }
+  },
+  "monitor": {
+    "searchPlaceholder": "Search plugins by name",
+    "capabilities": "Capabilities",
+    "lastChange": "Last change",
+    "enabled": "Enabled",
+    "restartPlugin": "Restart plugin",
+    "stopPlugin": "Stop plugin",
+    "item": {
+      "kind": {
+        "service": "Service",
+        "visual": "Visual"
+      },
+      "source": {
+        "builtIn": "Built-in",
+        "external": "External"
+      },
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "noneDeclared": "None declared",
+      "status": {
+        "online": "Online",
+        "offline": "Offline"
+      },
+      "state": {
+        "running": "Running",
+        "stopped": "Stopped",
+        "faulted": "Faulted",
+        "stopping": "Stopping",
+        "starting": "Starting"
+      },
+      "capability": {
+        "fileSystem": "FileSystem",
+        "localProcess": "LocalProcess",
+        "network": "Network",
+        "secrets": "Secrets"
+      }
+    },
+    "header": {
+      "visual": "Visual",
+      "service": "Service",
+      "matched": "Matched",
+      "disabled": "Disabled",
+      "diagnostics": "Diagnostics",
+      "healthy": "Healthy",
+      "contextError": "Global diagnostics are mapped to the current plugin runtime.",
+      "contextHealthy": "Runtime health is stable across the current plugin set.",
+      "total": "Total",
+      "running": "Running",
+      "faulted": "Faulted",
+      "errors": "Errors"
+    },
+    "details": {
+      "version": "Version",
+      "source": "Source",
+      "enabled": "Enabled",
+      "lastError": "Last error",
+      "noCurrentError": "No current error",
+      "runtimeSwitch": "Runtime switch",
+      "runtimeSwitchDescription": "Stopping only affects the current runtime instance and does not change whether the plugin is enabled.",
+      "diagnostics": "Plugin diagnostics",
+      "diagnosticsDescription": "Shows recent exceptions whose diagnostic records match the current plugin name or id.",
+      "noDiagnostics": "There are no diagnostics matched to this plugin."
+    },
+    "home": {
+      "totalPlugins": "Total plugins",
+      "faultedPlugins": "Faulted plugins",
+      "recentFaultedPlugins": "Recent faulted plugins",
+      "noFaultedPlugins": "There are no faulted plugins right now."
+    }
+  },
+  "keymap": {
+    "eyebrow": "Keymap",
+    "bindings": "Bindings",
+    "description": "Search commands and choose one binding to inspect or override.",
+    "searchPlaceholder": "Search shortcuts...",
+    "overrideHint": "Overrides take effect immediately and replace the default binding until you reset it.",
+    "empty": {
+      "title": "Select a shortcut",
+      "description": "Choose a binding from the left to inspect the current value and make changes."
+    },
+    "plugin": "Plugin",
+    "defaultBinding": "Default binding",
+    "currentBinding": "Current binding",
+    "currentBindingDescription": "Focus the capture box and press the new shortcut. Press Escape to cancel recording.",
+    "modifiedHint": "This binding currently overrides the default value.",
+    "enabled": "Enabled",
+    "enabledDescription": "Disabled bindings are skipped by the runtime shortcut handler.",
+    "reset": "Reset",
+    "resetAll": "Reset all",
+    "clickToRecord": "Click to record",
+    "capture": {
+      "pressShortcut": "Press a shortcut...",
+      "unset": "(not set)"
+    },
+    "keys": {
+      "ctrl": "Ctrl",
+      "alt": "Alt",
+      "shift": "Shift",
+      "meta": "Meta",
+      "space": "Space",
+      "enter": "Enter",
+      "backspace": "Backspace",
+      "tab": "Tab",
+      "delete": "Delete",
+      "insert": "Insert",
+      "home": "Home",
+      "end": "End",
+      "pageUp": "PageUp",
+      "pageDown": "PageDown",
+      "up": "Up",
+      "down": "Down",
+      "left": "Left",
+      "right": "Right"
+    },
+    "header": {
+      "context": "Shortcut bindings are grouped by plugin for browsing and editing.",
+      "contextFiltered": "Filtering shortcut bindings by \"{0}\".",
+      "bindings": "Bindings",
+      "plugins": "Plugins",
+      "modified": "Modified",
+      "disabled": "Disabled",
+      "noSelection": "No binding selected",
+      "allPlugins": "Browse all plugins"
+    }
+  },
+  "promptor": {
+    "cancel": "Cancel",
+    "copied": "Copied",
+    "log": "Log",
+    "clear": "Clear",
+    "copy": "Copy",
+    "optimize": "Optimize",
+    "logEmpty": "No log entries",
+    "logEmptyDescription": "Optimization history will appear here after you run a task.",
+    "inputEyebrow": "Input",
+    "inputTitle": "Source prompt",
+    "inputDescription": "Enter the original prompt text.",
+    "inputPlaceholder": "Type your prompt here",
+    "outputEyebrow": "Output",
+    "outputTitle": "Optimized result",
+    "outputDescription": "Review the generated prompt.",
+    "outputPlaceholder": "The optimized prompt will appear here",
+    "logEntriesFormat": "Total {0} entries",
+    "clearLog": "Clear log",
+    "strategy": {
+      "structured": {
+        "label": "Structured",
+        "description": "Restructure and clarify the prompt"
+      },
+      "fewShot": {
+        "label": "Few-shot",
+        "description": "Add examples"
+      },
+      "chainOfThought": {
+        "label": "Reasoning",
+        "description": "Guide the model step by step"
+      },
+      "concise": {
+        "label": "Concise",
+        "description": "Compress redundant wording"
+      },
+      "technical": {
+        "label": "Technical",
+        "description": "Strengthen constraints and format"
+      }
+    },
+    "messages": {
+      "inputRequiredTitle": "Input required",
+      "inputRequired": "Enter a prompt before optimizing.",
+      "configError": "Configuration error",
+      "optimizing": "Optimizing...",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "cancelledByUser": "Cancelled by user",
+      "failed": "Failed",
+      "optimizeFailed": "Optimization failed",
+      "apiKeyRequired": "Configure an API key or custom endpoint first.",
+      "copied": "Copied",
+      "copyFailed": "Copy failed"
+    }
+  },
+  "migration": {
+    "connectionProfiles": "Connection profiles",
+    "addProfile": "Add profile",
+    "editProfile": "Edit profile",
+    "deleteProfile": "Delete profile",
+    "refreshProfiles": "Refresh profiles",
+    "outputDirectory": "Output directory",
+    "workspace": "Migration workspace",
+    "workspaceDescription": "Review profile properties, inspect migration files, and execute schema actions without leaving the current workspace.",
+    "database": "Database",
+    "migrations": "Migrations",
+    "actions": "Migration actions",
+    "openMigrationFile": "Open migration file",
+    "newMigration": "New migration",
+    "removeMigration": "Remove migration",
+    "applyUpdate": "Apply update",
+    "executionLog": "Execution log",
+    "executionLogDescription": "Review the latest migration execution and file operation output.",
+    "clearLog": "Clear log",
+    "selectProfileFirst": "Select a profile first",
+    "profileIdentity": "Project and profile identity",
+    "domainProjectPath": "Domain project path",
+    "domainProjectPathPlaceholder": "Select the Domain project .csproj path",
+    "browseProject": "Browse project",
+    "profileName": "Profile name",
+    "profileNamePlaceholder": "For example: Development",
+    "dbContext": "DbContext",
+    "dbContextPlaceholder": "For example: AppDbContext",
+    "connection": "Connection",
+    "connectionDetails": "Database and connection details",
+    "databaseType": "Database type",
+    "connectionString": "Connection string",
+    "connectionStringPlaceholder": "Enter the database connection string",
+    "migrationFile": "Migration File",
+    "migrationFileUpper": "MIGRATION FILE",
+    "enableEditing": "Enable editing",
+    "exitEditing": "Exit editing",
+    "editingHint": "Enable editing before saving changes. Exiting edit mode discards unsaved content.",
+    "profile": {
+      "ready": "Ready",
+      "needsConfig": "Needs Config"
+    },
+    "status": {
+      "applied": "Applied",
+      "pending": "Pending",
+      "unknown": "Unknown"
+    },
+    "dbType": {
+      "sqlServerDescription": "Suitable for SQL Server / LocalDB",
+      "postgreSqlDescription": "Suitable for PostgreSQL",
+      "mySqlDescription": "Suitable for MySQL / MariaDB"
+    },
+    "messages": {
+      "ready": "Ready",
+      "noMigrationSelected": "-- Select a migration from the left --",
+      "noMigrationFiles": "No migration files",
+      "rollbackSelectFirst": "Select a migration first.",
+      "rollbackOnlyLatest": "EF Core can only remove the latest migration via dotnet ef migrations remove.",
+      "rollbackApplied": "The database will roll back to the previous migration before removing the migration files.",
+      "rollbackPending": "This will run dotnet ef migrations remove and update the ModelSnapshot.",
+      "profileAdded": "Added profile: {0}",
+      "deleteProfileTitle": "Delete profile",
+      "deleteProfileMessage": "Delete profile \"{0}\"?\nDatabase type: {1}\n\nThis will not delete the database, but it will remove the saved connection settings.",
+      "deleteProfileNote": "Make sure there are no unsaved configuration changes first.",
+      "profileDeleted": "Deleted profile: {0}",
+      "editProfileTitle": "Edit profile",
+      "editProfileDescription": "Update the project path, database type, and connection settings.",
+      "saveProfile": "Save profile",
+      "configSavedLog": "Configuration saved to .torbit-tools.json and Migration/setting.json",
+      "configSaved": "Configuration saved",
+      "profilesReloadedLog": "Reloaded profile list from configuration store",
+      "profilesReloaded": "Profile list reloaded",
+      "migrationCountStatus": "{0} migration(s) - {1}",
+      "migrationsLoadedLog": "Loaded {0} migration(s) via 'dotnet ef migrations list'",
+      "newMigrationUnavailableTitle": "Cannot create migration",
+      "newMigrationTitle": "New migration",
+      "newMigrationPrompt": "Enter a migration name. PascalCase is recommended.",
+      "createMigration": "Create migration",
+      "newMigrationPlaceholder": "For example: AddUserAuditLog",
+      "newMigrationNote": "Migration names must be at least 3 characters long.",
+      "createMigrationUnavailableTitle": "Cannot generate migration",
+      "executeUpdateTitle": "Apply database update",
+      "executeUpdateMessage": "Target profile: {0}\nTarget database: {1}\nDbContext: {2}\n\nThis will run database update and apply all pending migrations.",
+      "executeUpdateConfirm": "Apply update",
+      "executeUpdateNote": "Confirm the connection string and project path before continuing.",
+      "rollbackTitle": "Remove migration",
+      "rollbackMessage": "Migration: {0}\nTarget database: {1}\nDbContext: {2}\n\nSteps:\n{3}\n\nThis operation cannot be undone.",
+      "rollbackStepsApplied": "1. dotnet ef database update <previous> (execute Down)\n2. dotnet ef migrations remove (remove files and update ModelSnapshot)",
+      "rollbackStepsPending": "1. dotnet ef migrations remove (remove files and update ModelSnapshot)",
+      "rollbackConfirm": "Remove migration",
+      "rollbackNote": "Only the latest migration can be removed.",
+      "migrationFileMissingContent": "// Migration file path is missing. Confirm the output directory contains the generated migration files.",
+      "openMigrationUnavailableTitle": "Cannot open migration file",
+      "openMigrationUnavailableMessage": "Select a migration first.",
+      "fileSavedLog": "Saved {0}",
+      "fileSaved": "File saved",
+      "operationRunning": "{0}...",
+      "operationCompletedLog": "Completed",
+      "operationFailedLog": "Failed",
+      "operationSucceeded": "Done - {0}",
+      "operationFailed": "Operation failed",
+      "gotIt": "Got it",
+      "selectDomainProjectFile": "Select Domain project file",
+      "validation": {
+        "selectProfile": "Select a profile first.",
+        "selectDomainProject": "Select the Domain project for the current profile first.",
+        "domainProjectMissing": "Domain project file not found: {0}",
+        "contextRequired": "DbContext is required.",
+        "designSettingsMissing": "DesignSettings.json not found: {0}",
+        "migrationNameRequired": "Enter a migration name first.",
+        "migrationNameTooShort": "Migration names must be at least 3 characters long."
+      }
+    }
+  },
+  "runtime": {
+    "workspace": "Workspace",
+    "managedApps": "Managed apps",
+    "managedAppsDescription": "Profiles remain lightweight. Deployment, runtime state, and search all stay in one list.",
+    "add": "Add",
+    "delete": "Delete",
+    "zipArchive": "Zip archive",
+    "dotnetHost": "dotnet <dll>",
+    "emptyTitle": "No app profiles",
+    "emptyDescription": "Create a profile, upload a release zip, then start the deployed runtime.",
+    "profile": "Profile",
+    "runtimeDefinition": "Runtime definition",
+    "runtimeDefinitionDescription": "Keep configuration terse: identity, entry, startup mode, and environment injection.",
+    "name": "Name",
+    "deployFolder": "Deploy folder",
+    "description": "Description",
+    "entryRelativePath": "Entry relative path",
+    "runWithDotnetHost": "Run with dotnet host",
+    "autoStartOnHostLoad": "Auto start on host load",
+    "startupEnvironmentVariables": "Startup environment variables",
+    "environmentHelp": "One variable per line, format: KEY=VALUE.",
+    "environmentPlaceholder": "ASPNETCORE_URLS=http://127.0.0.1:5001\nDOTNET_ENVIRONMENT=Production",
+    "runtimeSnapshot": "Runtime snapshot",
+    "restart": "Restart",
+    "storage": "Storage",
+    "deploymentWorkspace": "Deployment workspace",
+    "deployPath": "Deploy path",
+    "logsPath": "Logs path",
+    "runtimeLog": "Runtime log",
+    "runtimeLogDescription": "Standard output, standard error, deployment events, and persisted host messages.",
+    "searchPlaceholder": "Search runtime profiles by name or entry",
+    "ready": "Ready",
+    "noPackage": "No package",
+    "directExecutable": "Direct executable",
+    "status": "Status",
+    "deploy": "Deploy",
+    "entry": "Entry",
+    "mode": "Mode",
+    "uptime": "Uptime",
+    "package": "Package",
+    "notDeployed": "Not deployed",
+    "profiles": "Profiles",
+    "running": "Running",
+    "idle": "Idle",
+    "faulted": "Faulted",
+    "apps": "Apps",
+    "stopped": "Stopped",
+    "addApp": "Add App",
+    "deployZip": "Deploy Zip",
+    "delete": "Delete",
+    "stop": "Stop",
+    "start": "Start",
+    "headerContext": "Deploy release packages, inject startup variables, and control local .NET runtimes from one workspace.",
+    "defaultAppName": "App {0}",
+    "defaultDeployFolder": "app-{0}",
+    "item": {
+      "noDescription": "No deployment notes.",
+      "autoStart": "Auto start",
+      "manual": "Manual",
+      "starting": "Starting",
+      "stopping": "Stopping",
+      "pid": "PID {0}",
+      "exit": "Exit {0}",
+      "noDeployment": "No deployment",
+      "notRunning": "Not running",
+      "duration": {
+        "hours": "{0}h {1}m",
+        "minutes": "{0}m {1}s",
+        "seconds": "{0}s"
+      }
+    },
+    "messages": {
+      "autoStartFailed": "Auto start failed",
+      "profileCreated": "Profile created.",
+      "deleteProfileTitle": "Delete profile",
+      "deleteProfileMessage": "Delete \"{0}\" and remove its runtime workspace?",
+      "profileDeleted": "Profile deleted.",
+      "selectPackage": "Select .NET release zip package",
+      "redeployTitle": "Redeploy package",
+      "redeployMessage": "Overwrite the current deployment for \"{0}\"?",
+      "packageDeployedFrom": "Package deployed from {0}.",
+      "detectedEntry": "Detected entry: {0} ({1}).",
+      "packageDeployed": "Package deployed.",
+      "deploymentFailed": "Deployment failed",
+      "deployBeforeStart": "Deploy a release package before starting the runtime.",
+      "started": "Started {0}.",
+      "startFailed": "Start failed",
+      "failedToStart": "Failed to start {0}.",
+      "stopped": "Stopped {0}.",
+      "restarted": "Restarted {0}.",
+      "restartFailed": "Restart failed",
+      "profileSaved": "Profile saved.",
+      "unnamedApp": "Unnamed app",
+      "entryFileNotFound": "Runtime entry file was not found.",
+      "registerProcessFailed": "Failed to register runtime process.",
+      "processDidNotStart": "The runtime process did not start.",
+      "processStartedWithPid": "Process started with PID {0}.",
+      "stoppingProcess": "Stopping process...",
+      "processExitedWithCode": "Process exited with code {0}."
+    },
+    "logLevel": {
+      "info": "Info",
+      "error": "Error",
+      "warning": "Warning"
+    }
+  },
+  "log": {
+    "eyebrow": "Log"
+  }
+}

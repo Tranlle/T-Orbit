@@ -1,26 +1,29 @@
+using Avalonia;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using TOrbit.Core.Models;
 using TOrbit.Core.Services;
+using TOrbit.Designer.Services;
 using TOrbit.Plugin.Core.Enums;
 
 namespace TOrbit.Plugin.Monitor.ViewModels;
 
 public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisposable
 {
-    private static readonly IBrush SuccessBackground = Brush.Parse("#1A2D20");
-    private static readonly IBrush SuccessForeground = Brush.Parse("#4FD18A");
-    private static readonly IBrush WarningBackground = Brush.Parse("#2E2415");
-    private static readonly IBrush WarningForeground = Brush.Parse("#E8BE64");
-    private static readonly IBrush DangerBackground = Brush.Parse("#2E1820");
-    private static readonly IBrush DangerForeground = Brush.Parse("#ED6E7D");
-    private static readonly IBrush NeutralBackground = Brush.Parse("#1F242C");
-    private static readonly IBrush NeutralForeground = Brush.Parse("#9CA8B8");
+    private static IBrush SuccessBackground => ResolveBrush("TOrbitBadgeSuccessBackgroundBrush");
+    private static IBrush SuccessForeground => ResolveBrush("TOrbitBadgeSuccessForegroundBrush");
+    private static IBrush WarningBackground => ResolveBrush("TOrbitBadgeWarningBackgroundBrush");
+    private static IBrush WarningForeground => ResolveBrush("TOrbitBadgeWarningForegroundBrush");
+    private static IBrush DangerBackground => ResolveBrush("TOrbitBadgeDangerBackgroundBrush");
+    private static IBrush DangerForeground => ResolveBrush("TOrbitBadgeDangerForegroundBrush");
+    private static IBrush NeutralBackground => ResolveBrush("TOrbitBadgeNeutralBackgroundBrush");
+    private static IBrush NeutralForeground => ResolveBrush("TOrbitBadgeNeutralForegroundBrush");
 
     private readonly PluginEntry _entry;
     private readonly IPluginLifecycleService _pluginLifecycleService;
+    private readonly ILocalizationService _localizationService;
     private bool _isBusy;
 
     public string Id => _entry.Id;
@@ -29,17 +32,17 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     public string Version => _entry.Version;
     public string Icon => _entry.Icon;
     public PluginKind Kind => _entry.Kind;
-    public string KindLabel => _entry.Kind == PluginKind.Service ? "Service" : "Visual";
+    public string KindLabel => _entry.Kind == PluginKind.Service ? L("monitor.item.kind.service") : L("monitor.item.kind.visual");
     public string KindTagLabel => _entry.Kind == PluginKind.Service ? "backend" : "frontend";
     public bool IsBuiltIn => _entry.IsBuiltIn;
-    public string SourceLabel => _entry.IsBuiltIn ? "Built-in" : "External";
-    public string EnabledLabel => _entry.IsEnabled ? "Enabled" : "Disabled";
-    public string EnableSummary => _entry.IsEnabled ? "Enabled" : "Disabled";
+    public string SourceLabel => _entry.IsBuiltIn ? L("monitor.item.source.builtIn") : L("monitor.item.source.external");
+    public string EnabledLabel => _entry.IsEnabled ? L("monitor.item.enabled") : L("monitor.item.disabled");
+    public string EnableSummary => EnabledLabel;
     public bool CanDisable => _entry.CanDisable;
     public bool CanToggleEnabled => !_isBusy && (_entry.CanDisable || _entry.IsEnabled);
     public IReadOnlyList<string> CapabilityTags => _entry.Capabilities.Select(FormatCapability).ToArray();
     public bool HasCapabilities => CapabilityTags.Count > 0;
-    public string CapabilitySummary => HasCapabilities ? string.Join(" / ", CapabilityTags) : "None declared";
+    public string CapabilitySummary => HasCapabilities ? string.Join(" / ", CapabilityTags) : L("monitor.item.noneDeclared");
     public IReadOnlyList<string> DisplayTags => _entry.DisplayTags;
     public bool HasDisplayTags => DisplayTags.Count > 0;
     public bool IsBusy => _isBusy;
@@ -73,22 +76,22 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     public PluginState State => _entry.State;
     public string StateLabel => _entry.State switch
     {
-        PluginState.Running => "Running",
-        PluginState.Loaded => "Stopped",
-        PluginState.Faulted => "Faulted",
-        PluginState.Stopping => "Stopping",
-        PluginState.Starting => "Starting",
+        PluginState.Running => L("monitor.item.state.running"),
+        PluginState.Loaded => L("monitor.item.state.stopped"),
+        PluginState.Faulted => L("monitor.item.state.faulted"),
+        PluginState.Stopping => L("monitor.item.state.stopping"),
+        PluginState.Starting => L("monitor.item.state.starting"),
         _ => _entry.State.ToString()
     };
 
     public string StateTagLabel => _entry.State switch
     {
-        PluginState.Running => "Running",
-        PluginState.Faulted => "Faulted",
-        PluginState.Starting => "Starting",
-        PluginState.Stopping => "Stopping",
-        PluginState.Loaded => "Stopped",
-        _ => "Unknown"
+        PluginState.Running => L("monitor.item.state.running"),
+        PluginState.Faulted => L("monitor.item.state.faulted"),
+        PluginState.Starting => L("monitor.item.state.starting"),
+        PluginState.Stopping => L("monitor.item.state.stopping"),
+        PluginState.Loaded => L("monitor.item.state.stopped"),
+        _ => L("app.state.unknown")
     };
 
     public IBrush StateBadgeBackground => _entry.State switch
@@ -105,9 +108,12 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
         _ => WarningForeground
     };
 
-    public string StateStatusLabel => _entry.State == PluginState.Running ? "Online" : "Offline";
+    public string StateStatusLabel => _entry.State == PluginState.Running ? L("monitor.item.status.online") : L("monitor.item.status.offline");
     public IBrush StateDotBrush => _entry.State == PluginState.Running ? SuccessForeground : WarningForeground;
     public string? LastErrorMessage => _entry.LastError?.Message;
+    public string DisplayLastErrorMessage => string.IsNullOrWhiteSpace(LastErrorMessage)
+        ? L("monitor.details.noCurrentError")
+        : LastErrorMessage;
     public string StateChangedAtText => _entry.StateChangedAt.ToString("yyyy-MM-dd HH:mm:ss");
     public bool HasError => _entry.LastError is not null;
     public bool CanRestart => !_isBusy && _entry.IsEnabled && _entry.CanDisable && _entry.State != PluginState.Stopping;
@@ -117,10 +123,11 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     public IAsyncRelayCommand RestartCommand { get; }
     public IAsyncRelayCommand StopCommand { get; }
 
-    public PluginMonitorItemViewModel(PluginEntry entry, IPluginLifecycleService pluginLifecycleService)
+    public PluginMonitorItemViewModel(PluginEntry entry, IPluginLifecycleService pluginLifecycleService, ILocalizationService localizationService)
     {
         _entry = entry;
         _pluginLifecycleService = pluginLifecycleService;
+        _localizationService = localizationService;
         _entry.PropertyChanged += EntryPropertyChanged;
 
         RestartCommand = new AsyncRelayCommand(
@@ -241,6 +248,11 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     private void RaiseStateProperties()
     {
         OnPropertyChanged(nameof(State));
+        OnPropertyChanged(nameof(KindLabel));
+        OnPropertyChanged(nameof(SourceLabel));
+        OnPropertyChanged(nameof(CapabilityTags));
+        OnPropertyChanged(nameof(HasCapabilities));
+        OnPropertyChanged(nameof(CapabilitySummary));
         OnPropertyChanged(nameof(StateLabel));
         OnPropertyChanged(nameof(StateTagLabel));
         OnPropertyChanged(nameof(StateBadgeBackground));
@@ -248,6 +260,7 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
         OnPropertyChanged(nameof(StateStatusLabel));
         OnPropertyChanged(nameof(StateDotBrush));
         OnPropertyChanged(nameof(LastErrorMessage));
+        OnPropertyChanged(nameof(DisplayLastErrorMessage));
         OnPropertyChanged(nameof(StateChangedAtText));
         OnPropertyChanged(nameof(HasError));
         OnPropertyChanged(nameof(IsEnabled));
@@ -268,12 +281,21 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
         _entry.PropertyChanged -= EntryPropertyChanged;
     }
 
-    private static string FormatCapability(PluginCapability capability) => capability switch
+    public void NotifyLocalizationChanged() => RaiseStateProperties();
+
+    private string FormatCapability(PluginCapability capability) => capability switch
     {
-        PluginCapability.FileSystem => "FileSystem",
-        PluginCapability.LocalProcess => "LocalProcess",
-        PluginCapability.Network => "Network",
-        PluginCapability.Secrets => "Secrets",
+        PluginCapability.FileSystem => L("monitor.item.capability.fileSystem"),
+        PluginCapability.LocalProcess => L("monitor.item.capability.localProcess"),
+        PluginCapability.Network => L("monitor.item.capability.network"),
+        PluginCapability.Secrets => L("monitor.item.capability.secrets"),
         _ => capability.ToString()
     };
+
+    private string L(string key) => _localizationService.GetString(key);
+
+    private static IBrush ResolveBrush(string resourceKey)
+        => Application.Current?.TryGetResource(resourceKey, Application.Current.ActualThemeVariant, out var value) == true && value is IBrush brush
+            ? brush
+            : Brushes.Transparent;
 }

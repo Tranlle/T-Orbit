@@ -9,9 +9,9 @@ public sealed class MigrationPluginMetadata : PluginBaseMetadata
     public static MigrationPluginMetadata Instance { get; } = new();
 
     public override string Id => "torbit.migration";
-    public override string Name => "数据库迁移";
+    public override string Name => "Database Migration";
     public override string Version => "1.0.1";
-    public override string Description => "EF迁移管理";
+    public override string Description => "EF Core migration management";
     public override string Author => "T-Orbit";
     public override string Icon => "Database";
     public override string Tags => "Database,Efcore,Migration";
@@ -27,8 +27,8 @@ public sealed class MigrationPluginMetadata : PluginBaseMetadata
         new PluginVariableDefinition(
             Key: "TORBIT_DB_CONNECTION",
             DefaultValue: "",
-            DisplayName: "数据库连接",
-            Description: "迁移命令连接串",
+            DisplayName: "Database Connection",
+            Description: "Default connection string for migration commands",
             IsRequired: true)
     ];
 }

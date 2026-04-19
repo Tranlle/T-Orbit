@@ -60,3 +60,5 @@ TestResults.xml
 /TOrbit.Plugin.Promptor/artifacts/
 /TOrbit.Plugin.Settings/artifacts/
 /artifacts/
+/TOrbit.Plugin.RuntimeHost/obj/
+/TOrbit.Plugin.RuntimeHost/bin/

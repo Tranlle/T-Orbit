@@ -1,0 +1,687 @@
+{
+  "app": {
+    "title": "T-Orbit",
+    "workspaceOnline": "工作区在线",
+    "tray": {
+      "tooltip": "T-Orbit",
+      "showMainWindow": "显示主窗口",
+      "exit": "退出 T-Orbit"
+    },
+    "window": {
+      "minimize": "最小化",
+      "maximize": "最大化",
+      "close": "关闭"
+    },
+    "navigation": {
+      "modules": "模块",
+      "currentModule": "当前模块",
+      "summary": "共 {0} 个模块"
+    },
+    "shortcuts": {
+      "plugin": "应用",
+      "gotoHome": {
+        "name": "跳转到主页",
+        "description": "快速切换到“主页”页面。"
+      },
+      "toggleNav": {
+        "name": "切换导航栏",
+        "description": "折叠或展开侧边导航。"
+      },
+      "gotoSettings": {
+        "name": "跳转到设置",
+        "description": "快速切换到“设置”页面。"
+      },
+      "gotoMonitor": {
+        "name": "跳转到监控",
+        "description": "快速切换到“插件监控”页面。"
+      },
+      "gotoKeymap": {
+        "name": "跳转到快捷键",
+        "description": "快速切换到“快捷键”页面。"
+      }
+    },
+    "header": {
+      "currentModule": "当前模块",
+      "validation": "校验"
+    },
+    "state": {
+      "unknown": "未知"
+    }
+  },
+  "dialog": {
+    "close": "关闭",
+    "confirm": "确认",
+    "cancel": "取消",
+    "confirmTitle": "确认",
+    "promptTitle": "请输入"
+  },
+  "plugins": {
+    "home": {
+      "name": "主页",
+      "description": "系统首页工作台"
+    },
+    "settings": {
+      "name": "设置",
+      "description": "主题、语言与共享插件变量"
+    },
+    "monitor": {
+      "name": "插件监控",
+      "description": "插件运行监控与诊断"
+    },
+    "keymap": {
+      "name": "快捷键",
+      "description": "快捷键绑定管理"
+    },
+    "promptor": {
+      "name": "提示词优化",
+      "description": "提示词优化工作台",
+      "variables": {
+        "provider": {
+          "name": "提供方",
+          "description": "模型提供方"
+        },
+        "endpoint": {
+          "name": "接口地址",
+          "description": "自定义 API 地址"
+        },
+        "apiKey": {
+          "name": "接口密钥",
+          "description": "鉴权凭证"
+        },
+        "model": {
+          "name": "模型名称",
+          "description": "目标模型"
+        },
+        "maxTokens": {
+          "name": "最大 Tokens",
+          "description": "输出上限",
+          "validation": "必须为正整数"
+        },
+        "temperature": {
+          "name": "温度",
+          "description": "采样温度",
+          "validation": "必须在 0 到 2 之间"
+        }
+      }
+    },
+    "migration": {
+      "name": "数据库迁移",
+      "description": "EF Core 迁移管理",
+      "variables": {
+        "connection": {
+          "name": "数据库连接",
+          "description": "迁移命令使用的默认连接字符串"
+        }
+      }
+    },
+    "runtime": {
+      "name": ".NET 运行宿主",
+      "description": "部署并管理本地 .NET 发布包"
+    }
+  },
+  "settings": {
+    "title": "宿主设置",
+    "description": "统一管理共享偏好",
+    "sections": {
+      "basic": {
+        "title": "基础设置",
+        "description": "控制外观、语言与关闭行为"
+      },
+      "advancedTheme": {
+        "title": "高级主题",
+        "description": "扩展配色与主题目录",
+        "palette": "高级配色",
+        "directory": "主题目录"
+      },
+      "variables": {
+        "empty": "暂无插件变量"
+      }
+    },
+    "fields": {
+      "appName": "应用名称",
+      "appNamePlaceholder": "输入应用名称",
+      "language": "显示语言",
+      "builtInPalette": "内置配色",
+      "font": "全局字体",
+      "closeBehavior": "关闭行为",
+      "closeBehaviorDescription": "选择最小化到托盘或直接退出",
+      "advancedThemeVisible": "显示高级主题设置"
+    },
+    "options": {
+      "tray": "托盘",
+      "exit": "退出"
+    },
+    "messages": {
+      "saved": "已保存",
+      "reset": "已重置",
+      "interWarning": "Inter 在部分中文界面下可能出现字重或回退异常"
+    },
+    "header": {
+      "basicTheme": "基础主题模式",
+      "advancedTheme": "高级主题已启用",
+      "metrics": {
+        "plugins": "插件",
+        "variables": "变量",
+        "covered": "覆盖",
+        "warnings": "警告"
+      },
+      "badges": {
+        "defaultPalette": "默认配色",
+        "systemFont": "系统字体",
+        "trayClose": "托盘关闭",
+        "exitClose": "直接退出",
+        "advancedTheme": "高级主题",
+        "basicTheme": "基础主题"
+      },
+      "actions": {
+        "reset": "重置",
+        "save": "保存"
+      }
+    },
+    "workspace": {
+      "title": "工作区",
+      "description": "设置根目录与迁移默认行为",
+      "root": "工作区根目录",
+      "useForMigration": "迁移默认使用工作区"
+    },
+    "variables": {
+      "eyebrow": "变量",
+      "title": "插件变量",
+      "description": "集中管理插件变量",
+      "add": "新增变量",
+      "createTitle": "新建变量",
+      "createDescription": "仅保存变量值",
+      "plugin": "插件",
+      "key": "键",
+      "keyPlaceholder": "例如：MY_API_KEY",
+      "keyHints": "推荐键：",
+      "value": "值",
+      "valuePlaceholder": "输入变量值",
+      "encrypted": "加密"
+    },
+    "validation": {
+      "required": "{0}: {1} 为必填项。",
+      "allowedValues": "{0}: {1} 必须是 {2} 之一。",
+      "invalid": "{0}: {1} {2}",
+      "invalidDefault": "格式不正确。"
+    },
+    "fonts": {
+      "system": {
+        "label": "系统推荐",
+        "description": "跟随系统默认字体"
+      },
+      "inter": {
+        "label": "Inter",
+        "description": "跨平台统一界面字体"
+      },
+      "segoe-ui": {
+        "label": "Segoe UI",
+        "description": "Windows 默认"
+      },
+      "microsoft-yahei-ui": {
+        "label": "Microsoft YaHei UI",
+        "description": "中文界面字体"
+      },
+      "arial": {
+        "label": "Arial",
+        "description": "经典备用"
+      },
+      "bahnschrift": {
+        "label": "Bahnschrift",
+        "description": "几何无衬线"
+      }
+    },
+    "palettes": {
+      "tranbok-dark": {
+        "description": "默认深蓝"
+      },
+      "tranbok-light": {
+        "description": "默认浅色"
+      },
+      "emerald-dark": {
+        "description": "深色偏绿"
+      },
+      "violet-dark": {
+        "description": "深色偏紫"
+      }
+    }
+  },
+  "home": {
+    "category": {
+      "general": "通用"
+    },
+    "empty": {
+      "title": "暂无报告",
+      "description": "当插件注册首页报告后，这里会自动显示。"
+    },
+    "report": {
+      "badge": "报告",
+      "preparing": "正在准备报告...",
+      "loading": "正在加载报告...",
+      "failed": "报告加载失败",
+      "retry": "重试",
+      "emptyContent": "{0} 暂无可显示内容。",
+      "noRecentDiagnostics": "最近没有新的错误或警告。"
+    },
+    "builtin": {
+      "category": "概览",
+      "pluginOverview": {
+        "title": "插件概览",
+        "description": "展示当前插件的启用、运行与故障状态。"
+      },
+      "recentDiagnostics": {
+        "title": "最近诊断",
+        "description": "展示宿主最近记录的错误与警告。"
+      }
+    },
+    "overview": {
+      "enabled": "已启用",
+      "running": "运行中",
+      "faulted": "故障",
+      "visual": "可视插件"
+    }
+  },
+  "monitor": {
+    "searchPlaceholder": "按名称搜索插件",
+    "capabilities": "能力",
+    "lastChange": "最近变更",
+    "enabled": "已启用",
+    "restartPlugin": "重启插件",
+    "stopPlugin": "停止插件",
+    "item": {
+      "kind": {
+        "service": "服务",
+        "visual": "界面"
+      },
+      "source": {
+        "builtIn": "内置",
+        "external": "外部"
+      },
+      "enabled": "已启用",
+      "disabled": "已禁用",
+      "noneDeclared": "未声明",
+      "status": {
+        "online": "在线",
+        "offline": "离线"
+      },
+      "state": {
+        "running": "运行中",
+        "stopped": "已停止",
+        "faulted": "故障",
+        "stopping": "停止中",
+        "starting": "启动中"
+      },
+      "capability": {
+        "fileSystem": "文件系统",
+        "localProcess": "本地进程",
+        "network": "网络",
+        "secrets": "敏感信息"
+      }
+    },
+    "header": {
+      "visual": "界面",
+      "service": "服务",
+      "matched": "匹配",
+      "disabled": "禁用",
+      "diagnostics": "诊断",
+      "healthy": "健康",
+      "contextError": "全局诊断已映射到当前插件运行状态。",
+      "contextHealthy": "当前插件集合的运行状态稳定。",
+      "total": "总数",
+      "running": "运行中",
+      "faulted": "故障",
+      "errors": "错误"
+    },
+    "details": {
+      "version": "版本",
+      "source": "来源",
+      "enabled": "启用状态",
+      "lastError": "最近错误",
+      "noCurrentError": "当前没有错误",
+      "runtimeSwitch": "运行开关",
+      "runtimeSwitchDescription": "停止只影响当前运行时实例，不会改变插件是否启用。",
+      "diagnostics": "插件诊断",
+      "diagnosticsDescription": "展示与当前插件名称或 ID 匹配的最近异常记录。",
+      "noDiagnostics": "当前没有匹配到该插件的诊断记录。"
+    },
+    "home": {
+      "totalPlugins": "插件总数",
+      "faultedPlugins": "故障插件",
+      "recentFaultedPlugins": "最近故障插件",
+      "noFaultedPlugins": "当前没有故障插件。"
+    }
+  },
+  "keymap": {
+    "eyebrow": "快捷键",
+    "bindings": "绑定",
+    "description": "搜索命令，并选择一个绑定进行查看或覆盖。",
+    "searchPlaceholder": "搜索快捷键...",
+    "overrideHint": "覆盖会立即生效，并在你重置前替代默认绑定。",
+    "empty": {
+      "title": "选择一个快捷键",
+      "description": "从左侧选择一个绑定，查看当前值并进行修改。"
+    },
+    "plugin": "插件",
+    "defaultBinding": "默认绑定",
+    "currentBinding": "当前绑定",
+    "currentBindingDescription": "聚焦录制框后按下新的快捷键，按 Escape 取消录制。",
+    "modifiedHint": "当前绑定已覆盖默认值。",
+    "enabled": "启用",
+    "enabledDescription": "禁用后的绑定会被运行时快捷键处理器跳过。",
+    "reset": "重置",
+    "resetAll": "全部重置",
+    "clickToRecord": "点击开始录制",
+    "capture": {
+      "pressShortcut": "请按下快捷键...",
+      "unset": "（未设置）"
+    },
+    "keys": {
+      "ctrl": "Ctrl",
+      "alt": "Alt",
+      "shift": "Shift",
+      "meta": "Meta",
+      "space": "空格",
+      "enter": "回车",
+      "backspace": "退格",
+      "tab": "Tab",
+      "delete": "Delete",
+      "insert": "Insert",
+      "home": "Home",
+      "end": "End",
+      "pageUp": "PageUp",
+      "pageDown": "PageDown",
+      "up": "上",
+      "down": "下",
+      "left": "左",
+      "right": "右"
+    },
+    "header": {
+      "context": "快捷键按插件分组展示，可直接浏览和编辑。",
+      "contextFiltered": "当前正在按“{0}”筛选快捷键列表。",
+      "bindings": "绑定数",
+      "plugins": "插件数",
+      "modified": "已修改",
+      "disabled": "已禁用",
+      "noSelection": "未选择绑定",
+      "allPlugins": "浏览全部插件"
+    }
+  },
+  "promptor": {
+    "cancel": "取消",
+    "copied": "已复制",
+    "log": "日志",
+    "clear": "清空",
+    "copy": "复制",
+    "optimize": "优化",
+    "logEmpty": "暂无日志",
+    "logEmptyDescription": "执行优化后，历史记录会显示在这里。",
+    "inputEyebrow": "输入",
+    "inputTitle": "原始提示词",
+    "inputDescription": "输入原始提示词内容。",
+    "inputPlaceholder": "在这里输入提示词",
+    "outputEyebrow": "输出",
+    "outputTitle": "优化结果",
+    "outputDescription": "查看生成后的提示词。",
+    "outputPlaceholder": "优化后的提示词会显示在这里",
+    "logEntriesFormat": "共 {0} 条记录",
+    "clearLog": "清空日志",
+    "strategy": {
+      "structured": {
+        "label": "结构化",
+        "description": "重组并澄清提示词"
+      },
+      "fewShot": {
+        "label": "少样本",
+        "description": "补充示例"
+      },
+      "chainOfThought": {
+        "label": "推理链",
+        "description": "引导模型分步思考"
+      },
+      "concise": {
+        "label": "精简",
+        "description": "压缩冗余表达"
+      },
+      "technical": {
+        "label": "技术向",
+        "description": "强化约束和格式"
+      }
+    },
+    "messages": {
+      "inputRequiredTitle": "需要输入内容",
+      "inputRequired": "请先输入提示词再执行优化。",
+      "configError": "配置错误",
+      "optimizing": "优化中...",
+      "completed": "已完成",
+      "cancelled": "已取消",
+      "cancelledByUser": "用户取消",
+      "failed": "失败",
+      "optimizeFailed": "优化失败",
+      "apiKeyRequired": "请先配置 API Key 或自定义接口地址。",
+      "copied": "已复制",
+      "copyFailed": "复制失败"
+    }
+  },
+  "migration": {
+    "connectionProfiles": "连接配置",
+    "addProfile": "新增配置",
+    "editProfile": "编辑配置",
+    "deleteProfile": "删除配置",
+    "refreshProfiles": "刷新配置",
+    "outputDirectory": "输出目录",
+    "workspace": "迁移工作区",
+    "workspaceDescription": "查看配置属性、检查迁移文件，并在当前工作区内执行结构变更操作。",
+    "database": "数据库",
+    "migrations": "迁移",
+    "actions": "迁移动作",
+    "openMigrationFile": "打开迁移文件",
+    "newMigration": "新建迁移",
+    "removeMigration": "移除迁移",
+    "applyUpdate": "应用更新",
+    "executionLog": "执行日志",
+    "executionLogDescription": "查看最近一次迁移执行和文件操作输出。",
+    "clearLog": "清空日志",
+    "selectProfileFirst": "请先选择一个配置",
+    "profileIdentity": "项目与配置标识",
+    "domainProjectPath": "领域项目路径",
+    "domainProjectPathPlaceholder": "选择 Domain 项目的 .csproj 路径",
+    "browseProject": "浏览项目",
+    "profileName": "配置名称",
+    "profileNamePlaceholder": "例如：Development",
+    "dbContext": "DbContext",
+    "dbContextPlaceholder": "例如：AppDbContext",
+    "connection": "连接",
+    "connectionDetails": "数据库与连接详情",
+    "databaseType": "数据库类型",
+    "connectionString": "连接字符串",
+    "connectionStringPlaceholder": "输入数据库连接字符串",
+    "migrationFile": "迁移文件",
+    "migrationFileUpper": "迁移文件",
+    "enableEditing": "启用编辑",
+    "exitEditing": "退出编辑",
+    "editingHint": "保存前请先启用编辑。退出编辑模式会丢弃未保存内容。",
+    "profile": {
+      "ready": "已就绪",
+      "needsConfig": "待配置"
+    },
+    "status": {
+      "applied": "已应用",
+      "pending": "待执行",
+      "unknown": "未知"
+    },
+    "dbType": {
+      "sqlServerDescription": "适用于 SQL Server / LocalDB",
+      "postgreSqlDescription": "适用于 PostgreSQL",
+      "mySqlDescription": "适用于 MySQL / MariaDB"
+    },
+    "messages": {
+      "ready": "就绪",
+      "noMigrationSelected": "-- 请从左侧选择迁移 --",
+      "noMigrationFiles": "暂无迁移文件",
+      "rollbackSelectFirst": "请先选择一条迁移。",
+      "rollbackOnlyLatest": "EF Core 只支持移除最后一条迁移（dotnet ef migrations remove）。",
+      "rollbackApplied": "将先回滚数据库到上一版本，再删除迁移文件。",
+      "rollbackPending": "将运行 dotnet ef migrations remove 并更新 ModelSnapshot。",
+      "profileAdded": "已添加配置：{0}",
+      "deleteProfileTitle": "删除配置",
+      "deleteProfileMessage": "确定删除配置“{0}”？\n数据库类型：{1}\n\n此操作不会删除数据库，但会移除已保存的连接配置。",
+      "deleteProfileNote": "删除前请先确认没有未保存的配置修改。",
+      "profileDeleted": "已删除配置：{0}",
+      "editProfileTitle": "编辑配置",
+      "editProfileDescription": "修改项目路径、数据库类型和连接信息。",
+      "saveProfile": "保存配置",
+      "configSavedLog": "配置已保存到 .torbit-tools.json 和 Migration/setting.json",
+      "configSaved": "配置已保存",
+      "profilesReloadedLog": "已从配置存储中重新读取配置列表",
+      "profilesReloaded": "配置列表已重新读取",
+      "migrationCountStatus": "{0} 条迁移 - {1}",
+      "migrationsLoadedLog": "已通过 'dotnet ef migrations list' 加载 {0} 条迁移",
+      "newMigrationUnavailableTitle": "无法新建迁移",
+      "newMigrationTitle": "新建迁移",
+      "newMigrationPrompt": "请输入迁移名称，建议使用 PascalCase 命名。",
+      "createMigration": "创建迁移",
+      "newMigrationPlaceholder": "例如：AddUserAuditLog",
+      "newMigrationNote": "迁移名称至少需要 3 个字符。",
+      "createMigrationUnavailableTitle": "无法生成迁移",
+      "executeUpdateTitle": "执行数据库更新",
+      "executeUpdateMessage": "目标配置：{0}\n目标数据库：{1}\nDbContext：{2}\n\n即将执行 database update，应用所有待执行迁移。",
+      "executeUpdateConfirm": "执行更新",
+      "executeUpdateNote": "请确认连接字符串和项目路径正确无误。",
+      "rollbackTitle": "移除迁移",
+      "rollbackMessage": "迁移：{0}\n目标数据库：{1}\nDbContext：{2}\n\n操作步骤：\n{3}\n\n该操作不可撤销。",
+      "rollbackStepsApplied": "1. dotnet ef database update <previous>（执行 Down）\n2. dotnet ef migrations remove（删除文件并更新 ModelSnapshot）",
+      "rollbackStepsPending": "1. dotnet ef migrations remove（删除文件并更新 ModelSnapshot）",
+      "rollbackConfirm": "移除迁移",
+      "rollbackNote": "仅支持移除最后一条迁移。",
+      "migrationFileMissingContent": "// 未找到迁移文件路径。请确认输出目录中存在对应生成的迁移文件。",
+      "openMigrationUnavailableTitle": "无法打开迁移文件",
+      "openMigrationUnavailableMessage": "请先选择一个迁移项。",
+      "fileSavedLog": "已保存 {0}",
+      "fileSaved": "文件已保存",
+      "operationRunning": "{0}...",
+      "operationCompletedLog": "已完成",
+      "operationFailedLog": "失败",
+      "operationSucceeded": "已完成 - {0}",
+      "operationFailed": "操作失败",
+      "gotIt": "知道了",
+      "selectDomainProjectFile": "选择 Domain 项目文件",
+      "validation": {
+        "selectProfile": "请先选择一个配置项。",
+        "selectDomainProject": "请先为当前配置选择 Domain 项目。",
+        "domainProjectMissing": "未找到 Domain 项目文件：{0}",
+        "contextRequired": "请先填写 DbContext。",
+        "designSettingsMissing": "未找到 DesignSettings.json：{0}",
+        "migrationNameRequired": "请先填写迁移名称。",
+        "migrationNameTooShort": "迁移名称至少需要 3 个字符。"
+      }
+    }
+  },
+  "runtime": {
+    "workspace": "工作区",
+    "managedApps": "托管应用",
+    "managedAppsDescription": "配置列表保持轻量，部署、运行状态与搜索都集中在同一列中。",
+    "add": "新增",
+    "delete": "删除",
+    "zipArchive": "Zip 压缩包",
+    "dotnetHost": "dotnet <dll>",
+    "emptyTitle": "暂无应用配置",
+    "emptyDescription": "先创建配置，再上传发布压缩包并启动运行时。",
+    "profile": "配置",
+    "runtimeDefinition": "运行时定义",
+    "runtimeDefinitionDescription": "尽量保持配置简洁，只保留身份、入口、启动方式和环境变量注入。",
+    "name": "名称",
+    "deployFolder": "部署目录",
+    "description": "描述",
+    "entryRelativePath": "相对入口路径",
+    "runWithDotnetHost": "使用 dotnet host 启动",
+    "autoStartOnHostLoad": "宿主加载时自动启动",
+    "startupEnvironmentVariables": "启动环境变量",
+    "environmentHelp": "每行一个变量，格式：KEY=VALUE。",
+    "environmentPlaceholder": "ASPNETCORE_URLS=http://127.0.0.1:5001\nDOTNET_ENVIRONMENT=Production",
+    "runtimeSnapshot": "运行时快照",
+    "restart": "重启",
+    "storage": "存储",
+    "deploymentWorkspace": "部署工作区",
+    "deployPath": "部署路径",
+    "logsPath": "日志路径",
+    "runtimeLog": "运行日志",
+    "runtimeLogDescription": "标准输出、标准错误、部署事件和持久化宿主消息。",
+    "searchPlaceholder": "按名称或入口搜索运行配置",
+    "ready": "就绪",
+    "noPackage": "无部署包",
+    "directExecutable": "直接执行",
+    "status": "状态",
+    "deploy": "部署",
+    "entry": "入口",
+    "mode": "模式",
+    "uptime": "运行时长",
+    "package": "部署包",
+    "notDeployed": "未部署",
+    "profiles": "配置",
+    "running": "运行中",
+    "idle": "空闲",
+    "faulted": "故障",
+    "apps": "应用",
+    "stopped": "已停止",
+    "addApp": "新增应用",
+    "deployZip": "部署压缩包",
+    "stop": "停止",
+    "start": "启动",
+    "headerContext": "上传发布包、注入启动变量，并在同一工作台中控制本地 .NET 运行时。",
+    "defaultAppName": "应用 {0}",
+    "defaultDeployFolder": "app-{0}",
+    "item": {
+      "noDescription": "暂无部署说明。",
+      "autoStart": "自动启动",
+      "manual": "手动启动",
+      "starting": "启动中",
+      "stopping": "停止中",
+      "pid": "PID {0}",
+      "exit": "退出码 {0}",
+      "noDeployment": "暂无部署",
+      "notRunning": "未运行",
+      "duration": {
+        "hours": "{0} 小时 {1} 分",
+        "minutes": "{0} 分 {1} 秒",
+        "seconds": "{0} 秒"
+      }
+    },
+    "messages": {
+      "autoStartFailed": "自动启动失败",
+      "profileCreated": "配置已创建。",
+      "deleteProfileTitle": "删除配置",
+      "deleteProfileMessage": "删除“{0}”并移除其运行时工作区？",
+      "profileDeleted": "配置已删除。",
+      "selectPackage": "选择 .NET 发布压缩包",
+      "redeployTitle": "重新部署",
+      "redeployMessage": "覆盖“{0}”当前部署内容？",
+      "packageDeployedFrom": "已从 {0} 完成部署。",
+      "detectedEntry": "检测到入口：{0}（{1}）。",
+      "packageDeployed": "部署完成。",
+      "deploymentFailed": "部署失败",
+      "deployBeforeStart": "请先部署发布包后再启动运行时。",
+      "started": "已启动 {0}。",
+      "startFailed": "启动失败",
+      "failedToStart": "启动 {0} 失败。",
+      "stopped": "已停止 {0}。",
+      "restarted": "已重启 {0}。",
+      "restartFailed": "重启失败",
+      "profileSaved": "配置已保存。",
+      "unnamedApp": "未命名应用",
+      "entryFileNotFound": "未找到运行入口文件。",
+      "registerProcessFailed": "注册运行进程失败。",
+      "processDidNotStart": "运行进程未能启动。",
+      "processStartedWithPid": "进程已启动，PID 为 {0}。",
+      "stoppingProcess": "正在停止进程...",
+      "processExitedWithCode": "进程已退出，退出码为 {0}。"
+    },
+    "logLevel": {
+      "info": "信息",
+      "error": "错误",
+      "warning": "警告"
+    }
+  },
+  "log": {
+    "eyebrow": "日志"
+  }
+}

@@ -2,12 +2,13 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using TOrbit.Core.Models;
 using TOrbit.Core.Services;
+using TOrbit.Designer.Services;
 
 namespace TOrbit.Plugin.Home;
 
 internal sealed class DiagnosticsReportView : UserControl
 {
-    public DiagnosticsReportView(IAppDiagnosticsService diagnosticsService)
+    public DiagnosticsReportView(IAppDiagnosticsService diagnosticsService, ILocalizationService localizationService)
     {
         var entries = diagnosticsService.Entries
             .Where(x => x.Severity != AppDiagnosticSeverity.Info)
@@ -19,7 +20,7 @@ internal sealed class DiagnosticsReportView : UserControl
         {
             Content = new TextBlock
             {
-                Text = "最近没有新的错误或警告。",
+                Text = localizationService.GetString("home.report.noRecentDiagnostics"),
                 Classes = { "caption-muted" },
                 TextWrapping = TextWrapping.Wrap
             };

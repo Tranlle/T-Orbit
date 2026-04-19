@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using TOrbit.Designer.Services;
 using TOrbit.Designer.Views;
 using TOrbit.Designer.ViewModels.Pages;
 using TOrbit.Plugin.Core.Base;
@@ -77,7 +78,7 @@ public sealed partial class HomeReportItemViewModel : ObservableObject
             },
             _ => new TextBlock
             {
-                Text = $"{definition.Title} 暂无可显示内容。",
+                Text = string.Format(LocalizationService.Current?.GetString("home.report.emptyContent") ?? "{0} has no content to display.", definition.Title),
                 TextWrapping = Avalonia.Media.TextWrapping.Wrap
             }
         };

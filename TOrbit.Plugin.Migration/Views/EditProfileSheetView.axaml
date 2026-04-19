@@ -3,6 +3,7 @@
              xmlns:vm="using:TOrbit.Plugin.Migration.ViewModels"
              xmlns:models="using:TOrbit.Designer.Models"
              xmlns:designer="using:TOrbit.Designer.Controls"
+             xmlns:loc="using:TOrbit.Designer.Markup"
              x:Class="TOrbit.Plugin.Migration.Views.EditProfileSheetView"
              x:DataType="vm:MigrationViewModel">
   <UserControl.Styles>
@@ -33,49 +34,49 @@
   </UserControl.Styles>
 
   <StackPanel Spacing="10">
-    <designer:SectionCard Eyebrow="Profile"
-                          Title="Project and profile identity">
+    <designer:SectionCard Eyebrow="{loc:Loc migration.profile}"
+                          Title="{loc:Loc migration.profileIdentity}">
       <designer:SectionCard.Body>
         <Grid ColumnDefinitions="*,10,*"
               RowDefinitions="Auto,Auto"
               RowSpacing="6">
           <designer:FormField Grid.Row="0"
                               Grid.ColumnSpan="3"
-                              Label="Domain project path">
+                              Label="{loc:Loc migration.domainProjectPath}">
             <designer:FormField.Body>
               <designer:PathPickerField Path="{Binding EditingProjectPath, Mode=TwoWay}"
-                                        PlaceholderText="Select the Domain project .csproj path"
-                                        BrowseText="Browse project"
+                                        PlaceholderText="{loc:Loc migration.domainProjectPathPlaceholder}"
+                                        BrowseText="{loc:Loc migration.browseProject}"
                                         BrowseCommand="{Binding BrowseProjectPathCommand}" />
             </designer:FormField.Body>
           </designer:FormField>
 
           <designer:FormField Grid.Row="1"
                               Grid.Column="0"
-                              Label="Profile name">
+                              Label="{loc:Loc migration.profileName}">
             <designer:FormField.Body>
               <TextBox Text="{Binding EditingProfile.ProfileName, Mode=TwoWay}"
-                       PlaceholderText="For example: Development" />
+                       PlaceholderText="{loc:Loc migration.profileNamePlaceholder}" />
             </designer:FormField.Body>
           </designer:FormField>
 
           <designer:FormField Grid.Row="1"
                               Grid.Column="2"
-                              Label="DbContext">
+                              Label="{loc:Loc migration.dbContext}">
             <designer:FormField.Body>
               <TextBox Text="{Binding EditingProfile.ContextName, Mode=TwoWay}"
-                       PlaceholderText="For example: AppDbContext" />
+                       PlaceholderText="{loc:Loc migration.dbContextPlaceholder}" />
             </designer:FormField.Body>
           </designer:FormField>
         </Grid>
       </designer:SectionCard.Body>
     </designer:SectionCard>
 
-    <designer:SectionCard Eyebrow="Connection"
-                          Title="Database and connection details">
+    <designer:SectionCard Eyebrow="{loc:Loc migration.connection}"
+                          Title="{loc:Loc migration.connectionDetails}">
       <designer:SectionCard.Body>
         <StackPanel Spacing="6">
-          <designer:FormField Label="Database type">
+          <designer:FormField Label="{loc:Loc migration.databaseType}">
             <designer:FormField.Body>
               <ComboBox ItemsSource="{Binding DbTypeOptions}"
                         SelectedItem="{Binding SelectedEditingDbTypeOption, Mode=TwoWay}">
@@ -88,10 +89,10 @@
             </designer:FormField.Body>
           </designer:FormField>
 
-          <designer:FormField Label="Connection string">
+          <designer:FormField Label="{loc:Loc migration.connectionString}">
             <designer:FormField.Body>
               <TextBox Text="{Binding EditingProfile.ConnectionString, Mode=TwoWay}"
-                       PlaceholderText="Enter the database connection string" />
+                       PlaceholderText="{loc:Loc migration.connectionStringPlaceholder}" />
             </designer:FormField.Body>
           </designer:FormField>
         </StackPanel>

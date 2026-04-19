@@ -9,9 +9,9 @@ public sealed class PromptorPluginMetadata : PluginBaseMetadata
     public static PromptorPluginMetadata Instance { get; } = new();
 
     public override string Id => "torbit.promptor";
-    public override string Name => "提示优化";
+    public override string Name => "Promptor";
     public override string Version => "1.0.0";
-    public override string Description => "提示词优化";
+    public override string Description => "Prompt optimization workspace";
     public override string Author => "T-Orbit";
     public override string Icon => "AutoFixHigh";
     public override string Tags => "AI,Prompt,Llm";
@@ -26,41 +26,41 @@ public sealed class PromptorPluginMetadata : PluginBaseMetadata
         new PluginVariableDefinition(
             Key: "PROMPTOR_PROVIDER",
             DefaultValue: "openai",
-            DisplayName: "提供方",
-            Description: "模型提供方",
+            DisplayName: "Provider",
+            Description: "Model provider",
             IsRequired: true,
             AllowedValues: ["openai", "qwen", "kimi", "ollama"]),
         new PluginVariableDefinition(
             Key: "PROMPTOR_API_ENDPOINT",
             DefaultValue: "",
-            DisplayName: "接口地址",
-            Description: "自定义地址"),
+            DisplayName: "API Endpoint",
+            Description: "Custom API endpoint"),
         new PluginVariableDefinition(
             Key: "PROMPTOR_API_KEY",
             DefaultValue: "",
-            DisplayName: "接口密钥",
-            Description: "鉴权密钥",
+            DisplayName: "API Key",
+            Description: "Authorization credential",
             IsEncrypted: true),
         new PluginVariableDefinition(
             Key: "PROMPTOR_MODEL_NAME",
             DefaultValue: "gpt-4o",
-            DisplayName: "模型名",
-            Description: "调用模型",
+            DisplayName: "Model Name",
+            Description: "Target model",
             IsRequired: true),
         new PluginVariableDefinition(
             Key: "PROMPTOR_MAX_TOKENS",
             DefaultValue: "2048",
-            DisplayName: "最大Token",
-            Description: "输出上限",
+            DisplayName: "Max Tokens",
+            Description: "Maximum output tokens",
             IsRequired: true,
             ValidationPattern: @"^\d+$",
-            ValidationMessage: "需为正整数"),
+            ValidationMessage: "Must be a positive integer"),
         new PluginVariableDefinition(
             Key: "PROMPTOR_TEMPERATURE",
             DefaultValue: "1.0",
-            DisplayName: "温度",
-            Description: "随机程度",
+            DisplayName: "Temperature",
+            Description: "Sampling temperature",
             ValidationPattern: @"^(?:0(?:\.\d+)?|1(?:\.\d+)?|2(?:\.0+)?)$",
-            ValidationMessage: "需在0-2间")
+            ValidationMessage: "Must be between 0 and 2")
     ];
 }

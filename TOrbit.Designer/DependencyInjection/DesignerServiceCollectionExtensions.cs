@@ -12,6 +12,7 @@ public static class DesignerServiceCollectionExtensions
         services.AddSingleton<IThemePaletteProvider>(_ => new JsonThemePaletteProvider(Path.Combine(AppContext.BaseDirectory, "themes")));
         services.AddSingleton<ThemePaletteRegistry>();
         services.AddSingleton<IThemeService, ThemeService>();
+        services.AddSingleton<ILocalizationService>(_ => LocalizationService.Shared);
         services.AddSingleton<IDesignerDialogService, DesignerDialogService>();
         return services;
     }
