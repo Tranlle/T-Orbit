@@ -1,5 +1,7 @@
 # T-Orbit
 
+[English README](https://github.com/Tranlle/T-Orbit/blob/main/README.en.md)
+
 <p align="center">
   <strong>基于 .NET 10 与 Avalonia 12 的插件化桌面工具宿主</strong>
 </p>
@@ -406,4 +408,4 @@ dotnet test TOrbit.Core.Tests/TOrbit.Core.Tests.csproj
 
 ## 许可证
 
-以仓库中的 [LICENSE](./LICENSE) 为准。
+以仓库中的 [LICENSE](https://github.com/Tranlle/T-Orbit/blob/main/LICENSE) 为准。
