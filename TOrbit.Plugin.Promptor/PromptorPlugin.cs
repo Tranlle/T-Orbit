@@ -12,16 +12,15 @@ using TOrbit.Plugin.Promptor.Views;
 
 namespace TOrbit.Plugin.Promptor;
 
-public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableReceiver, IPluginPageHeaderProvider
+public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableReceiver, IPluginHeaderActionsProvider
 {
     private PromptorView? _view;
     private PromptorViewModel? _viewModel;
+    private IReadOnlyList<PluginHeaderAction>? _headerActions;
     private PromptorVariables _variables = new();
 
     public override PluginDescriptor Descriptor { get; } =
         CreateDescriptor<PromptorPlugin>(PromptorPluginMetadata.Instance);
-
-    public event EventHandler? HeaderChanged;
 
     public void OnVariablesInjected(IReadOnlyDictionary<string, string> rawValues)
     {
@@ -50,7 +49,11 @@ public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableR
         return _view!;
     }
 
-    public PluginPageHeaderModel? GetPageHeader() => null;
+    public IReadOnlyList<PluginHeaderAction> GetHeaderActions()
+    {
+        EnsureView();
+        return _headerActions ?? [];
+    }
 
     private void EnsureView()
     {
@@ -58,7 +61,13 @@ public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableR
         {
             var dialogService = Context.GetTool<IDesignerDialogService>();
             _viewModel = new PromptorViewModel(dialogService, _variables);
-            _viewModel.HeaderSummaryChanged += ViewModelOnHeaderSummaryChanged;
+            _headerActions =
+            [
+                new PluginHeaderAction("Log", _viewModel.ShowLogCommand),
+                new PluginHeaderAction("Clear", _viewModel.ClearAllCommand),
+                new PluginHeaderAction("Copy", _viewModel.CopyCommand),
+                new PluginHeaderAction("Optimize", _viewModel.OptimizeCommand, IsPrimary: true)
+            ];
         }
 
         _view ??= new PromptorView { DataContext = _viewModel };
@@ -67,16 +76,11 @@ public sealed class PromptorPlugin : BasePlugin, IVisualPlugin, IPluginVariableR
     protected override ValueTask OnDisposeAsync()
     {
         if (_viewModel is not null)
-        {
-            _viewModel.HeaderSummaryChanged -= ViewModelOnHeaderSummaryChanged;
             _viewModel.Dispose();
-        }
 
         _view = null;
         _viewModel = null;
+        _headerActions = null;
         return ValueTask.CompletedTask;
     }
-
-    private void ViewModelOnHeaderSummaryChanged(object? sender, EventArgs e)
-        => HeaderChanged?.Invoke(this, EventArgs.Empty);
 }

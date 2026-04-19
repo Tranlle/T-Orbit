@@ -12,7 +12,7 @@
       <Border Classes="panel"
               Padding="14,12">
         <StackPanel Spacing="4">
-          <TextBlock Text="插件总数"
+          <TextBlock Text="Total plugins"
                      Classes="caption-muted"
                      MinHeight="0" />
           <TextBlock Text="{Binding TotalCount}"
@@ -25,7 +25,7 @@
               Classes="panel"
               Padding="14,12">
         <StackPanel Spacing="4">
-          <TextBlock Text="运行中"
+          <TextBlock Text="Running"
                      Classes="caption-muted"
                      MinHeight="0" />
           <TextBlock Text="{Binding RunningCount}"
@@ -39,7 +39,7 @@
               Classes="panel"
               Padding="14,12">
         <StackPanel Spacing="4">
-          <TextBlock Text="故障插件"
+          <TextBlock Text="Faulted plugins"
                      Classes="caption-muted"
                      MinHeight="0" />
           <TextBlock Text="{Binding FaultedCount}"
@@ -54,7 +54,7 @@
               Classes="panel"
               Padding="14,12">
         <StackPanel Spacing="4">
-          <TextBlock Text="错误诊断"
+          <TextBlock Text="Diagnostics"
                      Classes="caption-muted"
                      MinHeight="0" />
           <TextBlock Text="{Binding ErrorDiagnosticCount}"
@@ -66,7 +66,7 @@
     </Grid>
 
     <StackPanel Spacing="8">
-      <TextBlock Text="最近故障插件"
+      <TextBlock Text="Recent faulted plugins"
                  Classes="subsection-title" />
 
       <StackPanel Spacing="8"
@@ -85,7 +85,7 @@
         </ItemsControl>
       </StackPanel>
 
-      <TextBlock Text="当前没有故障插件。"
+      <TextBlock Text="There are no faulted plugins right now."
                  Classes="caption-muted"
                  IsVisible="{Binding !HasFaultedPlugins}" />
     </StackPanel>

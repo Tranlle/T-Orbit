@@ -17,11 +17,21 @@
       <Setter Property="BorderThickness" Value="0" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusMedium}" />
     </Style>
+
     <Style Selector="Button.binding-item:pointerover /template/ ContentPresenter">
       <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceHoverBrush}" />
     </Style>
+
     <Style Selector="Button.binding-item.selected /template/ ContentPresenter">
       <Setter Property="Background" Value="{DynamicResource TOrbitAccentSubtleBrush}" />
+    </Style>
+
+    <Style Selector="Border.keymap-info">
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceHoverBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
+      <Setter Property="Padding" Value="16,14" />
     </Style>
   </UserControl.Styles>
 
@@ -31,15 +41,27 @@
     <designer:ToolPageLayout.BodyContent>
       <designer:SplitWorkspace LeftWidth="340"
                                LeftMinWidth="260"
-                               RightMinWidth="420">
+                               RightMinWidth="440">
         <designer:SplitWorkspace.LeftContent>
           <Border Classes="workspace-panel">
             <Grid RowDefinitions="Auto,*,Auto">
               <StackPanel Margin="20,20,20,16"
                           Spacing="12">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="KEYMAP"
+                             Classes="eyebrow" />
+                  <TextBlock Text="Bindings"
+                             FontSize="18"
+                             FontWeight="SemiBold" />
+                  <TextBlock Text="Search commands and choose one binding to inspect or override."
+                             Classes="caption-muted"
+                             MinHeight="0"
+                             TextWrapping="Wrap" />
+                </StackPanel>
+
                 <TextBox Classes="form-control"
                          Text="{Binding SearchText, Mode=TwoWay}"
-                         PlaceholderText="搜索快捷键..."
+                         PlaceholderText="Search shortcuts..."
                          FontSize="13" />
               </StackPanel>
 
@@ -79,9 +101,9 @@
                                 <Border Background="Transparent"
                                         BorderBrush="{DynamicResource TOrbitBorderBrush}"
                                         BorderThickness="1"
-                                        CornerRadius="{DynamicResource TOrbitRadiusMedium}"
-                                        Padding="12,11"
-                                        MinHeight="48">
+                                        CornerRadius="{DynamicResource TOrbitRadiusLarge}"
+                                        Padding="14,12"
+                                        MinHeight="52">
                                   <Grid ColumnDefinitions="*,Auto"
                                         ColumnSpacing="10">
                                     <TextBlock Text="{Binding Name}"
@@ -108,12 +130,8 @@
 
               <Border Grid.Row="2"
                       Margin="20,16,20,20"
-                      Background="{DynamicResource TOrbitSurfaceBrush}"
-                      BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                      BorderThickness="1"
-                      CornerRadius="{DynamicResource TOrbitRadiusMedium}"
-                      Padding="12,10">
-                <TextBlock Text="修改后的绑定会立即反映到列表中，并覆盖默认配置。"
+                      Classes="keymap-info">
+                <TextBlock Text="Overrides take effect immediately and replace the default binding until you reset it."
                            Classes="caption-muted"
                            MinHeight="0"
                            TextWrapping="Wrap" />
@@ -127,9 +145,10 @@
             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
               <Panel Margin="20">
-                <designer:EmptyState IsVisible="{Binding SelectedBinding, Converter={x:Static ObjectConverters.IsNull}}"
-                                     Title="选择一个快捷键"
-                                     Description="从左侧列表选择一条绑定后，可在这里查看并编辑详情。" />
+                <designer:EmptyState Eyebrow="Keymap"
+                                     IsVisible="{Binding SelectedBinding, Converter={x:Static ObjectConverters.IsNull}}"
+                                     Title="Select a shortcut"
+                                     Description="Choose a binding from the left to inspect the current value and make changes." />
 
                 <ContentControl Content="{Binding SelectedBinding}"
                                 IsVisible="{Binding SelectedBinding, Converter={x:Static ObjectConverters.IsNotNull}}">
@@ -138,7 +157,7 @@
                       <StackPanel Spacing="18">
                         <StackPanel Spacing="4">
                           <TextBlock Text="{Binding Name}"
-                                     FontSize="18"
+                                     FontSize="20"
                                      FontWeight="SemiBold"
                                      TextWrapping="Wrap" />
                           <TextBlock Text="{Binding Description}"
@@ -150,10 +169,9 @@
 
                         <Grid ColumnDefinitions="*,*"
                               ColumnSpacing="12">
-                          <Border Classes="card"
-                                  Padding="14,12">
+                          <Border Classes="keymap-info">
                             <StackPanel Spacing="4">
-                              <TextBlock Text="所属插件"
+                              <TextBlock Text="Plugin"
                                          Classes="caption-muted"
                                          MinHeight="0" />
                               <TextBlock Text="{Binding PluginName}"
@@ -161,11 +179,11 @@
                                          FontWeight="SemiBold" />
                             </StackPanel>
                           </Border>
+
                           <Border Grid.Column="1"
-                                  Classes="card"
-                                  Padding="14,12">
+                                  Classes="keymap-info">
                             <StackPanel Spacing="4">
-                              <TextBlock Text="默认绑定"
+                              <TextBlock Text="Default binding"
                                          Classes="caption-muted"
                                          MinHeight="0" />
                               <TextBlock Text="{Binding DefaultKey}"
@@ -176,13 +194,13 @@
                           </Border>
                         </Grid>
 
-                        <Border Classes="card"
+                        <Border Classes="workspace-panel"
                                 Padding="18">
                           <StackPanel Spacing="16">
                             <StackPanel Spacing="2">
-                              <TextBlock Text="当前绑定"
+                              <TextBlock Text="Current binding"
                                          Classes="section-title" />
-                              <TextBlock Text="聚焦输入框后直接按下新的组合键，按 Esc 可取消本次录入。"
+                              <TextBlock Text="Focus the capture box and press the new shortcut. Press Escape to cancel recording."
                                          Classes="caption-muted"
                                          MinHeight="0"
                                          TextWrapping="Wrap" />
@@ -196,7 +214,7 @@
                                     BorderThickness="1"
                                     CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                                     Padding="12,10">
-                              <TextBlock Text="当前绑定已覆盖默认值。"
+                              <TextBlock Text="This binding currently overrides the default value."
                                          Foreground="{DynamicResource TOrbitBadgeInfoForegroundBrush}"
                                          FontSize="12"
                                          TextWrapping="Wrap" />
@@ -206,9 +224,9 @@
                                   ColumnSpacing="12"
                                   VerticalAlignment="Center">
                               <StackPanel Spacing="3">
-                                <TextBlock Text="启用状态"
+                                <TextBlock Text="Enabled"
                                            Classes="subsection-title" />
-                                <TextBlock Text="关闭后该绑定不会参与当前运行时的快捷键处理。"
+                                <TextBlock Text="Disabled bindings are skipped by the runtime shortcut handler."
                                            Classes="caption-muted"
                                            MinHeight="0"
                                            TextWrapping="Wrap" />
@@ -218,7 +236,7 @@
                                             VerticalAlignment="Center" />
                               <Button Grid.Column="2"
                                       Command="{Binding ResetCommand}"
-                                      Content="恢复默认"
+                                      Content="Reset"
                                       VerticalAlignment="Center" />
                             </Grid>
                           </StackPanel>

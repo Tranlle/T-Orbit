@@ -7,8 +7,9 @@
   <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
 
     <StackPanel Grid.Column="0" Spacing="4" VerticalAlignment="Center">
-      <TextBlock Classes="eyebrow"
-                 Text="WORKSPACE" />
+      <TextBlock x:Name="EyebrowText"
+                 Classes="eyebrow"
+                 Text="{Binding Eyebrow, ElementName=Root}" />
       <TextBlock Classes="page-title"
                  Text="{Binding Title, ElementName=Root}" />
       <TextBlock Classes="caption-muted"

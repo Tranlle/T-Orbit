@@ -4,15 +4,17 @@
              x:Class="TOrbit.Designer.Controls.SectionCard"
              x:DataType="controls:SectionCard"
              x:Name="Root">
-  <Border Classes="workspace-panel"
+  <Border Classes="panel"
           Padding="18">
     <StackPanel Spacing="16">
       <StackPanel Spacing="4">
-        <TextBlock Classes="eyebrow"
-                   Text="Section" />
+        <TextBlock x:Name="EyebrowText"
+                   Classes="eyebrow"
+                   Text="{Binding Eyebrow, ElementName=Root}" />
         <TextBlock Classes="section-title"
                    Text="{Binding Title, ElementName=Root}" />
-        <TextBlock Classes="caption-muted"
+        <TextBlock x:Name="DescriptionText"
+                   Classes="caption-muted"
                    MinHeight="0"
                    Text="{Binding Description, ElementName=Root}"
                    TextWrapping="Wrap" />

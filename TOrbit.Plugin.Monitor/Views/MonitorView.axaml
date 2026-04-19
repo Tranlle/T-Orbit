@@ -11,49 +11,109 @@
     <converters:IconNameToMaterialIconKindConverter x:Key="IconNameConverter" />
   </UserControl.Resources>
 
-  <Border Classes="workspace-panel">
-    <ScrollViewer Padding="20,20,20,28"
-                  HorizontalScrollBarVisibility="Disabled"
+  <UserControl.Styles>
+    <Style Selector="Border.monitor-hero">
+      <Setter Property="Background" Value="#101B24" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusXLarge}" />
+      <Setter Property="Padding" Value="24" />
+    </Style>
+
+    <Style Selector="Border.monitor-focus">
+      <Setter Property="Background" Value="#0F1B25" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitAccentBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
+      <Setter Property="Padding" Value="18" />
+    </Style>
+
+    <Style Selector="Border.monitor-row">
+      <Setter Property="Background" Value="#101923" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
+      <Setter Property="Padding" Value="18" />
+      <Setter Property="RenderTransform" Value="translateY(0px)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.16" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="Border.monitor-row:pointerover">
+      <Setter Property="RenderTransform" Value="translateY(-2px)" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderHoverBrush}" />
+    </Style>
+
+    <Style Selector="Border.monitor-tag">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.16" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="Button.monitor-icon">
+      <Setter Property="Width" Value="32" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="MinWidth" Value="32" />
+      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="CornerRadius" Value="999" />
+      <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceHoverBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="RenderTransform" Value="scale(1)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.14" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.14" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="Button.monitor-icon:pointerover">
+      <Setter Property="RenderTransform" Value="scale(1.06)" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderHoverBrush}" />
+    </Style>
+  </UserControl.Styles>
+
+  <Border Background="Transparent">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Auto">
-      <StackPanel Spacing="0">
+      <StackPanel Spacing="18">
         <ItemsControl ItemsSource="{Binding MonitorItems}">
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <WrapPanel Orientation="Horizontal"
-                         ItemWidth="352" />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate x:DataType="vm:PluginMonitorItemViewModel">
-              <Border Classes="card"
-                      Width="336"
-                      Height="272"
-                      Margin="0,0,16,16"
-                      Padding="18"
-                      CornerRadius="{DynamicResource TOrbitRadiusLarge}"
+              <Border Classes="monitor-row"
+                      Margin="0,0,0,12"
+                      Tapped="MonitorCard_OnTapped"
                       DoubleTapped="MonitorCard_OnDoubleTapped">
-                <Grid RowDefinitions="Auto,Auto,*,Auto"
-                      RowSpacing="14">
-                  <Grid ColumnDefinitions="Auto,*,Auto"
-                        ColumnSpacing="12">
-                    <Border Width="42"
-                            Height="42"
-                            Background="{DynamicResource TOrbitSurfaceHoverBrush}"
-                            CornerRadius="12"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top">
-                      <materialIcons:MaterialIcon Kind="{Binding Icon, Converter={StaticResource IconNameConverter}}"
-                                                  Width="22"
-                                                  Height="22"
-                                                  Foreground="{DynamicResource TOrbitTextPrimaryBrush}"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center" />
-                    </Border>
+                <Grid ColumnDefinitions="Auto,2.1*,1.4*,Auto"
+                      ColumnSpacing="18">
+                  <Border Width="48"
+                          Height="48"
+                          Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                          CornerRadius="14"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top">
+                    <materialIcons:MaterialIcon Kind="{Binding Icon, Converter={StaticResource IconNameConverter}}"
+                                                Width="24"
+                                                Height="24"
+                                                Foreground="{DynamicResource TOrbitTextPrimaryBrush}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center" />
+                  </Border>
 
-                    <StackPanel Grid.Column="1"
-                                Spacing="2">
+                  <StackPanel Grid.Column="1"
+                              Spacing="8">
+                    <StackPanel Spacing="2">
                       <TextBlock Text="{Binding Name}"
-                                 FontSize="15"
+                                 FontSize="16"
                                  FontWeight="SemiBold"
                                  TextTrimming="CharacterEllipsis" />
                       <TextBlock Text="{Binding Id}"
@@ -62,70 +122,39 @@
                                  TextTrimming="CharacterEllipsis" />
                     </StackPanel>
 
-                    <StackPanel Grid.Column="2"
-                                Orientation="Horizontal"
-                                Spacing="6"
-                                VerticalAlignment="Top">
-                      <Button Width="32"
-                              Height="32"
-                              Padding="0"
-                              CornerRadius="999"
-                              Background="{DynamicResource TOrbitSurfaceHoverBrush}"
-                              BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                              Command="{Binding RestartCommand}"
-                              IsEnabled="{Binding CanRestart}">
-                        <materialIcons:MaterialIcon Kind="Refresh"
-                                                    Width="16"
-                                                    Height="16" />
-                      </Button>
-                      <Button Width="32"
-                              Height="32"
-                              Padding="0"
-                              CornerRadius="999"
-                              Background="{DynamicResource TOrbitSurfaceHoverBrush}"
-                              BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                              Command="{Binding StopCommand}"
-                              IsEnabled="{Binding CanStop}">
-                        <materialIcons:MaterialIcon Kind="Power"
-                                                    Width="16"
-                                                    Height="16" />
-                      </Button>
-                    </StackPanel>
-                  </Grid>
+                    <TextBlock Text="{Binding Description}"
+                               Classes="caption-muted"
+                               MinHeight="0"
+                               MaxLines="2"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
 
-                  <TextBlock Grid.Row="1"
-                             Text="{Binding Description}"
-                             Classes="caption-muted"
-                             MinHeight="42"
-                             MaxHeight="42"
-                             MaxLines="2"
-                             TextWrapping="Wrap" />
+                  <StackPanel Grid.Column="2"
+                              Spacing="10">
+                    <TextBlock Text="Capabilities"
+                               Classes="caption-muted"
+                               MinHeight="0" />
+                    <designer:BadgeFlow ItemsSource="{Binding CardTags}">
+                      <designer:BadgeFlow.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PluginMonitorTagViewModel">
+                          <Border Classes="monitor-tag"
+                                  Background="{Binding Background}"
+                                  CornerRadius="999"
+                                  Padding="10,4"
+                                  MinHeight="24"
+                                  VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Text}"
+                                       FontSize="11"
+                                       FontWeight="Medium"
+                                       Foreground="{Binding Foreground}"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       LineHeight="14" />
+                          </Border>
+                        </DataTemplate>
+                      </designer:BadgeFlow.ItemTemplate>
+                    </designer:BadgeFlow>
 
-                  <designer:BadgeFlow Grid.Row="2"
-                                      ItemsSource="{Binding CardTags}">
-                    <designer:BadgeFlow.ItemTemplate>
-                      <DataTemplate x:DataType="vm:PluginMonitorTagViewModel">
-                        <Border Background="{Binding Background}"
-                                CornerRadius="999"
-                                Padding="10,4"
-                                MinHeight="24"
-                                VerticalAlignment="Center">
-                          <TextBlock Text="{Binding Text}"
-                                     FontSize="11"
-                                     FontWeight="Medium"
-                                     Foreground="{Binding Foreground}"
-                                     VerticalAlignment="Center"
-                                     TextAlignment="Center"
-                                     LineHeight="14" />
-                        </Border>
-                      </DataTemplate>
-                    </designer:BadgeFlow.ItemTemplate>
-                  </designer:BadgeFlow>
-
-                  <Border Grid.Row="3"
-                          Padding="0,12,0,0"
-                          BorderBrush="{DynamicResource TOrbitBorderBrush}"
-                          BorderThickness="0,1,0,0">
                     <Grid ColumnDefinitions="*,Auto"
                           ColumnSpacing="12">
                       <StackPanel Spacing="2">
@@ -149,15 +178,34 @@
                                       OnContent="" />
                       </StackPanel>
                     </Grid>
-                  </Border>
+                  </StackPanel>
+
+                  <StackPanel Grid.Column="3"
+                              Orientation="Horizontal"
+                              Spacing="6"
+                              VerticalAlignment="Top">
+                    <Button Classes="monitor-icon"
+                            Command="{Binding RestartCommand}"
+                            IsEnabled="{Binding CanRestart}"
+                            ToolTip.Tip="Restart plugin">
+                      <materialIcons:MaterialIcon Kind="Refresh"
+                                                  Width="16"
+                                                  Height="16" />
+                    </Button>
+                    <Button Classes="monitor-icon"
+                            Command="{Binding StopCommand}"
+                            IsEnabled="{Binding CanStop}"
+                            ToolTip.Tip="Stop plugin">
+                      <materialIcons:MaterialIcon Kind="Power"
+                                                  Width="16"
+                                                  Height="16" />
+                    </Button>
+                  </StackPanel>
                 </Grid>
               </Border>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-
-        <Border Height="24"
-                Background="Transparent" />
       </StackPanel>
     </ScrollViewer>
   </Border>

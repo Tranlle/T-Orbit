@@ -4,7 +4,8 @@
              x:Class="TOrbit.Designer.Controls.PluginCard"
              x:DataType="controls:PluginCard"
              x:Name="Root">
-  <Border Classes="card">
+  <Border Classes="panel"
+          Padding="18">
     <StackPanel Spacing="14">
       <StackPanel Spacing="6">
         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">

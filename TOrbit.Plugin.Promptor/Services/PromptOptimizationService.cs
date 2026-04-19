@@ -32,7 +32,8 @@ internal sealed class PromptOptimizationService : IDisposable
         while (!ct.IsCancellationRequested)
         {
             var line = await reader.ReadLineAsync(ct);
-            if (line is null) break;
+            if (line is null)
+                break;
 
             if (!line.StartsWith("data: ", StringComparison.Ordinal))
                 continue;
@@ -47,7 +48,8 @@ internal sealed class PromptOptimizationService : IDisposable
             if (!chunkRoot.TryGetProperty("choices", out var choices))
                 continue;
 
-            if (choices.GetArrayLength() == 0) continue;
+            if (choices.GetArrayLength() == 0)
+                continue;
 
             if (!choices[0].TryGetProperty("delta", out var delta))
                 continue;
@@ -96,6 +98,7 @@ internal sealed class PromptOptimizationService : IDisposable
                 $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}: {errorBody}",
                 null, response.StatusCode);
         }
+
         return response;
     }
 
@@ -137,7 +140,7 @@ internal sealed class PromptOptimizationService : IDisposable
             "kimi" => "https://api.moonshot.cn/v1/chat/completions",
             "ollama" => "http://localhost:11434/v1/chat/completions",
             _ => throw new InvalidOperationException(
-                $"未知提供商 '{config.Provider}'，请在插件变量中配置 PROMPTOR_API_ENDPOINT。")
+                $"Unknown provider '{config.Provider}'. Set PROMPTOR_API_ENDPOINT explicitly in plugin variables.")
         };
     }
 

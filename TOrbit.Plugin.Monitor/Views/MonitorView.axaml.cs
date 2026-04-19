@@ -9,6 +9,18 @@ public partial class MonitorView : UserControl
 {
     public MonitorView() => AvaloniaXamlLoader.Load(this);
 
+    private void MonitorCard_OnTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is not Control { DataContext: PluginMonitorItemViewModel item })
+            return;
+
+        if (DataContext is not MonitorViewModel viewModel)
+            return;
+
+        viewModel.SelectedMonitorItem = item;
+        e.Handled = false;
+    }
+
     private async void MonitorCard_OnDoubleTapped(object? sender, TappedEventArgs e)
     {
         if (sender is not Control { DataContext: PluginMonitorItemViewModel item })

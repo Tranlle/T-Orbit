@@ -21,7 +21,8 @@
       </Style>
     </Border.Styles>
 
-    <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+    <Grid ColumnDefinitions="*,Auto"
+          VerticalAlignment="Center">
       <TextBlock x:Name="DisplayText"
                  Grid.Column="0"
                  VerticalAlignment="Center"
@@ -30,7 +31,7 @@
       <TextBlock x:Name="HintText"
                  Grid.Column="1"
                  Classes="caption-muted"
-                 Text="点击录入"
+                 Text="Click to record"
                  FontSize="11"
                  VerticalAlignment="Center"
                  IsVisible="True" />

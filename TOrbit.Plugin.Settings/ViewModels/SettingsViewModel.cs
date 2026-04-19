@@ -52,7 +52,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     private bool minimizeToTrayOnClose = true;
 
     [ObservableProperty]
-    private string statusMessage = "设置已就绪。";
+    private string statusMessage = "设置已同步";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAddFormKeyHints))]
@@ -82,12 +82,12 @@ public sealed partial class SettingsViewModel : ObservableObject
         _validationStatusService.Get(plugin.Id, plugin.Name).HasIssues);
 
     public bool IsInterFontWarningVisible => SelectedFontOption?.Key == "inter";
-    public string FontWarningMessage => "Inter 在当前 Avalonia 版本下可能出现 TextBox 光标与末尾字符重叠的问题，如遇到输入异常，建议切回“系统推荐”。";
+    public string FontWarningMessage => "Inter 光标异常";
     public bool HasPluginVariables => _pluginVariableItems.Count > 0;
     public bool HasAddFormKeyHints => AddFormKeyHints.Count > 0;
     public string PluginVariableSummary => _pluginVariableItems.Count == 0
-        ? "尚未配置任何插件变量"
-        : $"共 {_pluginVariableItems.Count} 条变量，覆盖 {_pluginVariableItems.Select(x => x.PluginId).Distinct().Count()} 个插件";
+        ? "暂无变量"
+        : $"{_pluginVariableItems.Count}项/{_pluginVariableItems.Select(x => x.PluginId).Distinct().Count()}插件";
 
     public IRelayCommand SaveCommand { get; }
     public IRelayCommand ResetCommand { get; }
@@ -153,11 +153,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             SavePluginVariables();
             PublishPluginValidationStates();
 
-            var paletteLabel = ShowAdvancedThemeSettings
-                ? SelectedAdvancedPaletteOption?.Label ?? SelectedPaletteOption?.Label ?? "默认"
-                : SelectedPaletteOption?.Label ?? "默认";
-            var fontLabel = SelectedFontOption?.Label ?? "系统推荐";
-            StatusMessage = $"设置已保存，当前方案：{paletteLabel} / {fontLabel}";
+            StatusMessage = "已保存";
         });
 
         ResetCommand = new RelayCommand(() =>
@@ -183,7 +179,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             });
 
             PublishPluginValidationStates();
-            StatusMessage = "设置已重置。";
+            StatusMessage = "已重置";
         });
 
         ShowAddVariableFormCommand = new RelayCommand(() =>
@@ -475,7 +471,7 @@ public sealed partial class SettingsViewModel : ObservableObject
                 .ToDictionary(item => item.Key, item => item.Value, StringComparer.OrdinalIgnoreCase);
 
             var messages = PluginVariableValidator.Validate(plugin.Name, definitions, values).ToArray();
-                _validationStatusService.Set(plugin.Id, plugin.Name, messages);
+            _validationStatusService.Set(plugin.Id, plugin.Name, messages);
         }
 
         OnPropertyChanged(nameof(ValidationIssuePluginCount));
@@ -543,22 +539,22 @@ public sealed partial class SettingsViewModel : ObservableObject
         FontOptions.Add(new DesignerOptionItem
         {
             Key = "system",
-            Label = "系统推荐（按平台自动选择）",
-            Description = "Windows 使用 Segoe UI，macOS 使用系统字体，Linux 使用 Noto Sans / DejaVu Sans 回退链。"
+            Label = "系统推荐",
+            Description = "系统默认字体"
         });
         FontOptions.Add(new DesignerOptionItem
         {
             Key = "inter",
             Label = "Inter",
-            Description = "跨平台更统一，但在当前 Avalonia 版本下可能存在输入光标显示问题。"
+            Description = "跨平台一致"
         });
 
         if (OperatingSystem.IsWindows())
         {
-            FontOptions.Add(new DesignerOptionItem { Key = "segoe-ui", Label = "Segoe UI", Description = "Windows 默认界面字体。" });
-            FontOptions.Add(new DesignerOptionItem { Key = "microsoft-yahei-ui", Label = "Microsoft YaHei UI", Description = "适合中文界面的 Windows 字体。" });
-            FontOptions.Add(new DesignerOptionItem { Key = "arial", Label = "Arial", Description = "经典西文字体。" });
-            FontOptions.Add(new DesignerOptionItem { Key = "bahnschrift", Label = "Bahnschrift", Description = "Windows 自带的现代无衬线字体。" });
+            FontOptions.Add(new DesignerOptionItem { Key = "segoe-ui", Label = "Segoe UI", Description = "Windows 默认" });
+            FontOptions.Add(new DesignerOptionItem { Key = "microsoft-yahei-ui", Label = "Microsoft YaHei UI", Description = "中文界面字体" });
+            FontOptions.Add(new DesignerOptionItem { Key = "arial", Label = "Arial", Description = "经典备用" });
+            FontOptions.Add(new DesignerOptionItem { Key = "bahnschrift", Label = "Bahnschrift", Description = "几何无衬线" });
         }
     }
 

@@ -12,8 +12,9 @@
     <StackPanel MaxWidth="540"
                 Spacing="12"
                 HorizontalAlignment="Center">
-      <TextBlock Classes="eyebrow"
-                 Text="Empty" 
+      <TextBlock x:Name="EyebrowText"
+                 Classes="eyebrow"
+                 Text="{Binding Eyebrow, ElementName=Root}"
                  HorizontalAlignment="Center" />
       <TextBlock Classes="section-title"
                  Text="{Binding Title, ElementName=Root}"

@@ -25,6 +25,9 @@ public partial class CardTextEditor : UserControl
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<CardTextEditor, string?>(nameof(Title));
 
+    public static readonly StyledProperty<string?> EyebrowProperty =
+        AvaloniaProperty.Register<CardTextEditor, string?>(nameof(Eyebrow));
+
     public static readonly StyledProperty<string?> DescriptionProperty =
         AvaloniaProperty.Register<CardTextEditor, string?>(nameof(Description));
 
@@ -53,6 +56,7 @@ public partial class CardTextEditor : UserControl
 
     private Border?    _cardBorder;
     private TextBox?   _editorBox;
+    private TextBlock? _eyebrowText;
     private TextBlock? _descriptionText;
 
     // ── Constructor ──────────────────────────────────────────────────────────
@@ -69,6 +73,13 @@ public partial class CardTextEditor : UserControl
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
+    }
+
+    /// <summary>Optional eyebrow shown above the title. Hidden when null or empty.</summary>
+    public string? Eyebrow
+    {
+        get => GetValue(EyebrowProperty);
+        set => SetValue(EyebrowProperty, value);
     }
 
     /// <summary>Optional subtitle shown below the title. Hidden when null/empty.</summary>
@@ -139,6 +150,9 @@ public partial class CardTextEditor : UserControl
     {
         base.OnPropertyChanged(change);
 
+        if (change.Property == EyebrowProperty)
+            UpdateEyebrowVisibility();
+
         if (change.Property == DescriptionProperty)
             UpdateDescriptionVisibility();
 
@@ -159,6 +173,7 @@ public partial class CardTextEditor : UserControl
 
         _cardBorder      = this.FindControl<Border>("CardBorder");
         _editorBox       = this.FindControl<TextBox>("EditorBox");
+        _eyebrowText     = this.FindControl<TextBlock>("EyebrowText");
         _descriptionText = this.FindControl<TextBlock>("DescriptionText");
 
         if (_editorBox is not null)
@@ -181,6 +196,7 @@ public partial class CardTextEditor : UserControl
             ];
         }
 
+        UpdateEyebrowVisibility();
         UpdateDescriptionVisibility();
     }
 
@@ -215,5 +231,11 @@ public partial class CardTextEditor : UserControl
     {
         if (_descriptionText is not null)
             _descriptionText.IsVisible = !string.IsNullOrWhiteSpace(Description);
+    }
+
+    private void UpdateEyebrowVisibility()
+    {
+        if (_eyebrowText is not null)
+            _eyebrowText.IsVisible = !string.IsNullOrWhiteSpace(Eyebrow);
     }
 }

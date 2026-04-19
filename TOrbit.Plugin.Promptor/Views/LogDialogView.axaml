@@ -4,21 +4,18 @@
              x:DataType="vm:PromptorViewModel"
              x:Class="TOrbit.Plugin.Promptor.Views.LogDialogView">
   <Grid RowDefinitions="Auto,12,*">
-
-    <!-- 顶部工具栏 -->
     <Grid Grid.Row="0"
           ColumnDefinitions="*,Auto">
       <TextBlock Grid.Column="0"
                  Classes="caption-muted"
                  VerticalAlignment="Center"
-                 Text="{Binding LogEntries.Count, StringFormat='共 {0} 条记录'}" />
+                 Text="{Binding LogEntries.Count, StringFormat='Total {0} entries'}" />
       <Button Grid.Column="1"
-              Content="清空日志"
+              Content="Clear log"
               Command="{Binding ClearLogCommand}"
               Classes="danger" />
     </Grid>
 
-    <!-- 日志内容区 -->
     <Border Grid.Row="2"
             Background="{DynamicResource TOrbitBackgroundBrush}"
             BorderBrush="{DynamicResource TOrbitBorderBrush}"
@@ -39,6 +36,5 @@
                ScrollViewer.HorizontalScrollBarVisibility="Auto"
                ScrollViewer.VerticalScrollBarVisibility="Auto" />
     </Border>
-
   </Grid>
 </UserControl>

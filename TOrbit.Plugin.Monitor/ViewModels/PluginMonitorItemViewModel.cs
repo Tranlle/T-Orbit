@@ -32,20 +32,19 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
     public string KindLabel => _entry.Kind == PluginKind.Service ? "Service" : "Visual";
     public string KindTagLabel => _entry.Kind == PluginKind.Service ? "backend" : "frontend";
     public bool IsBuiltIn => _entry.IsBuiltIn;
-    public string SourceLabel => _entry.IsBuiltIn ? "内置" : "外部";
-    public string EnabledLabel => _entry.IsEnabled ? "已启用" : "已禁用";
-    public string EnableSummary => _entry.IsEnabled ? "启用" : "禁用";
+    public string SourceLabel => _entry.IsBuiltIn ? "Built-in" : "External";
+    public string EnabledLabel => _entry.IsEnabled ? "Enabled" : "Disabled";
+    public string EnableSummary => _entry.IsEnabled ? "Enabled" : "Disabled";
     public bool CanDisable => _entry.CanDisable;
     public bool CanToggleEnabled => !_isBusy && (_entry.CanDisable || _entry.IsEnabled);
     public IReadOnlyList<string> CapabilityTags => _entry.Capabilities.Select(FormatCapability).ToArray();
     public bool HasCapabilities => CapabilityTags.Count > 0;
-    public string CapabilitySummary => HasCapabilities ? string.Join(" / ", CapabilityTags) : "未声明";
+    public string CapabilitySummary => HasCapabilities ? string.Join(" / ", CapabilityTags) : "None declared";
     public IReadOnlyList<string> DisplayTags => _entry.DisplayTags;
     public bool HasDisplayTags => DisplayTags.Count > 0;
     public bool IsBusy => _isBusy;
 
-    public IReadOnlyList<PluginMonitorTagViewModel> CardTags
-        => BuildCardTags();
+    public IReadOnlyList<PluginMonitorTagViewModel> CardTags => BuildCardTags();
 
     public bool IsEnabled
     {
@@ -106,7 +105,7 @@ public sealed partial class PluginMonitorItemViewModel : ObservableObject, IDisp
         _ => WarningForeground
     };
 
-    public string StateStatusLabel => _entry.State == PluginState.Running ? "在线" : "离线";
+    public string StateStatusLabel => _entry.State == PluginState.Running ? "Online" : "Offline";
     public IBrush StateDotBrush => _entry.State == PluginState.Running ? SuccessForeground : WarningForeground;
     public string? LastErrorMessage => _entry.LastError?.Message;
     public string StateChangedAtText => _entry.StateChangedAt.ToString("yyyy-MM-dd HH:mm:ss");

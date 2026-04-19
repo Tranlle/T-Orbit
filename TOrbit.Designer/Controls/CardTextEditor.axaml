@@ -36,8 +36,9 @@
             Margin="18,14,16,12">
 
         <StackPanel Grid.Column="0" Spacing="3" VerticalAlignment="Center">
-          <TextBlock Classes="eyebrow"
-                     Text="Editor" />
+          <TextBlock x:Name="EyebrowText"
+                     Classes="eyebrow"
+                     Text="{Binding Eyebrow, ElementName=Root}" />
           <TextBlock Classes="section-title"
                      Text="{Binding Title, ElementName=Root}" />
           <TextBlock x:Name="DescriptionText"

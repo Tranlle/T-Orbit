@@ -65,31 +65,31 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
         return new PluginPageHeaderModel
         {
             Context = _viewModel.ShowAdvancedThemeSettings
-                ? "当前已启用高级主题设置。"
-                : "当前使用基础主题配置。",
+                ? "高级主题已开"
+                : "基础主题模式",
             Metrics =
             [
                 new PluginPageHeaderMetric
                 {
-                    Label = "插件数",
+                    Label = "Plugins",
                     Value = _viewModel.PluginCount.ToString(),
                     Tone = PluginPageHeaderTone.Neutral
                 },
                 new PluginPageHeaderMetric
                 {
-                    Label = "变量数",
+                    Label = "Variables",
                     Value = _viewModel.VariableCount.ToString(),
                     Tone = PluginPageHeaderTone.Accent
                 },
                 new PluginPageHeaderMetric
                 {
-                    Label = "覆盖插件",
+                    Label = "Covered",
                     Value = _viewModel.VariablePluginCount.ToString(),
                     Tone = PluginPageHeaderTone.Success
                 },
                 new PluginPageHeaderMetric
                 {
-                    Label = "告警",
+                    Label = "Warnings",
                     Value = _viewModel.ValidationIssuePluginCount.ToString(),
                     Tone = _viewModel.ValidationIssuePluginCount > 0 ? PluginPageHeaderTone.Warning : PluginPageHeaderTone.Success
                 }
@@ -108,7 +108,7 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
                 },
                 new PluginPageHeaderBadge
                 {
-                    Text = _viewModel.MinimizeToTrayOnClose ? "关闭到托盘" : "关闭即退出",
+                    Text = _viewModel.MinimizeToTrayOnClose ? "托盘关闭" : "直接退出",
                     Tone = PluginPageHeaderTone.Accent
                 },
                 new PluginPageHeaderBadge
@@ -134,8 +134,8 @@ public sealed class SettingsPlugin : BasePlugin, IVisualPlugin, IPluginHeaderAct
             _viewModel.HeaderSummaryChanged += ViewModelOnHeaderSummaryChanged;
             _headerActions =
             [
-                new PluginHeaderAction("重置设置", _viewModel.ResetCommand),
-                new PluginHeaderAction("保存设置", _viewModel.SaveCommand, IsPrimary: true)
+                new PluginHeaderAction("重置", _viewModel.ResetCommand),
+                new PluginHeaderAction("保存", _viewModel.SaveCommand, IsPrimary: true)
             ];
         }
 

@@ -1,58 +1,86 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TOrbit.Plugin.Home.ViewModels"
+             xmlns:designer="using:TOrbit.Designer.Controls"
              x:Class="TOrbit.Plugin.Home.Views.HomeView"
              x:DataType="vm:HomeViewModel">
 
-  <Border Classes="workspace-panel">
-    <ScrollViewer Padding="20"
-                  HorizontalScrollBarVisibility="Disabled"
+  <UserControl.Styles>
+    <Style Selector="Border.report-surface">
+      <Setter Property="Background" Value="#101923" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
+      <Setter Property="Padding" Value="20" />
+      <Setter Property="RenderTransform" Value="translateY(0px)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.16" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="Border.report-surface:pointerover">
+      <Setter Property="RenderTransform" Value="translateY(-3px)" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderHoverBrush}" />
+    </Style>
+  </UserControl.Styles>
+
+  <Border Background="Transparent">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Auto">
-      <StackPanel Spacing="0">
-        <StackPanel IsVisible="{Binding !HasReports}"
-                    Spacing="8">
-          <TextBlock Text="当前没有可展示的报表。"
-                     Classes="section-title" />
-          <TextBlock Text="后续插件实现首页报表接口后，会自动出现在这里。"
-                     Classes="caption-muted"
-                     MinHeight="0"
-                     TextWrapping="Wrap" />
-        </StackPanel>
+      <StackPanel Spacing="18">
+        <designer:EmptyState IsVisible="{Binding !HasReports}"
+                             Title="No reports available"
+                             Description="When plugins register home reports, they will appear here automatically." />
 
         <ItemsControl ItemsSource="{Binding ReportGroups}"
                       IsVisible="{Binding HasReports}">
           <ItemsControl.ItemTemplate>
             <DataTemplate x:DataType="vm:HomeReportGroupViewModel">
-              <StackPanel Spacing="12"
-                          Margin="0,0,0,18">
-                <TextBlock Text="{Binding Category}"
-                           Classes="section-title" />
-
+              <StackPanel Spacing="14"
+                          Margin="0,0,0,12">
                 <ItemsControl ItemsSource="{Binding Reports}">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                       <WrapPanel Orientation="Horizontal"
-                                 ItemWidth="440" />
+                                 ItemWidth="520" />
                     </ItemsPanelTemplate>
                   </ItemsControl.ItemsPanel>
                   <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:HomeReportItemViewModel">
-                      <Border Classes="card"
-                              Width="424"
-                              MinHeight="260"
-                              Margin="0,0,16,16"
-                              Padding="18">
+                      <Border Classes="report-surface"
+                              Width="500"
+                              MinHeight="280"
+                              Margin="0,0,16,16">
                         <Grid RowDefinitions="Auto,Auto,*"
                               RowSpacing="14">
-                          <StackPanel Spacing="4">
-                            <TextBlock Text="{Binding Definition.Title}"
-                                       Classes="section-title" />
-                            <TextBlock Text="{Binding Definition.Description}"
-                                       Classes="caption-muted"
-                                       MinHeight="0"
-                                       MaxLines="2"
-                                       TextWrapping="Wrap" />
-                          </StackPanel>
+                          <Grid ColumnDefinitions="*,Auto"
+                                ColumnSpacing="16">
+                            <StackPanel Spacing="4">
+                              <TextBlock Text="{Binding Definition.Title}"
+                                         Classes="section-title" />
+                              <TextBlock Text="{Binding Definition.Description}"
+                                         Classes="caption-muted"
+                                         MinHeight="0"
+                                         MaxLines="2"
+                                         TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <Border Grid.Column="1"
+                                    Background="{DynamicResource TOrbitSurfaceHoverBrush}"
+                                    BorderBrush="{DynamicResource TOrbitBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="999"
+                                    Padding="10,4"
+                                    VerticalAlignment="Top">
+                              <TextBlock Text="Report"
+                                         FontSize="11"
+                                         Foreground="{DynamicResource TOrbitTextMutedBrush}" />
+                            </Border>
+                          </Grid>
 
                           <Border Grid.Row="1"
                                   BorderBrush="{DynamicResource TOrbitBorderBrush}"
@@ -68,7 +96,7 @@
                                         HorizontalAlignment="Center">
                               <ProgressBar Width="180"
                                            IsIndeterminate="True" />
-                              <TextBlock Text="报表准备中..."
+                              <TextBlock Text="Preparing report..."
                                          Classes="caption-muted"
                                          HorizontalAlignment="Center" />
                             </StackPanel>
@@ -79,7 +107,7 @@
                                         HorizontalAlignment="Center">
                               <ProgressBar Width="180"
                                            IsIndeterminate="True" />
-                              <TextBlock Text="正在加载报表..."
+                              <TextBlock Text="Loading report..."
                                          Classes="caption-muted"
                                          HorizontalAlignment="Center" />
                             </StackPanel>
@@ -92,13 +120,13 @@
                                     Padding="14,12"
                                     VerticalAlignment="Center">
                               <StackPanel Spacing="8">
-                                <TextBlock Text="报表加载失败"
+                                <TextBlock Text="Failed to load report"
                                            FontWeight="SemiBold"
                                            Foreground="{DynamicResource TOrbitBadgeDangerForegroundBrush}" />
                                 <TextBlock Text="{Binding ErrorMessage}"
                                            Foreground="{DynamicResource TOrbitBadgeDangerForegroundBrush}"
                                            TextWrapping="Wrap" />
-                                <Button Content="重新加载"
+                                <Button Content="Retry"
                                         Command="{Binding LoadCommand}"
                                         HorizontalAlignment="Left" />
                               </StackPanel>
@@ -113,9 +141,6 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-
-        <Border Height="24"
-                Background="Transparent" />
       </StackPanel>
     </ScrollViewer>
   </Border>

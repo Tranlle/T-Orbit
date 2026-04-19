@@ -17,25 +17,30 @@
       <Setter Property="BorderThickness" Value="0" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusMedium}" />
     </Style>
+
     <Style Selector="Button.profile-item:pointerover /template/ ContentPresenter">
       <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceHoverBrush}" />
     </Style>
+
     <Style Selector="Button.profile-item.selected /template/ ContentPresenter">
       <Setter Property="Background" Value="{DynamicResource TOrbitAccentSubtleBrush}" />
     </Style>
+
     <Style Selector="Border.action-cluster">
       <Setter Property="Background" Value="{DynamicResource TOrbitSurfaceBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusMedium}" />
-      <Setter Property="Padding" Value="12" />
+      <Setter Property="Padding" Value="8" />
     </Style>
+
     <Style Selector="Button.compact-action">
       <Setter Property="MinWidth" Value="96" />
       <Setter Property="Height" Value="32" />
       <Setter Property="MinHeight" Value="32" />
       <Setter Property="Padding" Value="12,0" />
     </Style>
+
     <Style Selector="Button.icon-action">
       <Setter Property="Width" Value="32" />
       <Setter Property="Height" Value="32" />
@@ -43,57 +48,73 @@
       <Setter Property="MinHeight" Value="32" />
       <Setter Property="Padding" Value="0" />
     </Style>
+
+    <Style Selector="Border.migration-hero">
+      <Setter Property="Background" Value="#101B24" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusXLarge}" />
+      <Setter Property="Padding" Value="18" />
+    </Style>
+
+    <Style Selector="Border.metric-surface">
+      <Setter Property="Background" Value="#101923" />
+      <Setter Property="BorderBrush" Value="{DynamicResource TOrbitBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="{DynamicResource TOrbitRadiusLarge}" />
+      <Setter Property="Padding" Value="14,12" />
+    </Style>
   </UserControl.Styles>
 
   <designer:ToolPageLayout FooterHeight="196">
     <designer:ToolPageLayout.BodyContent>
       <designer:SplitWorkspace LeftWidth="360"
                                LeftMinWidth="300"
-                               RightMinWidth="500">
+                               RightMinWidth="520">
         <designer:SplitWorkspace.LeftContent>
           <Border Classes="workspace-panel">
             <Grid RowDefinitions="Auto,*,Auto">
-              <Grid Margin="20,20,20,16"
-                    ColumnDefinitions="*,Auto"
-                    ColumnSpacing="16">
-                <StackPanel Spacing="4">
-                  <TextBlock Text="PROFILES"
-                             Classes="eyebrow" />
-                  <TextBlock Text="连接配置"
-                             FontSize="18"
-                             FontWeight="SemiBold" />
-                  <TextBlock Text="管理数据库配置、项目路径和迁移输出目录。"
-                             Classes="caption-muted"
-                             MinHeight="0"
-                             TextWrapping="Wrap" />
-                </StackPanel>
+              <StackPanel Margin="20,20,20,16"
+                          Spacing="14">
+                <Border Classes="migration-hero">
+                  <Grid ColumnDefinitions="*,Auto"
+                        ColumnSpacing="16">
+                    <StackPanel Spacing="6">
+                      <TextBlock Text="PROFILES"
+                                 Classes="eyebrow" />
+                      <TextBlock Text="Connection profiles"
+                                 FontSize="20"
+                                 FontWeight="SemiBold" />
+                    </StackPanel>
 
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Spacing="8"
-                            VerticalAlignment="Top">
-                  <Button Classes="icon-action"
-                          ToolTip.Tip="新增配置"
-                          Command="{Binding AddProfileCommand}">
-                    <materialIcons:MaterialIcon Kind="Plus" Width="16" Height="16" />
-                  </Button>
-                  <Button Classes="icon-action"
-                          ToolTip.Tip="修改配置"
-                          Command="{Binding OpenEditProfileCommand}">
-                    <materialIcons:MaterialIcon Kind="PencilOutline" Width="16" Height="16" />
-                  </Button>
-                  <Button Classes="icon-action danger"
-                          ToolTip.Tip="删除配置"
-                          Command="{Binding DeleteProfileCommand}">
-                    <materialIcons:MaterialIcon Kind="TrashCanOutline" Width="16" Height="16" />
-                  </Button>
-                  <Button Classes="icon-action"
-                          ToolTip.Tip="重新读取配置列表"
-                          Command="{Binding RefreshCommand}">
-                    <materialIcons:MaterialIcon Kind="Refresh" Width="16" Height="16" />
-                  </Button>
-                </StackPanel>
-              </Grid>
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                VerticalAlignment="Top">
+                      <Button Classes="icon-action"
+                              ToolTip.Tip="Add profile"
+                              Command="{Binding AddProfileCommand}">
+                        <materialIcons:MaterialIcon Kind="Plus" Width="16" Height="16" />
+                      </Button>
+                      <Button Classes="icon-action"
+                              ToolTip.Tip="Edit profile"
+                              Command="{Binding OpenEditProfileCommand}">
+                        <materialIcons:MaterialIcon Kind="PencilOutline" Width="16" Height="16" />
+                      </Button>
+                      <Button Classes="icon-action danger"
+                              ToolTip.Tip="Delete profile"
+                              Command="{Binding DeleteProfileCommand}">
+                        <materialIcons:MaterialIcon Kind="TrashCanOutline" Width="16" Height="16" />
+                      </Button>
+                      <Button Classes="icon-action"
+                              ToolTip.Tip="Refresh profiles"
+                              Command="{Binding RefreshCommand}">
+                        <materialIcons:MaterialIcon Kind="Refresh" Width="16" Height="16" />
+                      </Button>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+              </StackPanel>
 
               <ScrollViewer Grid.Row="1"
                             Margin="20,0,20,0"
@@ -109,17 +130,20 @@
                         <Border Background="Transparent"
                                 BorderBrush="{DynamicResource TOrbitBorderBrush}"
                                 BorderThickness="1"
-                                CornerRadius="{DynamicResource TOrbitRadiusMedium}"
+                                CornerRadius="{DynamicResource TOrbitRadiusLarge}"
                                 Padding="14,12"
-                                MinHeight="72">
+                                MinHeight="76">
                           <Grid ColumnDefinitions="*,Auto"
                                 ColumnSpacing="10"
                                 VerticalAlignment="Center">
-                            <TextBlock Text="{Binding EffectiveProfileName}"
-                                       FontSize="13"
-                                       FontWeight="SemiBold"
-                                       VerticalAlignment="Center"
-                                       TextTrimming="CharacterEllipsis" />
+                            <StackPanel Spacing="4">
+                              <TextBlock Text="{Binding EffectiveProfileName}"
+                                         FontSize="14"
+                                         FontWeight="SemiBold"
+                                         VerticalAlignment="Center"
+                                         TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+
                             <StackPanel Grid.Column="1"
                                         Orientation="Horizontal"
                                         Spacing="6"
@@ -149,7 +173,7 @@
                       CornerRadius="{DynamicResource TOrbitRadiusMedium}"
                       Padding="12,10">
                 <StackPanel Spacing="4">
-                  <TextBlock Text="输出目录"
+                  <TextBlock Text="Output directory"
                              Classes="subsection-title" />
                   <TextBlock Text="{Binding OutputDirectory, StringFormat='{}{0}'}"
                              Classes="caption-muted"
@@ -163,27 +187,28 @@
 
         <designer:SplitWorkspace.RightContent>
           <Border Classes="workspace-panel">
-            <Grid RowDefinitions="Auto,Auto,*,Auto">
+            <Grid RowDefinitions="Auto,Auto,*">
               <StackPanel Margin="20,20,20,16"
                           Spacing="18">
-                <StackPanel Spacing="4">
-                  <TextBlock Text="ACTIVE PROFILE"
-                             Classes="eyebrow" />
-                  <TextBlock Text="当前配置"
-                             FontSize="18"
-                             FontWeight="SemiBold" />
-                  <TextBlock Text="查看属性、选择迁移文件并直接编辑迁移内容。"
-                             Classes="caption-muted"
-                             MinHeight="0"
-                             TextWrapping="Wrap" />
-                </StackPanel>
+                <Border Classes="migration-hero">
+                  <StackPanel Spacing="6">
+                    <TextBlock Text="ACTIVE PROFILE"
+                               Classes="eyebrow" />
+                    <TextBlock Text="Migration workspace"
+                               FontSize="20"
+                               FontWeight="SemiBold" />
+                    <TextBlock Text="Review profile properties, inspect migration files, and execute schema actions without leaving the current workspace."
+                               Classes="caption-muted"
+                               MinHeight="0"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
+                </Border>
 
                 <Grid ColumnDefinitions="*,*,*"
                       ColumnSpacing="12">
-                  <Border Classes="card"
-                          Padding="14,12">
+                  <Border Classes="metric-surface">
                     <StackPanel Spacing="4">
-                      <TextBlock Text="数据库类型"
+                      <TextBlock Text="Database"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                       <TextBlock Text="{Binding CurrentDatabaseTypeDisplay}"
@@ -191,11 +216,11 @@
                                  FontWeight="SemiBold" />
                     </StackPanel>
                   </Border>
+
                   <Border Grid.Column="1"
-                          Classes="card"
-                          Padding="14,12">
+                          Classes="metric-surface">
                     <StackPanel Spacing="4">
-                      <TextBlock Text="迁移总数"
+                      <TextBlock Text="Migrations"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                       <TextBlock Text="{Binding MigrationCount}"
@@ -203,11 +228,11 @@
                                  FontWeight="SemiBold" />
                     </StackPanel>
                   </Border>
+
                   <Border Grid.Column="2"
-                          Classes="card"
-                          Padding="14,12">
+                          Classes="metric-surface">
                     <StackPanel Spacing="4">
-                      <TextBlock Text="状态"
+                      <TextBlock Text="Status"
                                  Classes="caption-muted"
                                  MinHeight="0" />
                       <TextBlock Text="{Binding StatusMessage}"
@@ -233,9 +258,9 @@
                     RowSpacing="12">
                 <Grid ColumnDefinitions="*,Auto"
                       ColumnSpacing="12">
-                  <designer:EditorHeader Title="迁移动作">
+                  <designer:EditorHeader Title="Migration actions">
                     <designer:EditorHeader.ActionContent>
-                      <Button Content="查看迁移文件"
+                      <Button Content="Open migration file"
                               Command="{Binding OpenMigrationFileCommand}"
                               IsEnabled="{Binding HasSelectedMigration}" />
                     </designer:EditorHeader.ActionContent>
@@ -245,26 +270,26 @@
                               Orientation="Horizontal"
                               Spacing="8"
                               VerticalAlignment="Center">
-                    <Border Classes="action-cluster"
-                            Padding="8">
+                    <Border Classes="action-cluster">
                       <StackPanel Orientation="Horizontal"
                                   Spacing="8">
                         <Button Classes="compact-action"
-                                Content="新增迁移"
+                                Content="New migration"
                                 Command="{Binding ShowNewPanelCommand}" />
                         <Button Classes="compact-action danger"
-                                Content="删除迁移"
+                                Content="Remove migration"
                                 Command="{Binding RollbackSelectedCommand}"
                                 ToolTip.Tip="{Binding RollbackTooltip}"
                                 IsEnabled="{Binding CanRollback}" />
                       </StackPanel>
                     </Border>
+
                     <Button Classes="compact-action accent"
-                            Content="执行更新"
+                            Content="Apply update"
                             Command="{Binding ExecuteUpdateCommand}"
                             IsEnabled="{Binding IsIdle}" />
                     <Button Classes="compact-action"
-                            Content="取消"
+                            Content="Cancel"
                             Command="{Binding CancelOperationCommand}"
                             IsVisible="{Binding IsBusy}" />
                   </StackPanel>
@@ -277,11 +302,11 @@
     </designer:ToolPageLayout.BodyContent>
 
     <designer:ToolPageLayout.FooterContent>
-      <designer:LogViewer Title="执行日志"
-                          Description="显示最近一次迁移执行与文件操作输出。"
+      <designer:LogViewer Title="Execution log"
+                          Description="Review the latest migration execution and file operation output."
                           Text="{Binding OutputLog}">
         <designer:LogViewer.ActionContent>
-          <Button Content="清空日志" Command="{Binding ClearLogCommand}" />
+          <Button Content="Clear log" Command="{Binding ClearLogCommand}" />
         </designer:LogViewer.ActionContent>
       </designer:LogViewer>
     </designer:ToolPageLayout.FooterContent>

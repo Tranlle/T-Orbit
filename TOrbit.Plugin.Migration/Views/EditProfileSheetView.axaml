@@ -33,43 +33,49 @@
   </UserControl.Styles>
 
   <StackPanel Spacing="10">
-    <designer:SectionCard Title="项目与配置标识">
+    <designer:SectionCard Eyebrow="Profile"
+                          Title="Project and profile identity">
       <designer:SectionCard.Body>
         <Grid ColumnDefinitions="*,10,*"
               RowDefinitions="Auto,Auto"
               RowSpacing="6">
           <designer:FormField Grid.Row="0"
                               Grid.ColumnSpan="3"
-                              Label="Domain 项目路径">
+                              Label="Domain project path">
             <designer:FormField.Body>
               <designer:PathPickerField Path="{Binding EditingProjectPath, Mode=TwoWay}"
-                                        PlaceholderText="请选择 Domain 项目 .csproj 路径"
-                                        BrowseText="选择项目"
+                                        PlaceholderText="Select the Domain project .csproj path"
+                                        BrowseText="Browse project"
                                         BrowseCommand="{Binding BrowseProjectPathCommand}" />
             </designer:FormField.Body>
           </designer:FormField>
 
-          <designer:FormField Grid.Row="1" Grid.Column="0" Label="配置名称">
+          <designer:FormField Grid.Row="1"
+                              Grid.Column="0"
+                              Label="Profile name">
             <designer:FormField.Body>
               <TextBox Text="{Binding EditingProfile.ProfileName, Mode=TwoWay}"
-                       PlaceholderText="例如：开发环境" />
+                       PlaceholderText="For example: Development" />
             </designer:FormField.Body>
           </designer:FormField>
 
-          <designer:FormField Grid.Row="1" Grid.Column="2" Label="DbContext">
+          <designer:FormField Grid.Row="1"
+                              Grid.Column="2"
+                              Label="DbContext">
             <designer:FormField.Body>
               <TextBox Text="{Binding EditingProfile.ContextName, Mode=TwoWay}"
-                       PlaceholderText="例如：AppDbContext" />
+                       PlaceholderText="For example: AppDbContext" />
             </designer:FormField.Body>
           </designer:FormField>
         </Grid>
       </designer:SectionCard.Body>
     </designer:SectionCard>
 
-    <designer:SectionCard Title="数据库与连接信息">
+    <designer:SectionCard Eyebrow="Connection"
+                          Title="Database and connection details">
       <designer:SectionCard.Body>
         <StackPanel Spacing="6">
-          <designer:FormField Label="数据库类型">
+          <designer:FormField Label="Database type">
             <designer:FormField.Body>
               <ComboBox ItemsSource="{Binding DbTypeOptions}"
                         SelectedItem="{Binding SelectedEditingDbTypeOption, Mode=TwoWay}">
@@ -82,10 +88,10 @@
             </designer:FormField.Body>
           </designer:FormField>
 
-          <designer:FormField Label="连接字符串">
+          <designer:FormField Label="Connection string">
             <designer:FormField.Body>
               <TextBox Text="{Binding EditingProfile.ConnectionString, Mode=TwoWay}"
-                       PlaceholderText="请输入数据库连接字符串" />
+                       PlaceholderText="Enter the database connection string" />
             </designer:FormField.Body>
           </designer:FormField>
         </StackPanel>

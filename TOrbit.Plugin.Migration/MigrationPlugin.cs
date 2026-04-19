@@ -44,10 +44,9 @@ public sealed class MigrationPlugin : BasePlugin, IVisualPlugin, IPluginVariable
 
         var context = _viewModel.StatusMessage;
         if (string.IsNullOrWhiteSpace(context)
-            || string.Equals(context, "Ready", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(context, "就绪", StringComparison.OrdinalIgnoreCase))
+            || string.Equals(context, "Ready", StringComparison.OrdinalIgnoreCase))
         {
-            context = _viewModel.HasSelectedProfile ? string.Empty : "请先选择或创建一个数据库配置。";
+            context = _viewModel.HasSelectedProfile ? string.Empty : "先选配置";
         }
 
         return new PluginPageHeaderModel

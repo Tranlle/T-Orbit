@@ -6,6 +6,9 @@ namespace TOrbit.Designer.Controls;
 
 public partial class EmptyState : UserControl
 {
+    public static readonly StyledProperty<string?> EyebrowProperty =
+        AvaloniaProperty.Register<EmptyState, string?>(nameof(Eyebrow));
+
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<EmptyState, string?>(nameof(Title));
 
@@ -15,9 +18,17 @@ public partial class EmptyState : UserControl
     public static readonly StyledProperty<object?> ActionContentProperty =
         AvaloniaProperty.Register<EmptyState, object?>(nameof(ActionContent));
 
+    private TextBlock? _eyebrowText;
+
     public EmptyState()
     {
         InitializeComponent();
+    }
+
+    public string? Eyebrow
+    {
+        get => GetValue(EyebrowProperty);
+        set => SetValue(EyebrowProperty, value);
     }
 
     public string? Title
@@ -38,8 +49,24 @@ public partial class EmptyState : UserControl
         set => SetValue(ActionContentProperty, value);
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == EyebrowProperty)
+            UpdateEyebrowVisibility();
+    }
+
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+        _eyebrowText = this.FindControl<TextBlock>("EyebrowText");
+        UpdateEyebrowVisibility();
+    }
+
+    private void UpdateEyebrowVisibility()
+    {
+        if (_eyebrowText is not null)
+            _eyebrowText.IsVisible = !string.IsNullOrWhiteSpace(Eyebrow);
     }
 }

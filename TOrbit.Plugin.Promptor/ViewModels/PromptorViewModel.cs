@@ -49,7 +49,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     public ObservableCollection<PromptorLogEntry> LogEntries { get; } = [];
 
     public string FormattedLogText => LogEntries.Count == 0
-        ? "（暂时没有操作日志）\n\n完成一次提示词优化后，这里会显示结构化调用记录。"
+        ? "暂无日志\n\n运行后显示"
         : string.Join(Environment.NewLine + Environment.NewLine, LogEntries.Select(entry => entry.FormatAsText()));
 
     public IReadOnlyList<DesignerOptionItem> StrategyOptions { get; } =
@@ -59,35 +59,35 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
             Key = "Structured",
             Label = "结构化",
             Value = OptimizationStrategy.Structured,
-            Description = "角色定义 + 任务描述 + 约束条件。"
+            Description = "结构化改写"
         },
         new DesignerOptionItem
         {
             Key = "FewShot",
             Label = "少样本",
             Value = OptimizationStrategy.FewShot,
-            Description = "自动补充典型输入与输出示例。"
+            Description = "补充示例"
         },
         new DesignerOptionItem
         {
             Key = "ChainOfThought",
-            Label = "思维链",
+            Label = "推理链",
             Value = OptimizationStrategy.ChainOfThought,
-            Description = "引导模型先分析，再输出最终结果。"
+            Description = "引导推理"
         },
         new DesignerOptionItem
         {
             Key = "Concise",
-            Label = "精简版",
+            Label = "精简",
             Value = OptimizationStrategy.Concise,
-            Description = "压缩冗余表达，保留核心意图。"
+            Description = "压缩冗词"
         },
         new DesignerOptionItem
         {
             Key = "Technical",
             Label = "技术向",
             Value = OptimizationStrategy.Technical,
-            Description = "强化技术约束、实现细节和输出格式要求。"
+            Description = "强化约束"
         }
     ];
 
@@ -96,7 +96,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     public bool IsIdle => !IsBusy;
     public bool CanOptimize => HasRawInput && !IsBusy;
     public string StrategyDescription => SelectedStrategyOption?.Description ?? string.Empty;
-    public string CopyButtonText => IsCopied ? "已复制" : "复制结果";
+    public string CopyButtonText => IsCopied ? "已复制" : "复制";
     public int LogCount => LogEntries.Count;
 
     public IRelayCommand OptimizeCommand { get; }
@@ -162,7 +162,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
     {
         if (string.IsNullOrWhiteSpace(RawInput))
         {
-            await ShowAlertAsync("输入为空", "请先输入需要优化的提示词内容。");
+            await ShowAlertAsync("需输入", "先输入提示词");
             return;
         }
 
@@ -190,7 +190,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 
         IsBusy = true;
         OptimizedOutput = string.Empty;
-        StatusMessage = $"正在优化（{strategyLabel}）...";
+        StatusMessage = "优化中";
 
         var sw = Stopwatch.StartNew();
         var success = false;
@@ -206,7 +206,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 
             sw.Stop();
             success = true;
-            StatusMessage = $"优化完成（{strategyLabel}）";
+            StatusMessage = "已完成";
         }
         catch (OperationCanceledException)
         {
@@ -217,7 +217,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         catch (Exception ex)
         {
             sw.Stop();
-            StatusMessage = "优化失败";
+            StatusMessage = "已失败";
             errorMessage = ex.Message;
             await ShowAlertAsync("优化失败", ex.Message);
         }
@@ -255,7 +255,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         if (!isOllama && !hasEndpoint && string.IsNullOrWhiteSpace(apiKey))
         {
             throw new InvalidOperationException(
-                "尚未配置 API Key。\n请先在“设置 -> 插件变量”中补充 PROMPTOR_API_KEY。");
+                "请配置 API Key");
         }
 
         return new PromptorConfig(provider, endpoint, apiKey, model, maxTokens, temperature);
@@ -270,8 +270,8 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
 
         await _dialogService.ShowSheetAsync(owner, new DesignerSheetViewModel
         {
-            Title = "操作日志",
-            Description = LogEntries.Count > 0 ? $"共 {LogEntries.Count} 条记录" : "暂无记录",
+            Title = "运行日志",
+            Description = LogEntries.Count > 0 ? $"{LogEntries.Count} 条日志" : "暂无日志",
             Content = content,
             ConfirmText = "关闭",
             CancelText = string.Empty,
@@ -294,7 +294,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
             if (TryGetOwnerWindow()?.Clipboard is { } clipboard)
             {
                 await clipboard.SetTextAsync(OptimizedOutput);
-                StatusMessage = "已复制到剪贴板";
+                StatusMessage = "已复制";
 
                 _copyCts?.Cancel();
                 _copyCts = new CancellationTokenSource();
@@ -313,7 +313,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         }
         catch (Exception ex)
         {
-            StatusMessage = $"复制失败：{ex.Message}";
+            StatusMessage = "复制失败";
         }
     }
 
@@ -339,7 +339,7 @@ public sealed partial class PromptorViewModel : PluginBaseViewModel, IDisposable
         {
             Title = title,
             Message = message,
-            ConfirmText = "知道了",
+            ConfirmText = "OK",
             CancelText = string.Empty,
             Icon = DesignerDialogIcon.Info
         });

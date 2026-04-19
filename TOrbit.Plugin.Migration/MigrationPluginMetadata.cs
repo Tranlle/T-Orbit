@@ -11,7 +11,7 @@ public sealed class MigrationPluginMetadata : PluginBaseMetadata
     public override string Id => "torbit.migration";
     public override string Name => "数据库迁移";
     public override string Version => "1.0.1";
-    public override string Description => "管理 EF Core 迁移文件：新增、编辑、执行、回滚，支持 SqlServer / PostgreSQL / MySQL。";
+    public override string Description => "EF迁移管理";
     public override string Author => "T-Orbit";
     public override string Icon => "Database";
     public override string Tags => "Database,Efcore,Migration";
@@ -27,8 +27,8 @@ public sealed class MigrationPluginMetadata : PluginBaseMetadata
         new PluginVariableDefinition(
             Key: "TORBIT_DB_CONNECTION",
             DefaultValue: "",
-            DisplayName: "数据库连接字符串",
-            Description: "执行迁移时传递给 dotnet ef 命令的数据库连接字符串。",
+            DisplayName: "数据库连接",
+            Description: "迁移命令连接串",
             IsRequired: true)
     ];
 }

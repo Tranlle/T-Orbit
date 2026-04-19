@@ -57,14 +57,14 @@
               RowDefinitions="Auto,Auto,Auto,Auto"
               RowSpacing="12"
               ColumnSpacing="14">
-          <TextBlock Text="版本"
+          <TextBlock Text="Version"
                      Classes="field-label" />
           <TextBlock Grid.Column="1"
                      Text="{Binding Plugin.Version}"
                      Classes="field-value" />
 
           <TextBlock Grid.Row="1"
-                     Text="来源"
+                     Text="Source"
                      Classes="field-label" />
           <TextBlock Grid.Row="1"
                      Grid.Column="1"
@@ -72,7 +72,7 @@
                      Classes="field-value" />
 
           <TextBlock Grid.Row="2"
-                     Text="启用状态"
+                     Text="Enabled"
                      Classes="field-label" />
           <TextBlock Grid.Row="2"
                      Grid.Column="1"
@@ -80,11 +80,11 @@
                      Classes="field-value" />
 
           <TextBlock Grid.Row="3"
-                     Text="最近错误"
+                     Text="Last error"
                      Classes="field-label" />
           <TextBlock Grid.Row="3"
                      Grid.Column="1"
-                     Text="{Binding Plugin.LastErrorMessage, FallbackValue=当前无错误}"
+                     Text="{Binding Plugin.LastErrorMessage, FallbackValue=No current error}"
                      Classes="field-value"
                      TextWrapping="Wrap" />
         </Grid>
@@ -97,9 +97,9 @@
           <Grid ColumnDefinitions="*,Auto"
                 ColumnSpacing="12">
             <StackPanel Spacing="2">
-              <TextBlock Text="运行开关"
+              <TextBlock Text="Runtime switch"
                          Classes="section-title" />
-              <TextBlock Text="停止仅关闭当前运行实例，不改变插件启用状态。"
+              <TextBlock Text="Stopping only affects the current runtime instance and does not change whether the plugin is enabled."
                          Classes="caption-muted"
                          MinHeight="0"
                          TextWrapping="Wrap" />
@@ -113,12 +113,12 @@
 
           <Grid ColumnDefinitions="Auto,Auto"
                 ColumnSpacing="8">
-            <Button Content="重启插件"
+            <Button Content="Restart plugin"
                     Classes="accent"
                     Command="{Binding Plugin.RestartCommand}"
                     IsEnabled="{Binding Plugin.CanRestart}" />
             <Button Grid.Column="1"
-                    Content="关闭插件"
+                    Content="Stop plugin"
                     Command="{Binding Plugin.StopCommand}"
                     IsEnabled="{Binding Plugin.CanStop}" />
           </Grid>
@@ -155,9 +155,9 @@
           RowDefinitions="Auto,*"
           RowSpacing="12">
       <StackPanel Spacing="2">
-        <TextBlock Text="插件诊断"
+        <TextBlock Text="Plugin diagnostics"
                    Classes="section-title" />
-        <TextBlock Text="基于全局诊断记录匹配当前插件名称和 Id 的最近异常。"
+        <TextBlock Text="Shows recent exceptions whose diagnostic records match the current plugin name or id."
                    Classes="caption-muted"
                    MinHeight="0"
                    TextWrapping="Wrap" />
@@ -166,7 +166,7 @@
       <StackPanel Grid.Row="1"
                   Spacing="8"
                   IsVisible="{Binding !HasDiagnostics}">
-        <TextBlock Text="当前没有匹配到该插件的诊断记录。"
+        <TextBlock Text="There are no diagnostics matched to this plugin."
                    Classes="caption-muted" />
       </StackPanel>
 

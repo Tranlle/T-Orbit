@@ -4,6 +4,7 @@
              xmlns:designer="using:TOrbit.Designer.Controls"
              x:Class="TOrbit.Designer.Views.DefaultPluginView"
              x:DataType="viewModels:DefaultPluginViewModel">
-  <designer:EmptyState Title="{Binding Title}"
+  <designer:EmptyState Eyebrow="Plugin"
+                       Title="{Binding Title}"
                        Description="{Binding Description}" />
 </UserControl>

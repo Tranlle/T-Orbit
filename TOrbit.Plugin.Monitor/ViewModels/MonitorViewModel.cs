@@ -86,7 +86,7 @@ public sealed partial class MonitorViewModel : ObservableObject, IDisposable
             Title = item.Name,
             Description = item.Description,
             Content = content,
-            ConfirmText = "关闭",
+            ConfirmText = "Close",
             CancelText = string.Empty,
             Icon = DesignerDialogIcon.Info,
             BaseFontSize = 13,
@@ -157,7 +157,7 @@ public sealed partial class MonitorViewModel : ObservableObject, IDisposable
                 MonitorItems.Move(currentIndex, index);
         }
 
-        SelectedMonitorItem = MonitorItems.FirstOrDefault(x => x.Id == selectedMonitorId) ?? MonitorItems.FirstOrDefault();
+        SelectedMonitorItem = MonitorItems.FirstOrDefault(x => x.Id == selectedMonitorId);
         RaiseSummaryProperties();
     }
 

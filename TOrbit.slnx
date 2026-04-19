@@ -1,12 +1,13 @@
 <Solution>
-  <Project Path="TOrbit.Core/TOrbit.Core.csproj" />
-  <Project Path="TOrbit.Core.Tests/TOrbit.Core.Tests.csproj" />
   <Project Path="TOrbit.App/TOrbit.App.csproj" />
+  <Project Path="TOrbit.Core.Tests/TOrbit.Core.Tests.csproj" />
+  <Project Path="TOrbit.Core/TOrbit.Core.csproj" />
   <Project Path="TOrbit.Designer/TOrbit.Designer.csproj" />
-  <Project Path="TOrbit.Plugin.Migration/TOrbit.Plugin.Migration.csproj" Id="480c1a3b-1df4-4e0c-921a-0eca262e190f" />
   <Project Path="TOrbit.Plugin.Core/TOrbit.Plugin.Core.csproj" />
+  <Project Path="TOrbit.Plugin.Home/TOrbit.Plugin.Home.csproj" />
+  <Project Path="TOrbit.Plugin.KeyMap/TOrbit.Plugin.KeyMap.csproj" />
+  <Project Path="TOrbit.Plugin.Migration/TOrbit.Plugin.Migration.csproj" Id="480c1a3b-1df4-4e0c-921a-0eca262e190f" />
   <Project Path="TOrbit.Plugin.Monitor/TOrbit.Plugin.Monitor.csproj" />
   <Project Path="TOrbit.Plugin.Promptor/TOrbit.Plugin.Promptor.csproj" />
   <Project Path="TOrbit.Plugin.Settings/TOrbit.Plugin.Settings.csproj" />
-  <Project Path="TOrbit.Plugin.KeyMap/TOrbit.Plugin.KeyMap.csproj" />
 </Solution>

@@ -14,7 +14,7 @@ public partial class PathPickerField : UserControl
         AvaloniaProperty.Register<PathPickerField, string?>(nameof(PlaceholderText));
 
     public static readonly StyledProperty<string> BrowseTextProperty =
-        AvaloniaProperty.Register<PathPickerField, string>(nameof(BrowseText), "选择文件");
+        AvaloniaProperty.Register<PathPickerField, string>(nameof(BrowseText), "Browse");
 
     public static readonly StyledProperty<bool> IsReadOnlyProperty =
         AvaloniaProperty.Register<PathPickerField, bool>(nameof(IsReadOnly), true);

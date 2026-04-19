@@ -15,18 +15,18 @@ public sealed class PromptorLogEntry
 
     public string FormatAsText()
     {
-        const string sep = "──────────────────────────────────────────────────────";
+        const string sep = "--------------------------------------------------------";
         var sb = new StringBuilder();
         sb.AppendLine(sep);
-        sb.AppendLine($"  时间   {Time:yyyy-MM-dd HH:mm:ss}");
-        sb.AppendLine($"  策略   {StrategyLabel}");
-        sb.AppendLine($"  模型   {Model}  ({Provider})");
-        sb.AppendLine($"  耗时   {Duration.TotalSeconds:F2} 秒");
-        sb.AppendLine($"  状态   {(IsSuccess ? "✓ 成功" : "✗ 失败")}");
+        sb.AppendLine($"  Time      {Time:yyyy-MM-dd HH:mm:ss}");
+        sb.AppendLine($"  Strategy  {StrategyLabel}");
+        sb.AppendLine($"  Model     {Model} ({Provider})");
+        sb.AppendLine($"  Duration  {Duration.TotalSeconds:F2}s");
+        sb.AppendLine($"  Status    {(IsSuccess ? "Success" : "Failed")}");
         if (!string.IsNullOrEmpty(ErrorMessage))
-            sb.AppendLine($"  错误   {ErrorMessage}");
+            sb.AppendLine($"  Error     {ErrorMessage}");
         if (!string.IsNullOrEmpty(InputPreview))
-            sb.AppendLine($"  输入   {InputPreview}");
+            sb.AppendLine($"  Input     {InputPreview}");
         sb.Append(sep);
         return sb.ToString();
     }
