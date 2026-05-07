@@ -1,0 +1,19 @@
+{
+  "id": "torbit.subtitle-translator",
+  "name": "Subtitle Translator",
+  "version": "1.0.0",
+  "entryAssembly": "TOrbit.Plugin.SubtitleTranslator.dll",
+  "entryType": "TOrbit.Plugin.SubtitleTranslator.SubtitleTranslatorPlugin",
+  "description": "Realtime subtitle OCR workspace for region capture, stabilization, and translation.",
+  "author": "T-Orbit",
+  "icon": "Translate",
+  "tags": "OCR,Subtitle,Translation",
+  "kind": "Visual",
+  "loadMode": "Lazy",
+  "isolationMode": "AssemblyLoadContext",
+  "capabilities": [],
+  "dependencies": [],
+  "metadata": {
+    "displayCategory": "Language"
+  }
+}

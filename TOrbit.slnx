@@ -11,4 +11,5 @@
   <Project Path="TOrbit.Plugin.Promptor/TOrbit.Plugin.Promptor.csproj" />
   <Project Path="TOrbit.Plugin.RuntimeHost/TOrbit.Plugin.RuntimeHost.csproj" />
   <Project Path="TOrbit.Plugin.Settings/TOrbit.Plugin.Settings.csproj" />
+  <Project Path="TOrbit.Plugin.SubtitleTranslator/TOrbit.Plugin.SubtitleTranslator.csproj" />
 </Solution>

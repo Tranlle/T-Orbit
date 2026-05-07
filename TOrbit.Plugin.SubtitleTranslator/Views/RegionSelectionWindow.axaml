@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="using:TOrbit.Designer.Markup"
+        x:Class="TOrbit.Plugin.SubtitleTranslator.Views.RegionSelectionWindow"
+        WindowDecorations="None"
+        CanResize="False"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Background="#66000000"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1">
+
+  <Grid x:Name="RootGrid"
+        Cursor="Cross">
+    <Canvas>
+      <Border x:Name="SelectionBorder"
+              IsVisible="False"
+              BorderBrush="#F4FBFF"
+              BorderThickness="2"
+              Background="#1AC6F0FF"
+              CornerRadius="4" />
+    </Canvas>
+
+    <Border HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Margin="0,32,0,0"
+            Background="#D90B1016"
+            BorderBrush="#33465A"
+            BorderThickness="1"
+            CornerRadius="999"
+            Padding="14,8">
+      <TextBlock Text="{loc:Loc subtitle.selection.instruction}"
+                 FontSize="12"
+                 Foreground="#E6F2FF" />
+    </Border>
+  </Grid>
+</Window>

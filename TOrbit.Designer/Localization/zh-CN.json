@@ -117,6 +117,241 @@
     "runtime": {
       "name": ".NET 运行宿主",
       "description": "部署并管理本地 .NET 发布包"
+    },
+    "subtitleTranslator": {
+      "name": "字幕翻译",
+      "description": "实时字幕 OCR 工作台"
+    }
+  },
+  "subtitle": {
+    "ui": {
+      "eyebrow": "实时 OCR",
+      "title": "字幕翻译工作台",
+      "state": "状态",
+      "source": "原文",
+      "translation": "译文",
+      "runLog": "运行日志",
+      "controls": "控制",
+      "actions": "操作",
+      "statusRail": "状态栏"
+    },
+    "actions": {
+      "selectRegion": "选择区域",
+      "start": "开始",
+      "pause": "暂停",
+      "translationSettings": "翻译设置"
+    },
+    "settings": {
+      "eyebrow": "翻译",
+      "title": "翻译设置",
+      "description": "在这里启用或关闭字幕翻译，并配置当前翻译提供方。",
+      "hint": "保存后会立即应用到当前字幕流水线。",
+      "enabledHint": "翻译已启用，开始采集前请确认提供方配置正确。",
+      "disabledHint": "翻译已关闭，工作台只会显示原文字幕。",
+      "saved": "翻译设置已保存。",
+      "fields": {
+        "provider": "提供方",
+        "targetLanguage": "目标语言",
+        "model": "模型",
+        "endpoint": "接口地址",
+        "apiKey": "API Key",
+        "showTranslation": "显示译文字幕输出"
+      },
+      "preview": {
+        "title": "显示"
+      },
+      "providers": {
+        "disabled": {
+          "label": "关闭翻译",
+          "description": "不启用翻译，只显示原始字幕。"
+        },
+        "echo": {
+          "label": "Echo 调试",
+          "description": "本地调试模式，会在原文前附加目标语言标记。"
+        },
+        "openaiCompatible": {
+          "label": "OpenAI 兼容接口",
+          "description": "将字幕文本发送到兼容 Chat Completions 的接口。"
+        }
+      },
+      "validation": {
+        "targetLanguage": "目标语言不能为空。",
+        "endpoint": "使用 OpenAI 兼容接口时必须填写接口地址。",
+        "model": "使用 OpenAI 兼容接口时必须填写模型名称。"
+      }
+    },
+    "header": {
+      "region": "区域",
+      "pipeline": "流程",
+      "interval": "采样间隔",
+      "translation": "翻译",
+      "ocr": "OCR",
+      "lastUpdate": "最近更新",
+      "translationConfigured": "已配置",
+      "originalOnly": "仅原文"
+    },
+    "badge": {
+      "preview": "实时预览",
+      "awaitingRegion": "等待选择区域"
+    },
+    "initial": {
+      "source": "等待 OCR 流水线输出。",
+      "translation": "译文会显示在这里。",
+      "status": "就绪",
+      "lastUpdate": "尚未开始"
+    },
+    "state": {
+      "noRegion": "未选区域",
+      "idle": "空闲",
+      "ready": "就绪",
+      "sampling": "采样中",
+      "paused": "已暂停",
+      "error": "错误",
+      "waiting": "等待中",
+      "evaluatingFrame": "分析画面",
+      "skippedUnchanged": "跳过未变化画面",
+      "rawOcrRunning": "原始 OCR 识别中",
+      "rawOcrCompleted": "原始 OCR 完成",
+      "rawOcrFailed": "原始 OCR 失败",
+      "ocrReady": "OCR 就绪",
+      "ocrFailed": "OCR 失败",
+      "ocrNotInitialized": "OCR 引擎未初始化",
+      "updatedAt": "已更新"
+    },
+    "status": {
+      "noRegion": "未选择区域",
+      "running": "采集循环运行中",
+      "paused": "已暂停",
+      "frameUnchanged": "画面未变化",
+      "regionSelected": "已选择区域",
+      "regionSelectionCancelled": "已取消区域选择",
+      "ocrPassCompleted": "OCR 识别完成",
+      "ocrFailed": "OCR 失败",
+      "duplicateSuppressed": "重复字幕已抑制"
+    },
+    "translation": {
+      "notConfigured": "未配置翻译",
+      "providerPrefix": "提供方",
+      "providerIssue": "提供方异常",
+      "translatedTo": "已翻译到",
+      "originalOnly": "仅显示原文。",
+      "waiting": "等待翻译输出。"
+    },
+    "empty": {
+      "selectRegionTitle": "先选择字幕区域",
+      "selectRegionDescription": "先框选字幕带，开始采集后工作台才会进入实时识别。",
+      "originalOnlyTitle": "原文字幕预览",
+      "originalOnlyDescription": "当前未启用翻译，工作台仍会采集并稳定输出原文字幕。",
+      "readyTitle": "翻译流程已就绪",
+      "readyDescription": "区域、OCR 和翻译都已配置完成，开始采集即可持续输出字幕。"
+    },
+    "hint": {
+      "paused": "采集循环已暂停，需要时可继续。",
+      "manualPause": "已手动暂停流程。",
+      "pipelineFailed": "流程执行失败，请检查运行日志和 OCR 配置。",
+      "regionSelected": "区域已锁定，可以开始采集。",
+      "running": "采集、OCR、稳定器和翻译流程正在运行。",
+      "frameSkipped": "帧变化检测已跳过本轮 OCR。",
+      "ocrFailed": "OCR 未能从当前画面中提取可读字幕。",
+      "stabilizing": "正在将本次 OCR 结果与最近字幕历史进行比对。",
+      "selectRegion": "先选择字幕带，才能开启实时工作台。",
+      "ready": "翻译已配置，开始采集即可输出双语字幕。",
+      "originalOnly": "当前未启用翻译，开始采集后只显示原文字幕。"
+    },
+    "error": {
+      "captureFailed": "采集失败",
+      "pipelineFailed": "流程执行失败",
+      "ocrFrameFailed": "当前帧 OCR 识别失败。",
+      "noReadableText": "未检测到可读的字幕文本。"
+    },
+    "log": {
+      "empty": "执行一次采集后，这里会显示 OCR 和翻译输出。",
+      "booleanYes": "是",
+      "booleanNo": "否",
+      "variablesUpdated": "变量已更新：",
+      "capturePaused": "采集已暂停。",
+      "regionSelectionCancelled": "已取消区域选择。",
+      "regionSelected": "已选择区域",
+      "captureStarted": "采集已开始，间隔",
+      "regionReady": "区域已就绪",
+      "frameCaptured": "已采集画面",
+      "frameSkipped": "已跳过画面",
+      "frameAccepted": "已接受画面",
+      "preprocessApplied": "已应用预处理",
+      "ocrCompare": "OCR 对比",
+      "ocrError": "OCR 错误",
+      "stabilizer": "稳定器",
+      "stableText": "稳定字幕",
+      "ocrSuccess": "OCR 成功",
+      "translationUpdated": "译文已更新",
+      "translationSkipped": "已跳过翻译"
+    },
+    "selection": {
+      "instruction": "拖拽选择字幕带，松开确认。按 Esc 或右键取消。"
+    },
+    "variables": {
+      "targetLanguage": {
+        "name": "目标语言",
+        "description": "翻译目标语言，例如 zh-CN 或 en-US。"
+      },
+      "captureInterval": {
+        "name": "采样间隔",
+        "description": "屏幕采集间隔，单位毫秒。",
+        "validation": "采样间隔必须是正整数。"
+      },
+      "showSource": {
+        "name": "显示原文",
+        "description": "是否显示原始字幕文本。"
+      },
+      "showTranslation": {
+        "name": "显示译文",
+        "description": "是否显示翻译后的字幕文本。"
+      },
+      "ocrPadding": {
+        "name": "OCR 边距",
+        "description": "OCR 前在选区外围附加的边距像素。",
+        "validation": "OCR 边距必须是非负整数。"
+      },
+      "similarityThreshold": {
+        "name": "相似度阈值",
+        "description": "用于字幕去重和稳定判断的相似度阈值。",
+        "validation": "相似度阈值必须在 0 到 1 之间。"
+      },
+      "minRefreshInterval": {
+        "name": "最小刷新间隔",
+        "description": "稳定字幕最短刷新时间，单位毫秒。",
+        "validation": "最小刷新间隔必须是非负整数。"
+      },
+      "stabilizationWindow": {
+        "name": "稳定窗口",
+        "description": "字幕稳定器用于判断更新的时间窗口，单位毫秒。",
+        "validation": "稳定窗口必须是非负整数。"
+      },
+      "frameChangeDetection": {
+        "name": "帧变化检测",
+        "description": "当画面变化不明显时跳过 OCR，减少重复识别。"
+      },
+      "frameChangeThreshold": {
+        "name": "帧变化阈值",
+        "description": "帧变化检测的灵敏度阈值。",
+        "validation": "帧变化阈值必须在 0 到 1 之间。"
+      },
+      "translationProvider": {
+        "name": "翻译提供方",
+        "description": "翻译后端提供方，设为 disabled 时仅保留原文字幕。"
+      },
+      "translationModel": {
+        "name": "翻译模型",
+        "description": "翻译提供方使用的模型名称。"
+      },
+      "translationEndpoint": {
+        "name": "翻译接口地址",
+        "description": "翻译提供方的自定义 API 地址。"
+      },
+      "translationApiKey": {
+        "name": "翻译 API Key",
+        "description": "调用翻译接口所需的 API Key。"
+      }
     }
   },
   "settings": {

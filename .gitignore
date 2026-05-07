@@ -63,3 +63,6 @@ TestResults.xml
 /TOrbit.Plugin.RuntimeHost/obj/
 /TOrbit.Plugin.RuntimeHost/bin/
 /TOrbit.Plugin.RuntimeHost/artifacts/
+/.tmp/
+/TOrbit.Plugin.SubtitleTranslator/obj/
+/TOrbit.Plugin.SubtitleTranslator/bin/

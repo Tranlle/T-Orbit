@@ -25,6 +25,7 @@
     <ProjectReference Include="..\TOrbit.Core\TOrbit.Core.csproj" />
     <ProjectReference Include="..\TOrbit.Plugin.Core\TOrbit.Plugin.Core.csproj" />
     <ProjectReference Include="..\TOrbit.Plugin.Migration\TOrbit.Plugin.Migration.csproj" />
+    <ProjectReference Include="..\TOrbit.Plugin.SubtitleTranslator\TOrbit.Plugin.SubtitleTranslator.csproj" />
   </ItemGroup>
 
 </Project>

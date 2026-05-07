@@ -1,0 +1,98 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:designer="using:TOrbit.Designer.Controls"
+             xmlns:loc="using:TOrbit.Designer.Markup"
+             xmlns:vm="using:TOrbit.Plugin.SubtitleTranslator.ViewModels"
+             x:Class="TOrbit.Plugin.SubtitleTranslator.Views.TranslationSettingsSheetView"
+             x:DataType="vm:TranslationSettingsSheetViewModel">
+  <StackPanel Spacing="18">
+    <Border Classes="workspace-panel"
+            Padding="20">
+      <Grid RowDefinitions="Auto,Auto"
+            RowSpacing="18">
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="16">
+          <StackPanel Spacing="4">
+            <TextBlock Classes="eyebrow"
+                       Text="{loc:Loc subtitle.settings.eyebrow}" />
+            <TextBlock Classes="section-title"
+                       Text="{loc:Loc subtitle.settings.title}" />
+            <TextBlock Classes="caption-muted"
+                       Text="{loc:Loc subtitle.settings.description}"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+
+          <Button Grid.Column="1"
+                  Content="{loc:Loc settings.header.actions.save}"
+                  Command="{Binding SaveCommand}"
+                  VerticalAlignment="Top" />
+        </Grid>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="18"
+              RowDefinitions="Auto,Auto,Auto,Auto">
+          <designer:FormField Label="{loc:Loc subtitle.settings.fields.provider}">
+            <ComboBox ItemsSource="{Binding ProviderOptions}"
+                      SelectedItem="{Binding SelectedProvider, Mode=TwoWay}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Spacing="2">
+                    <TextBlock Text="{Binding Label}" />
+                    <TextBlock Classes="caption-muted"
+                               MinHeight="0"
+                               Text="{Binding Description}"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+          </designer:FormField>
+
+          <designer:FormField Grid.Column="1"
+                              Label="{loc:Loc subtitle.settings.fields.targetLanguage}">
+            <TextBox Text="{Binding TargetLanguage, Mode=TwoWay}"
+                     PlaceholderText="zh-CN" />
+          </designer:FormField>
+
+          <designer:FormField Grid.Row="1"
+                              Grid.ColumnSpan="2"
+                              Label="{loc:Loc subtitle.settings.fields.model}">
+            <TextBox Text="{Binding TranslationModel, Mode=TwoWay}"
+                     IsEnabled="{Binding IsTranslationEnabled}"
+                     PlaceholderText="{Binding SelectedProvider.Key}" />
+          </designer:FormField>
+
+          <designer:FormField Grid.Row="2"
+                              Grid.ColumnSpan="2"
+                              Label="{loc:Loc subtitle.settings.fields.endpoint}">
+            <TextBox Text="{Binding TranslationEndpoint, Mode=TwoWay}"
+                     IsEnabled="{Binding IsOpenAiCompatibleProvider}"
+                     PlaceholderText="https://api.example.com/v1/chat/completions" />
+          </designer:FormField>
+
+          <designer:FormField Grid.Row="3"
+                              Grid.ColumnSpan="2"
+                              Label="{loc:Loc subtitle.settings.fields.apiKey}">
+            <TextBox Text="{Binding TranslationApiKey, Mode=TwoWay}"
+                     IsEnabled="{Binding IsOpenAiCompatibleProvider}" />
+          </designer:FormField>
+        </Grid>
+      </Grid>
+    </Border>
+
+    <Border Classes="workspace-panel"
+            Padding="20">
+      <StackPanel Spacing="12">
+        <TextBlock Classes="eyebrow"
+                   Text="{loc:Loc subtitle.settings.preview.title}" />
+        <CheckBox IsChecked="{Binding ShowTranslatedText, Mode=TwoWay}"
+                  Content="{loc:Loc subtitle.settings.fields.showTranslation}" />
+        <TextBlock Classes="caption-muted"
+                   MinHeight="0"
+                   Text="{Binding StatusMessage}"
+                   TextWrapping="Wrap" />
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

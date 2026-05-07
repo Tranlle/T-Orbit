@@ -117,6 +117,241 @@
     "runtime": {
       "name": ".NET Runtime Host",
       "description": "Deploy and manage local .NET release packages"
+    },
+    "subtitleTranslator": {
+      "name": "Subtitle Translator",
+      "description": "Realtime subtitle OCR workspace"
+    }
+  },
+  "subtitle": {
+    "ui": {
+      "eyebrow": "Realtime OCR",
+      "title": "Subtitle Translation Workbench",
+      "state": "State",
+      "source": "Source",
+      "translation": "Translation",
+      "runLog": "Run Log",
+      "controls": "Controls",
+      "actions": "Actions",
+      "statusRail": "Status Rail"
+    },
+    "actions": {
+      "selectRegion": "Select Region",
+      "start": "Start",
+      "pause": "Pause",
+      "translationSettings": "Translation Settings"
+    },
+    "settings": {
+      "eyebrow": "Translation",
+      "title": "Translation Settings",
+      "description": "Enable or disable subtitle translation and configure the current provider.",
+      "hint": "Save changes to apply them to the live subtitle pipeline.",
+      "enabledHint": "Translation is enabled. Review provider credentials before starting capture.",
+      "disabledHint": "Translation is disabled. The workspace will only show original subtitles.",
+      "saved": "Translation settings saved.",
+      "fields": {
+        "provider": "Provider",
+        "targetLanguage": "Target Language",
+        "model": "Model",
+        "endpoint": "Endpoint",
+        "apiKey": "API Key",
+        "showTranslation": "Show translated subtitle output"
+      },
+      "preview": {
+        "title": "Display"
+      },
+      "providers": {
+        "disabled": {
+          "label": "Disabled",
+          "description": "Keep translation turned off and only show the source subtitle."
+        },
+        "echo": {
+          "label": "Echo",
+          "description": "Local debug mode. Prefix the source text with the target language."
+        },
+        "openaiCompatible": {
+          "label": "OpenAI-Compatible",
+          "description": "Send subtitle text to a Chat Completions compatible endpoint."
+        }
+      },
+      "validation": {
+        "targetLanguage": "Target language is required.",
+        "endpoint": "Endpoint is required for the OpenAI-compatible provider.",
+        "model": "Model is required for the OpenAI-compatible provider."
+      }
+    },
+    "header": {
+      "region": "Region",
+      "pipeline": "Pipeline",
+      "interval": "Interval",
+      "translation": "Translation",
+      "ocr": "OCR",
+      "lastUpdate": "Last Update",
+      "translationConfigured": "Configured",
+      "originalOnly": "Original only"
+    },
+    "badge": {
+      "preview": "Live Preview",
+      "awaitingRegion": "Awaiting region"
+    },
+    "initial": {
+      "source": "Waiting for OCR pipeline.",
+      "translation": "Translation output will appear here.",
+      "status": "Ready",
+      "lastUpdate": "Not started"
+    },
+    "state": {
+      "noRegion": "No region",
+      "idle": "Idle",
+      "ready": "Ready",
+      "sampling": "Sampling",
+      "paused": "Paused",
+      "error": "Error",
+      "waiting": "Waiting",
+      "evaluatingFrame": "Evaluating frame",
+      "skippedUnchanged": "Skipped unchanged frame",
+      "rawOcrRunning": "Raw OCR running",
+      "rawOcrCompleted": "Raw OCR complete",
+      "rawOcrFailed": "Raw OCR failed",
+      "ocrReady": "OCR ready",
+      "ocrFailed": "OCR failed",
+      "ocrNotInitialized": "OCR engine not initialized",
+      "updatedAt": "Updated"
+    },
+    "status": {
+      "noRegion": "No region selected",
+      "running": "Running capture loop",
+      "paused": "Paused",
+      "frameUnchanged": "Frame unchanged",
+      "regionSelected": "Region selected",
+      "regionSelectionCancelled": "Region selection cancelled",
+      "ocrPassCompleted": "OCR pass completed",
+      "ocrFailed": "OCR failed",
+      "duplicateSuppressed": "Duplicate subtitle suppressed"
+    },
+    "translation": {
+      "notConfigured": "Translation not configured",
+      "providerPrefix": "Provider",
+      "providerIssue": "Provider issue",
+      "translatedTo": "Translated to",
+      "originalOnly": "Original only.",
+      "waiting": "Waiting for translation output."
+    },
+    "empty": {
+      "selectRegionTitle": "Select a region to begin",
+      "selectRegionDescription": "Choose the subtitle band first. The workspace starts sampling after capture begins.",
+      "originalOnlyTitle": "Original subtitle preview",
+      "originalOnlyDescription": "Translation is disabled. The workspace will still capture and stabilize the original subtitle text.",
+      "readyTitle": "Translation pipeline ready",
+      "readyDescription": "Region, OCR, and translation are all configured. Start capture to stream subtitle updates."
+    },
+    "hint": {
+      "paused": "Capture loop paused. Resume when you want to continue sampling.",
+      "manualPause": "Pipeline paused manually.",
+      "pipelineFailed": "Pipeline failed. Review the run log and OCR configuration.",
+      "regionSelected": "Region locked. Start capture when ready.",
+      "running": "Capture, OCR, stabilization, and translation are running.",
+      "frameSkipped": "Frame change detection skipped this cycle.",
+      "ocrFailed": "OCR could not extract readable text from this frame.",
+      "stabilizing": "Comparing the latest OCR result with recent subtitle history.",
+      "selectRegion": "Select the subtitle band to unlock the live workspace.",
+      "ready": "Translation is configured. Start capture to produce bilingual subtitles.",
+      "originalOnly": "Translation is disabled. Start capture to preview the original subtitle only."
+    },
+    "error": {
+      "captureFailed": "Capture failed",
+      "pipelineFailed": "Pipeline failed",
+      "ocrFrameFailed": "OCR failed on this frame.",
+      "noReadableText": "No readable subtitle text was detected."
+    },
+    "log": {
+      "empty": "Run one capture cycle to inspect OCR and translation output.",
+      "booleanYes": "yes",
+      "booleanNo": "no",
+      "variablesUpdated": "Variables updated:",
+      "capturePaused": "Capture paused.",
+      "regionSelectionCancelled": "Region selection cancelled.",
+      "regionSelected": "Region selected",
+      "captureStarted": "Capture started, interval",
+      "regionReady": "Region ready",
+      "frameCaptured": "Frame captured",
+      "frameSkipped": "Frame skipped",
+      "frameAccepted": "Frame accepted",
+      "preprocessApplied": "Preprocess applied",
+      "ocrCompare": "OCR comparison",
+      "ocrError": "OCR error",
+      "stabilizer": "Stabilizer",
+      "stableText": "Stable subtitle",
+      "ocrSuccess": "OCR success",
+      "translationUpdated": "Translation updated",
+      "translationSkipped": "Translation skipped"
+    },
+    "selection": {
+      "instruction": "Drag to select the subtitle band. Release to confirm. Press Esc or right-click to cancel."
+    },
+    "variables": {
+      "targetLanguage": {
+        "name": "Target Language",
+        "description": "Translation target language, for example zh-CN or en-US."
+      },
+      "captureInterval": {
+        "name": "Capture Interval",
+        "description": "Screen capture interval in milliseconds.",
+        "validation": "Capture interval must be a positive integer."
+      },
+      "showSource": {
+        "name": "Show Source",
+        "description": "Whether to display the original subtitle text."
+      },
+      "showTranslation": {
+        "name": "Show Translation",
+        "description": "Whether to display translated subtitle text."
+      },
+      "ocrPadding": {
+        "name": "OCR Padding",
+        "description": "Extra padding added around the selected subtitle region before OCR.",
+        "validation": "OCR padding must be a non-negative integer."
+      },
+      "similarityThreshold": {
+        "name": "Similarity Threshold",
+        "description": "Subtitle similarity threshold for deduplication and stabilization.",
+        "validation": "Similarity threshold must be between 0 and 1."
+      },
+      "minRefreshInterval": {
+        "name": "Min Refresh Interval",
+        "description": "Minimum interval between stable subtitle refreshes in milliseconds.",
+        "validation": "Minimum refresh interval must be a non-negative integer."
+      },
+      "stabilizationWindow": {
+        "name": "Stabilization Window",
+        "description": "Time window used to stabilize OCR subtitle updates in milliseconds.",
+        "validation": "Stabilization window must be a non-negative integer."
+      },
+      "frameChangeDetection": {
+        "name": "Frame Change Detection",
+        "description": "Skip OCR when the sampled frame has no significant change."
+      },
+      "frameChangeThreshold": {
+        "name": "Frame Change Threshold",
+        "description": "Sensitivity threshold for frame change detection.",
+        "validation": "Frame change threshold must be between 0 and 1."
+      },
+      "translationProvider": {
+        "name": "Translation Provider",
+        "description": "Translation backend provider. Use disabled to keep original subtitles only."
+      },
+      "translationModel": {
+        "name": "Translation Model",
+        "description": "Model name used by the translation provider."
+      },
+      "translationEndpoint": {
+        "name": "Translation Endpoint",
+        "description": "Custom API endpoint for the translation provider."
+      },
+      "translationApiKey": {
+        "name": "Translation API Key",
+        "description": "API key used to call the translation endpoint."
+      }
     }
   },
   "settings": {

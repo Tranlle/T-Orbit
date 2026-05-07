@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>TOrbit.Plugin.SubtitleTranslator</AssemblyName>
+    <ToolHostPluginId>SubtitleTranslator</ToolHostPluginId>
+    <ToolHostPluginOutputDir>..\TOrbit.App\bin\$(Configuration)\net10.0\plugins\$(ToolHostPluginId)\</ToolHostPluginOutputDir>
+    <OutDir>$(ToolHostPluginOutputDir)</OutDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RapidOCR.Net" Version="0.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
+    <ProjectReference Include="..\TOrbit.Core\TOrbit.Core.csproj" />
+    <ProjectReference Include="..\TOrbit.Designer\TOrbit.Designer.csproj" />
+    <ProjectReference Include="..\TOrbit.Plugin.Core\TOrbit.Plugin.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="plugin.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="CopyPluginManifest" AfterTargets="Build">
+    <Copy SourceFiles="plugin.json"
+          DestinationFolder="$(OutDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>
